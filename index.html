@@ -1429,7 +1429,23 @@
 
 
 
-  </style>
+  
+  .cs-gate-close {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .cs-gate-close:hover { color: var(--ink); }
+  .cs-gate-inner { position: relative; }
+
+</style>
 </head>
 <body>
 <nav>
@@ -1629,6 +1645,23 @@
         </div>
         <div class="cs-expand-btn" onclick="showCsGate()">
           <span id="cs-expand-label">Read full case study</span> <span id="cs-expand-arrow">↓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-password-gate" id="csGate">
+      <div class="cs-gate-inner">
+        <button class="cs-gate-close" onclick="closeCsGate()" title="Close">✕</button>
+        <div class="cs-gate-icon">⟡</div>
+        <div class="cs-gate-title">Full case study available on request</div>
+        <div class="cs-gate-desc">This case study contains proprietary architectural details. Request access and I'll send you the password directly.</div>
+        <div class="cs-gate-actions">
+          <a href="mailto:me@urvash.com?subject=Case study access request&body=Hi Urvash, I'd like to read the full Insights Service case study." class="cs-gate-btn">Request access →</a>
+          <div class="cs-gate-input-row">
+            <input type="password" id="csPasswordInput" class="cs-gate-input" placeholder="Have the password? Enter it here" />
+            <button class="cs-gate-submit" onclick="window.checkPassword()">Unlock</button>
+          </div>
+          <div class="cs-gate-error" id="csError"></div>
         </div>
       </div>
     </div>
@@ -2277,12 +2310,17 @@
 
   // ── CASE STUDY
   var CS_PW='insights2024',CS_DAYS=7,CS_KEY='cs_v1';
-  function showCsGate(){
+  window.closeCsGate = function closeCsGate(){
+    var g=document.getElementById('csGate');
+    if(g) g.classList.remove('visible');
+  };
+
+  window.showCsGate = function showCsGate(){
     try{var s=localStorage.getItem(CS_KEY);if(s){var d=JSON.parse(s);if(d.ok&&(Date.now()-d.t)/86400000<CS_DAYS){openCaseStudy();return;}localStorage.removeItem(CS_KEY);}}catch(e){}
     var g=document.getElementById('csGate');
     if(g){g.classList.add('visible');setTimeout(function(){g.scrollIntoView({behavior:'smooth',block:'center'});},100);}
   }
-  function checkPassword(){
+  window.checkPassword = function checkPassword(){
     var i=document.getElementById('csPasswordInput'),e=document.getElementById('csError');
     if(!i)return;
     if(i.value===CS_PW){
@@ -2291,23 +2329,393 @@
       openCaseStudy();
     }else{if(e)e.textContent='Incorrect password.';i.value='';i.focus();}
   }
-  function openCaseStudy(){
+  window.openCaseStudy = function openCaseStudy(){
     var f=document.getElementById('csFull'),l=document.getElementById('cs-expand-label'),a=document.getElementById('cs-expand-arrow');
     if(!f)return;f.classList.add('open');
     if(l)l.textContent='Collapse case study';if(a)a.textContent='↑';
     setTimeout(function(){f.scrollIntoView({behavior:'smooth',block:'start'});},100);
   }
-  function toggleCaseStudy(){showCsGate();}
+  window.toggleCaseStudy = function(){ window.showCsGate(); };
 
   // ── DARK MODE
   var _dk=false;
-  function toggleDark(){
+  window.toggleDark = function toggleDark(){
     _dk=!_dk;document.body.classList.toggle('dark',_dk);
     var t=document.getElementById('toggleTrack'),i=document.getElementById('toggleIcon');
     if(t)t.classList.toggle('active',_dk);
     if(i)i.textContent=_dk?'☾':'☀︎';
   }
 
+})();
+</script>
+
+
+<!-- ══ AI CHATBOT ══ -->
+<div id="chatbot-bubble" onclick="toggleChat()" title="Chat with Urvash's AI">
+  <div class="chatbot-memoji">
+    <img src="data:image/png;base64,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" alt="Urvash" />
+    <div class="chatbot-online-badge"></div>
+  </div>
+  <span class="chatbot-label">Chat with Urvash's AI</span>
+</div>
+
+<div id="chatbot-window" class="chatbot-window">
+  <div class="chatbot-header">
+    <div class="chatbot-header-left">
+      <div class="chatbot-avatar">UC</div>
+      <div>
+        <div class="chatbot-name">Urvash's AI</div>
+        <div class="chatbot-status"><span class="chatbot-online-dot"></span>Online</div>
+      </div>
+    </div>
+    <button class="chatbot-close" onclick="toggleChat()">✕</button>
+  </div>
+
+  <div class="chatbot-messages" id="chatMessages">
+    <div class="chatbot-msg bot">
+      <div class="chatbot-msg-text">Hi! I'm Urvash's AI. Ask me anything about his background, work, or what he's looking for — I'll give you the real story.</div>
+    </div>
+    <div class="chatbot-suggestions" id="chatSuggestions">
+      <div class="chatbot-suggestions-label">Try asking:</div>
+      <button class="chatbot-suggestion" onclick="sendSuggestion(this)">What did you build at Mavrck?</button>
+      <button class="chatbot-suggestion" onclick="sendSuggestion(this)">What are you looking for next?</button>
+      <button class="chatbot-suggestion" onclick="sendSuggestion(this)">How technical are you as a PM?</button>
+    </div>
+  </div>
+
+  <div class="chatbot-input-row">
+    <input type="text" id="chatInput" class="chatbot-input" placeholder="Ask anything…" autocomplete="off" />
+    <button class="chatbot-send" id="chatSend" onclick="sendMessage()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  /* ── CHATBOT BUBBLE ── */
+  #chatbot-bubble {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.5rem 1.25rem 0.5rem 0.5rem;
+    border-radius: 3rem;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(15,14,13,0.22);
+    transition: transform 0.2s, box-shadow 0.2s;
+    user-select: none;
+    font-family: var(--sans);
+  }
+  #chatbot-bubble:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(15,14,13,0.28); }
+  .chatbot-memoji {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--ink);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .chatbot-memoji img { width: 100%; height: 100%; object-fit: cover; }
+  .chatbot-online-badge {
+    position: absolute;
+    bottom: 1px; right: 1px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 2px solid var(--ink);
+  }
+  .chatbot-label { font-size: 0.8rem; letter-spacing: 0.03em; font-weight: 500; }
+
+  /* ── CHATBOT WINDOW ── */
+  .chatbot-window {
+    position: fixed;
+    bottom: 5.5rem; right: 2rem;
+    z-index: 999;
+    width: 360px;
+    max-height: 520px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 8px 40px rgba(15,14,13,0.15);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px) scale(0.97);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .chatbot-window.open {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0) scale(1);
+  }
+
+  /* ── HEADER ── */
+  .chatbot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .chatbot-header-left { display: flex; align-items: center; gap: 0.65rem; }
+  .chatbot-avatar {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-style: italic;
+    font-size: 0.75rem; color: white;
+    font-weight: 600;
+  }
+  .chatbot-name { font-size: 0.82rem; font-weight: 500; font-family: var(--sans); letter-spacing: 0.02em; }
+  .chatbot-status { display: flex; align-items: center; gap: 0.35rem; font-size: 0.65rem; color: rgba(245,242,237,0.5); font-family: var(--mono); letter-spacing: 0.08em; }
+  .chatbot-online-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; }
+  .chatbot-close { background: none; border: none; color: rgba(245,242,237,0.4); cursor: pointer; font-size: 0.85rem; padding: 0; transition: color 0.2s; }
+  .chatbot-close:hover { color: var(--paper); }
+
+  /* ── MESSAGES ── */
+  .chatbot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    scroll-behavior: smooth;
+  }
+  .chatbot-messages::-webkit-scrollbar { width: 3px; }
+  .chatbot-messages::-webkit-scrollbar-thumb { background: var(--line); }
+
+  .chatbot-msg { display: flex; max-width: 85%; }
+  .chatbot-msg.bot { align-self: flex-start; }
+  .chatbot-msg.user { align-self: flex-end; }
+  .chatbot-msg-text {
+    padding: 0.65rem 0.9rem;
+    font-size: 0.84rem;
+    line-height: 1.65;
+    font-family: var(--sans);
+  }
+  .chatbot-msg.bot .chatbot-msg-text {
+    background: white;
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .chatbot-msg.user .chatbot-msg-text {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* Typing indicator */
+  .chatbot-typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.65rem 0.9rem;
+    background: white;
+    border: 1px solid var(--line);
+    align-self: flex-start;
+  }
+  .chatbot-typing span {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--muted);
+    animation: typing-bounce 1.2s infinite;
+  }
+  .chatbot-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .chatbot-typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* Suggestions */
+  .chatbot-suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-self: flex-start;
+    width: 100%;
+  }
+  .chatbot-suggestions-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.15rem;
+    opacity: 0.6;
+  }
+  .chatbot-suggestion {
+    text-align: left;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--line);
+    background: white;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    border-radius: 0;
+  }
+  .chatbot-suggestion:hover { border-color: var(--accent); color: var(--accent); background: var(--paper); }
+
+  /* ── INPUT ── */
+  .chatbot-input-row {
+    display: flex;
+    border-top: 1px solid var(--line);
+    gap: 0;
+  }
+  .chatbot-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: var(--paper);
+    font-family: var(--sans);
+    font-size: 0.84rem;
+    color: var(--ink);
+    outline: none;
+  }
+  .chatbot-input::placeholder { color: var(--muted); }
+  .chatbot-send {
+    padding: 0 1rem;
+    background: var(--ink);
+    border: none;
+    color: var(--paper);
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chatbot-send:hover { background: var(--accent); }
+  .chatbot-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Dark mode */
+  body.dark #chatbot-bubble { background: rgba(245,242,237,0.08); border: 1px solid rgba(245,242,237,0.1); }
+  body.dark .chatbot-window { background: #1a1917; border-color: rgba(245,242,237,0.1); }
+  body.dark .chatbot-msg.bot .chatbot-msg-text { background: #0f0e0d; border-color: rgba(245,242,237,0.08); color: var(--paper); }
+  body.dark .chatbot-input { background: #1a1917; color: var(--paper); }
+  body.dark .chatbot-suggestion { background: #1a1917; border-color: rgba(245,242,237,0.08); }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .chatbot-window { width: calc(100vw - 2rem); right: 1rem; bottom: 5rem; max-height: 70vh; }
+    #chatbot-bubble { right: 1rem; bottom: 1rem; padding: 0.4rem 1rem 0.4rem 0.4rem; }
+    .chatbot-label { font-size: 0.72rem; }
+    .chatbot-memoji { width: 38px; height: 38px; }
+  }
+</style>
+
+<script>
+(function() {
+  var history = [];
+  var open = false;
+
+  window.toggleChat = function() {
+    open = !open;
+    var win = document.getElementById('chatbot-window');
+    var dot = document.getElementById('chatDot');
+    if (win) win.classList.toggle('open', open);
+    if (dot) dot.style.display = open ? 'none' : 'block';
+    if (open) {
+      setTimeout(function() {
+        var inp = document.getElementById('chatInput');
+        if (inp) inp.focus();
+      }, 250);
+    }
+  };
+
+  window.sendSuggestion = function(btn) {
+    var text = btn.textContent;
+    var sugg = document.getElementById('chatSuggestions');
+    if (sugg) sugg.style.display = 'none';
+    sendText(text);
+  };
+
+  window.sendMessage = function() {
+    var inp = document.getElementById('chatInput');
+    if (!inp || !inp.value.trim()) return;
+    var text = inp.value.trim();
+    inp.value = '';
+    sendText(text);
+  };
+
+  function sendText(text) {
+    appendMsg('user', text);
+    history.push({role: 'user', content: text});
+    setLoading(true);
+    callAPI();
+  }
+
+  function appendMsg(role, text) {
+    var msgs = document.getElementById('chatMessages');
+    if (!msgs) return;
+    var div = document.createElement('div');
+    div.className = 'chatbot-msg ' + role;
+    var inner = document.createElement('div');
+    inner.className = 'chatbot-msg-text';
+    inner.textContent = text;
+    div.appendChild(inner);
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return inner;
+  }
+
+  function showTyping() {
+    var msgs = document.getElementById('chatMessages');
+    if (!msgs) return null;
+    var div = document.createElement('div');
+    div.className = 'chatbot-typing';
+    div.id = 'typingIndicator';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  function setLoading(on) {
+    var btn = document.getElementById('chatSend');
+    var inp = document.getElementById('chatInput');
+    if (btn) btn.disabled = on;
+    if (inp) inp.disabled = on;
+    if (on) { showTyping(); }
+    else {
+      var t = document.getElementById('typingIndicator');
+      if (t) t.remove();
+    }
+  }
+
+  function callAPI() {
+    fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      setLoading(false);
+      var text = data.reply || "Something went wrong — try again or email me@urvash.com.";
+      history.push({role: 'assistant', content: text});
+      appendMsg('bot', text);
+    })
+    .catch(function() {
+      setLoading(false);
+      appendMsg('bot', "Connection issue — try again or reach out at me@urvash.com.");
+    });
+  }
+
+  // Enter key
+  document.addEventListener('DOMContentLoaded', function() {
+    var inp = document.getElementById('chatInput');
+    if (inp) inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+  });
 })();
 </script>
 
