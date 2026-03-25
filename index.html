@@ -1933,7 +1933,7 @@
         <div class="tool-pill">Snowflake</div>
         <div class="tool-pill">AWS Redshift</div>
         <div class="tool-pill">Python</div>
-        <div class="tool-pill">JavaScript (ES6)</div>
+        <div class="tool-pill">Java (ES6)</div>
       </div>
     </div>
 
@@ -2615,13 +2615,11 @@
 (function() {
   var history = [];
   var open = false;
-
+ 
   window.toggleChat = function() {
     open = !open;
     var win = document.getElementById('chatbot-window');
-    var dot = document.getElementById('chatDot');
     if (win) win.classList.toggle('open', open);
-    if (dot) dot.style.display = open ? 'none' : 'block';
     if (open) {
       setTimeout(function() {
         var inp = document.getElementById('chatInput');
@@ -2629,14 +2627,14 @@
       }, 250);
     }
   };
-
+ 
   window.sendSuggestion = function(btn) {
     var text = btn.textContent;
     var sugg = document.getElementById('chatSuggestions');
     if (sugg) sugg.style.display = 'none';
     sendText(text);
   };
-
+ 
   window.sendMessage = function() {
     var inp = document.getElementById('chatInput');
     if (!inp || !inp.value.trim()) return;
@@ -2644,14 +2642,24 @@
     inp.value = '';
     sendText(text);
   };
-
+ 
   function sendText(text) {
     appendMsg('user', text);
-    history.push({role: 'user', content: text});
+    history.push({ role: 'user', content: text });
     setLoading(true);
     callAPI();
   }
-
+ 
+  // ── MARKDOWN RENDERER ──
+  // Converts **bold**, *italic*, and newlines to HTML
+  function renderMarkdown(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>');
+  }
+ 
   function appendMsg(role, text) {
     var msgs = document.getElementById('chatMessages');
     if (!msgs) return;
@@ -2659,13 +2667,18 @@
     div.className = 'chatbot-msg ' + role;
     var inner = document.createElement('div');
     inner.className = 'chatbot-msg-text';
-    inner.textContent = text;
+    if (role === 'bot') {
+      inner.innerHTML = '<p>' + renderMarkdown(text) + '</p>';
+    } else {
+      // User messages: plain text, no markdown
+      inner.textContent = text;
+    }
     div.appendChild(inner);
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
     return inner;
   }
-
+ 
   function showTyping() {
     var msgs = document.getElementById('chatMessages');
     if (!msgs) return null;
@@ -2677,19 +2690,35 @@
     msgs.scrollTop = msgs.scrollHeight;
     return div;
   }
-
+ 
+  function removeTyping() {
+    var t = document.getElementById('typingIndicator');
+    if (t) t.remove();
+  }
+ 
   function setLoading(on) {
     var btn = document.getElementById('chatSend');
     var inp = document.getElementById('chatInput');
     if (btn) btn.disabled = on;
     if (inp) inp.disabled = on;
-    if (on) { showTyping(); }
-    else {
-      var t = document.getElementById('typingIndicator');
-      if (t) t.remove();
+    if (on) {
+      showTyping();
+    } else {
+      removeTyping();
     }
   }
-
+ 
+  // ── VARIABLE TYPING DELAY ──
+  // Short answers feel instant. Long answers feel composed.
+  // Makes it feel like someone is actually thinking and writing.
+  function getTypingDelay(text) {
+    var len = text ? text.length : 0;
+    if (len < 80)  return 600;   // one-liner — quick
+    if (len < 200) return 950;   // short paragraph — brief pause
+    if (len < 400) return 1300;  // medium answer — feels considered
+    return 1800;                 // long answer — feels properly thought through
+  }
+ 
   function callAPI() {
     fetch('/.netlify/functions/chat', {
       method: 'POST',
@@ -2698,24 +2727,37 @@
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      setLoading(false);
-      var text = data.reply || "Something went wrong — try again or email me@urvash.com.";
-      history.push({role: 'assistant', content: text});
-      appendMsg('bot', text);
+      var text = data.reply || "Something went wrong — try again in a moment.";
+      history.push({ role: 'assistant', content: text });
+ 
+      // Hold the typing indicator for a natural delay before showing the reply
+      var delay = getTypingDelay(text);
+      setTimeout(function() {
+        setLoading(false);
+        appendMsg('bot', text);
+      }, delay);
     })
     .catch(function() {
-      setLoading(false);
-      appendMsg('bot', "Connection issue — try again or reach out at me@urvash.com.");
+      setTimeout(function() {
+        setLoading(false);
+        appendMsg('bot', "Connection issue — try again in a moment.");
+      }, 600);
     });
   }
-
-  // Enter key
+ 
+  // Enter key to send
   document.addEventListener('DOMContentLoaded', function() {
     var inp = document.getElementById('chatInput');
-    if (inp) inp.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-    });
+    if (inp) {
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+    }
   });
+ 
 })();
 </script>
 
