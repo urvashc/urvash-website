@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>graphify - graphify-out/graph.html</title>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f1a; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; display: flex; height: 100vh; overflow: hidden; }
+  #graph { flex: 1; }
+  #sidebar { width: 280px; background: #1a1a2e; border-left: 1px solid #2a2a4e; display: flex; flex-direction: column; overflow: hidden; }
+  #search-wrap { padding: 12px; border-bottom: 1px solid #2a2a4e; }
+  #search { width: 100%; background: #0f0f1a; border: 1px solid #3a3a5e; color: #e0e0e0; padding: 7px 10px; border-radius: 6px; font-size: 13px; outline: none; }
+  #search:focus { border-color: #4E79A7; }
+  #search-results { max-height: 140px; overflow-y: auto; padding: 4px 12px; border-bottom: 1px solid #2a2a4e; display: none; }
+  .search-item { padding: 4px 6px; cursor: pointer; border-radius: 4px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-item:hover { background: #2a2a4e; }
+  #info-panel { padding: 14px; border-bottom: 1px solid #2a2a4e; min-height: 140px; }
+  #info-panel h3 { font-size: 13px; color: #aaa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  #info-content { font-size: 13px; color: #ccc; line-height: 1.6; }
+  #info-content .field { margin-bottom: 5px; }
+  #info-content .field b { color: #e0e0e0; }
+  #info-content .empty { color: #555; font-style: italic; }
+  .neighbor-link { display: block; padding: 2px 6px; margin: 2px 0; border-radius: 3px; cursor: pointer; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 3px solid #333; }
+  .neighbor-link:hover { background: #2a2a4e; }
+  #neighbors-list { max-height: 160px; overflow-y: auto; margin-top: 4px; }
+  #legend-wrap { flex: 1; overflow-y: auto; padding: 12px; }
+  #legend-wrap h3 { font-size: 13px; color: #aaa; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; border-radius: 4px; font-size: 12px; }
+  .legend-item:hover { background: #2a2a4e; padding-left: 4px; }
+  .legend-item.dimmed { opacity: 0.35; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .legend-count { color: #666; font-size: 11px; }
+  #stats { padding: 10px 14px; border-top: 1px solid #2a2a4e; font-size: 11px; color: #555; }
+  #legend-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding: 4px 0; }
+  #legend-controls label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; color: #aaa; user-select: none; }
+  #legend-controls label:hover { color: #e0e0e0; }
+  .legend-cb, #select-all-cb { appearance: none; -webkit-appearance: none; width: 14px; height: 14px; border: 1.5px solid #3a3a5e; border-radius: 3px; background: #0f0f1a; cursor: pointer; position: relative; flex-shrink: 0; }
+  .legend-cb:checked, #select-all-cb:checked { background: #4E79A7; border-color: #4E79A7; }
+  .legend-cb:checked::after, #select-all-cb:checked::after { content: ''; position: absolute; left: 3.5px; top: 1px; width: 4px; height: 7px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  #select-all-cb:indeterminate { background: #4E79A7; border-color: #4E79A7; }
+  #select-all-cb:indeterminate::after { content: ''; position: absolute; left: 2px; top: 5px; width: 8px; height: 2px; background: #fff; border: none; transform: none; }
+</style>
+</head>
+<body>
+<div id="graph"></div>
+<div id="sidebar">
+  <div id="search-wrap">
+    <input id="search" type="text" placeholder="Search nodes..." autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <div id="info-panel">
+    <h3>Node Info</h3>
+    <div id="info-content"><span class="empty">Click a node to inspect it</span></div>
+  </div>
+  <div id="legend-wrap">
+    <h3>Communities</h3>
+    <div id="legend-controls">
+      <label><input type="checkbox" id="select-all-cb" checked onchange="toggleAllCommunities(!this.checked)">Select All</label>
+    </div>
+    <div id="legend"></div>
+  </div>
+  <div id="stats">53 nodes &middot; 61 edges &middot; 8 communities</div>
+</div>
+<script>
+const RAW_NODES = [{"id": "chat_js", "label": "chat.js", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "chat.js", "community": 6, "community_name": "AST \u2014 Rate Limiter Code", "source_file": "chat.js", "file_type": "code", "degree": 2}, {"id": "functions_chat_isratelimited", "label": "isRateLimited()", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "isRateLimited()", "community": 6, "community_name": "AST \u2014 Rate Limiter Code", "source_file": "chat.js", "file_type": "code", "degree": 1}, {"id": "functions_chat_cleanupratelimit", "label": "cleanupRateLimit()", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "cleanupRateLimit()", "community": 6, "community_name": "AST \u2014 Rate Limiter Code", "source_file": "chat.js", "file_type": "code", "degree": 1}, {"id": "chatjs_serverless_function", "label": "chat.js Netlify Serverless Function", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 32.5, "font": {"size": 12, "color": "#ffffff"}, "title": "chat.js Netlify Serverless Function", "community": 1, "community_name": "Serverless Chat Backend", "source_file": "netlify/functions/chat.js", "file_type": "code", "degree": 6}, {"id": "chatjs_rate_limiter", "label": "In-Memory Rate Limiter (20 req / 10 min per IP)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "In-Memory Rate Limiter (20 req / 10 min per IP)", "community": 1, "community_name": "Serverless Chat Backend", "source_file": "netlify/functions/chat.js", "file_type": "code", "degree": 2}, {"id": "chatjs_is_rate_limited", "label": "isRateLimited() function", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "isRateLimited() function", "community": 1, "community_name": "Serverless Chat Backend", "source_file": "netlify/functions/chat.js", "file_type": "code", "degree": 2}, {"id": "chatjs_cleanup_rate_limit", "label": "cleanupRateLimit() function", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "cleanupRateLimit() function", "community": 1, "community_name": "Serverless Chat Backend", "source_file": "netlify/functions/chat.js", "file_type": "code", "degree": 2}, {"id": "chatjs_system_prompt", "label": "Chatbot System Prompt (Five-Register Taxonomy)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Chatbot System Prompt (Five-Register Taxonomy)", "community": 1, "community_name": "Serverless Chat Backend", "source_file": "netlify/functions/chat.js", "file_type": "rationale", "degree": 2}, {"id": "chatjs_anthropic_api_call", "label": "Anthropic Messages API Call (claude-haiku-4-5)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Anthropic Messages API Call (claude-haiku-4-5)", "community": 1, "community_name": "Serverless Chat Backend", "source_file": "netlify/functions/chat.js", "file_type": "code", "degree": 2}, {"id": "indexhtml_portfolio_site", "label": "index.html \u2014 Single-File Portfolio Site", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 40.0, "font": {"size": 12, "color": "#ffffff"}, "title": "index.html \u2014 Single-File Portfolio Site", "community": 3, "community_name": "Site Features & Analytics", "source_file": "index.html", "file_type": "code", "degree": 8}, {"id": "indexhtml_chatbot_ui", "label": "Chatbot UI Widget (Floating Bubble + Window)", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 25.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Chatbot UI Widget (Floating Bubble + Window)", "community": 2, "community_name": "Chatbot Frontend UI", "source_file": "index.html", "file_type": "code", "degree": 4}, {"id": "indexhtml_call_api", "label": "callAPI() \u2014 fetch to /.netlify/functions/chat", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 25.0, "font": {"size": 12, "color": "#ffffff"}, "title": "callAPI() \u2014 fetch to /.netlify/functions/chat", "community": 2, "community_name": "Chatbot Frontend UI", "source_file": "index.html", "file_type": "code", "degree": 4}, {"id": "indexhtml_send_message", "label": "sendMessage() / sendText() functions", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 25.0, "font": {"size": 12, "color": "#ffffff"}, "title": "sendMessage() / sendText() functions", "community": 2, "community_name": "Chatbot Frontend UI", "source_file": "index.html", "file_type": "code", "degree": 4}, {"id": "indexhtml_append_msg", "label": "appendMsg() \u2014 DOM message renderer", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 21.2, "font": {"size": 12, "color": "#ffffff"}, "title": "appendMsg() \u2014 DOM message renderer", "community": 2, "community_name": "Chatbot Frontend UI", "source_file": "index.html", "file_type": "code", "degree": 3}, {"id": "indexhtml_render_markdown", "label": "renderMarkdown() \u2014 lightweight markdown-to-HTML", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "renderMarkdown() \u2014 lightweight markdown-to-HTML", "community": 2, "community_name": "Chatbot Frontend UI", "source_file": "index.html", "file_type": "code", "degree": 1}, {"id": "indexhtml_show_typing", "label": "showTyping() / setLoading() \u2014 typing indicator", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "showTyping() / setLoading() \u2014 typing indicator", "community": 2, "community_name": "Chatbot Frontend UI", "source_file": "index.html", "file_type": "code", "degree": 1}, {"id": "indexhtml_toggle_dark", "label": "toggleDark() \u2014 dark mode toggle", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "toggleDark() \u2014 dark mode toggle", "community": 3, "community_name": "Site Features & Analytics", "source_file": "index.html", "file_type": "code", "degree": 1}, {"id": "indexhtml_pipeline_canvas", "label": "Animated Data Pipeline Canvas (hero section)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Animated Data Pipeline Canvas (hero section)", "community": 3, "community_name": "Site Features & Analytics", "source_file": "index.html", "file_type": "code", "degree": 1}, {"id": "indexhtml_password_gate", "label": "Password Gate \u2014 Deep Case Study (checkPassword)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Password Gate \u2014 Deep Case Study (checkPassword)", "community": 3, "community_name": "Site Features & Analytics", "source_file": "index.html", "file_type": "code", "degree": 2}, {"id": "indexhtml_scroll_reveal", "label": "Scroll-Triggered Reveal Animations (tick / IntersectionObserver)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Scroll-Triggered Reveal Animations (tick / IntersectionObserver)", "community": 3, "community_name": "Site Features & Analytics", "source_file": "index.html", "file_type": "code", "degree": 1}, {"id": "indexhtml_google_analytics", "label": "Google Analytics (gtag G-SVJKPE6JN9)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Google Analytics (gtag G-SVJKPE6JN9)", "community": 3, "community_name": "Site Features & Analytics", "source_file": "index.html", "file_type": "code", "degree": 2}, {"id": "indexhtml_ms_clarity", "label": "Microsoft Clarity (placeholder ID)", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Microsoft Clarity (placeholder ID)", "community": 3, "community_name": "Site Features & Analytics", "source_file": "index.html", "file_type": "code", "degree": 2}, {"id": "indexhtml_send_suggestion", "label": "sendSuggestion() \u2014 suggestion button handler", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "sendSuggestion() \u2014 suggestion button handler", "community": 2, "community_name": "Chatbot Frontend UI", "source_file": "index.html", "file_type": "code", "degree": 2}, {"id": "indexhtml_toggle_chat", "label": "toggleChat() \u2014 open/close chatbot window", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "toggleChat() \u2014 open/close chatbot window", "community": 2, "community_name": "Chatbot Frontend UI", "source_file": "index.html", "file_type": "code", "degree": 1}, {"id": "claude_md_project_config", "label": "CLAUDE.md \u2014 Project Configuration and Session Context", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "CLAUDE.md \u2014 Project Configuration and Session Context", "community": 1, "community_name": "Serverless Chat Backend", "source_file": "CLAUDE.md", "file_type": "document", "degree": 2}, {"id": "readme_minimal", "label": "README.md \u2014 Minimal Repository Description", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 10.0, "font": {"size": 0, "color": "#ffffff"}, "title": "README.md \u2014 Minimal Repository Description", "community": 7, "community_name": "README", "source_file": "README.md", "file_type": "document", "degree": 0}, {"id": "five_register_taxonomy", "label": "Five-Register Tone Taxonomy (chatbot design pattern)", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Five-Register Tone Taxonomy (chatbot design pattern)", "community": 1, "community_name": "Serverless Chat Backend", "source_file": "netlify/functions/chat.js", "file_type": "rationale", "degree": 1}, {"id": "netlify_deploy_pattern", "label": "Netlify Auto-Deploy on Push to Main", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Netlify Auto-Deploy on Push to Main", "community": 1, "community_name": "Serverless Chat Backend", "source_file": "CLAUDE.md", "file_type": "rationale", "degree": 1}, {"id": "password_gate_localstorage", "label": "Password Gate with localStorage 7-day Cache", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Password Gate with localStorage 7-day Cache", "community": 3, "community_name": "Site Features & Analytics", "source_file": "index.html", "file_type": "rationale", "degree": 1}, {"id": "og_image", "label": "OG Image (og-image.png)", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 40.0, "font": {"size": 12, "color": "#ffffff"}, "title": "OG Image (og-image.png)", "community": 5, "community_name": "OG Image & Social Sharing", "source_file": "og-image.png", "file_type": "image", "degree": 8}, {"id": "person_urvash_chheda", "label": "Urvash Chheda", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 40.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Urvash Chheda", "community": 4, "community_name": "Personal Brand & Domain", "source_file": "og-image.png", "file_type": "image", "degree": 8}, {"id": "role_senior_technical_pm", "label": "Senior Technical PM", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Senior Technical PM", "community": 4, "community_name": "Personal Brand & Domain", "source_file": "og-image.png", "file_type": "image", "degree": 1}, {"id": "domain_data_infrastructure", "label": "Data Infrastructure", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Data Infrastructure", "community": 4, "community_name": "Personal Brand & Domain", "source_file": "og-image.png", "file_type": "image", "degree": 2}, {"id": "domain_ml", "label": "Machine Learning (ML)", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Machine Learning (ML)", "community": 4, "community_name": "Personal Brand & Domain", "source_file": "og-image.png", "file_type": "image", "degree": 2}, {"id": "domain_analytics", "label": "Analytics", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Analytics", "community": 4, "community_name": "Personal Brand & Domain", "source_file": "og-image.png", "file_type": "image", "degree": 2}, {"id": "tagline_ai_infrastructure", "label": "Tagline: I build the infrastructure modern AI runs on \u2014 and I stay accountable to the numbers on the other side.", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 25.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Tagline: I build the infrastructure modern AI runs on \u2014 and I stay accountable to the numbers on the other side.", "community": 4, "community_name": "Personal Brand & Domain", "source_file": "og-image.png", "file_type": "image", "degree": 4}, {"id": "website_urvash_com", "label": "urvash.com", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "urvash.com", "community": 5, "community_name": "OG Image & Social Sharing", "source_file": "og-image.png", "file_type": "image", "degree": 2}, {"id": "visual_avatar_3d", "label": "3D Avatar / Memoji Character", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "3D Avatar / Memoji Character", "community": 4, "community_name": "Personal Brand & Domain", "source_file": "og-image.png", "file_type": "image", "degree": 2}, {"id": "design_color_palette_og", "label": "OG Image Color Palette (warm cream/off-white + terracotta/rust red + dark background)", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "OG Image Color Palette (warm cream/off-white + terracotta/rust red + dark background)", "community": 5, "community_name": "OG Image & Social Sharing", "source_file": "og-image.png", "file_type": "image", "degree": 2}, {"id": "design_typography_og", "label": "OG Image Typography (large serif display name, sans-serif body)", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "OG Image Typography (large serif display name, sans-serif body)", "community": 5, "community_name": "OG Image & Social Sharing", "source_file": "og-image.png", "file_type": "image", "degree": 1}, {"id": "design_layout_og", "label": "OG Image Layout (split: left text panel, right dark avatar panel)", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "OG Image Layout (split: left text panel, right dark avatar panel)", "community": 5, "community_name": "OG Image & Social Sharing", "source_file": "og-image.png", "file_type": "image", "degree": 1}, {"id": "brand_initials_uc", "label": "Brand Initials Badge: UC", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Brand Initials Badge: UC", "community": 4, "community_name": "Personal Brand & Domain", "source_file": "og-image.png", "file_type": "image", "degree": 2}, {"id": "purpose_social_sharing", "label": "Social Sharing / Open Graph Preview", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Social Sharing / Open Graph Preview", "community": 5, "community_name": "OG Image & Social Sharing", "source_file": "og-image.png", "file_type": "image", "degree": 1}, {"id": "avatar_image", "label": "Avatar / Profile Image", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 25.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Avatar / Profile Image", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 4}, {"id": "avatar_3d_character", "label": "3D Animated Avatar Character", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 36.2, "font": {"size": 12, "color": "#ffffff"}, "title": "3D Animated Avatar Character", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 7}, {"id": "apple_memoji", "label": "Apple Memoji", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Apple Memoji", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 1}, {"id": "meditation_pose", "label": "Meditation / Mindfulness Pose", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Meditation / Mindfulness Pose", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 2}, {"id": "dark_background", "label": "Black Background", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Black Background", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 1}, {"id": "round_glasses_feature", "label": "Round Glasses Visual Feature", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Round Glasses Visual Feature", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 1}, {"id": "dark_beard_feature", "label": "Dark Beard Visual Feature", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Dark Beard Visual Feature", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 1}, {"id": "gray_sweater_feature", "label": "Gray Long-Sleeve Sweater", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Gray Long-Sleeve Sweater", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 1}, {"id": "calm_mood", "label": "Calm / Serene Mood", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Calm / Serene Mood", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 2}, {"id": "urvash_website", "label": "urvash.com Personal Website", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "urvash.com Personal Website", "community": 0, "community_name": "Avatar & Visual Identity", "source_file": "avatar.jpg", "file_type": "image", "degree": 2}];
+const RAW_EDGES = [{"from": "chat_js", "to": "functions_chat_isratelimited", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chat_js", "to": "functions_chat_cleanupratelimit", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_serverless_function", "to": "chatjs_is_rate_limited", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_serverless_function", "to": "chatjs_cleanup_rate_limit", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_serverless_function", "to": "chatjs_anthropic_api_call", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_serverless_function", "to": "indexhtml_call_api", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_serverless_function", "to": "netlify_deploy_pattern", "label": "rationale_for", "title": "rationale_for [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_serverless_function", "to": "claude_md_project_config", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_rate_limiter", "to": "chatjs_is_rate_limited", "label": "shares_data_with", "title": "shares_data_with [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_rate_limiter", "to": "chatjs_cleanup_rate_limit", "label": "shares_data_with", "title": "shares_data_with [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_system_prompt", "to": "chatjs_anthropic_api_call", "label": "shares_data_with", "title": "shares_data_with [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "chatjs_system_prompt", "to": "five_register_taxonomy", "label": "rationale_for", "title": "rationale_for [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_portfolio_site", "to": "indexhtml_chatbot_ui", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_portfolio_site", "to": "indexhtml_pipeline_canvas", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_portfolio_site", "to": "indexhtml_password_gate", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_portfolio_site", "to": "indexhtml_scroll_reveal", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_portfolio_site", "to": "indexhtml_toggle_dark", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_portfolio_site", "to": "indexhtml_google_analytics", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_portfolio_site", "to": "indexhtml_ms_clarity", "label": "implements", "title": "implements [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_portfolio_site", "to": "claude_md_project_config", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_chatbot_ui", "to": "indexhtml_toggle_chat", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_chatbot_ui", "to": "indexhtml_send_message", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_chatbot_ui", "to": "indexhtml_send_suggestion", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_call_api", "to": "indexhtml_send_message", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_call_api", "to": "indexhtml_append_msg", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_call_api", "to": "indexhtml_show_typing", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_send_message", "to": "indexhtml_append_msg", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_send_message", "to": "indexhtml_send_suggestion", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_append_msg", "to": "indexhtml_render_markdown", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "indexhtml_password_gate", "to": "password_gate_localstorage", "label": "rationale_for", "title": "rationale_for [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "indexhtml_google_analytics", "to": "indexhtml_ms_clarity", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "og_image", "to": "purpose_social_sharing", "label": "serves_purpose", "title": "serves_purpose [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "og_image", "to": "person_urvash_chheda", "label": "features_person", "title": "features_person [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "og_image", "to": "website_urvash_com", "label": "represents_site", "title": "represents_site [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "og_image", "to": "visual_avatar_3d", "label": "contains_visual_element", "title": "contains_visual_element [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "og_image", "to": "design_color_palette_og", "label": "uses_design", "title": "uses_design [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "og_image", "to": "design_typography_og", "label": "uses_design", "title": "uses_design [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "og_image", "to": "design_layout_og", "label": "uses_design", "title": "uses_design [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "og_image", "to": "brand_initials_uc", "label": "contains_visual_element", "title": "contains_visual_element [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "person_urvash_chheda", "to": "role_senior_technical_pm", "label": "has_role", "title": "has_role [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "person_urvash_chheda", "to": "domain_data_infrastructure", "label": "works_in_domain", "title": "works_in_domain [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "person_urvash_chheda", "to": "domain_ml", "label": "works_in_domain", "title": "works_in_domain [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "person_urvash_chheda", "to": "domain_analytics", "label": "works_in_domain", "title": "works_in_domain [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "person_urvash_chheda", "to": "tagline_ai_infrastructure", "label": "has_tagline", "title": "has_tagline [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "person_urvash_chheda", "to": "visual_avatar_3d", "label": "represents", "title": "represents [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "person_urvash_chheda", "to": "brand_initials_uc", "label": "abbreviates", "title": "abbreviates [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "domain_data_infrastructure", "to": "tagline_ai_infrastructure", "label": "references_domain", "title": "references_domain [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "domain_ml", "to": "tagline_ai_infrastructure", "label": "references_domain", "title": "references_domain [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "domain_analytics", "to": "tagline_ai_infrastructure", "label": "references_domain", "title": "references_domain [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "website_urvash_com", "to": "design_color_palette_og", "label": "consistent_with_brand", "title": "consistent_with_brand [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_image", "to": "avatar_3d_character", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_image", "to": "dark_background", "label": "has_background", "title": "has_background [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_image", "to": "calm_mood", "label": "conveys_mood", "title": "conveys_mood [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_image", "to": "urvash_website", "label": "used_as_asset_in", "title": "used_as_asset_in [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_3d_character", "to": "apple_memoji", "label": "is_type_of", "title": "is_type_of [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_3d_character", "to": "meditation_pose", "label": "depicted_in", "title": "depicted_in [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_3d_character", "to": "round_glasses_feature", "label": "has_visual_feature", "title": "has_visual_feature [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_3d_character", "to": "dark_beard_feature", "label": "has_visual_feature", "title": "has_visual_feature [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_3d_character", "to": "gray_sweater_feature", "label": "has_visual_feature", "title": "has_visual_feature [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "avatar_3d_character", "to": "urvash_website", "label": "represents_owner_of", "title": "represents_owner_of [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "meditation_pose", "to": "calm_mood", "label": "reinforces", "title": "reinforces [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}];
+const LEGEND = [{"cid": 0, "color": "#4E79A7", "label": "Avatar &amp; Visual Identity", "count": 10}, {"cid": 1, "color": "#F28E2B", "label": "Serverless Chat Backend", "count": 9}, {"cid": 2, "color": "#E15759", "label": "Chatbot Frontend UI", "count": 8}, {"cid": 3, "color": "#76B7B2", "label": "Site Features &amp; Analytics", "count": 8}, {"cid": 4, "color": "#59A14F", "label": "Personal Brand &amp; Domain", "count": 8}, {"cid": 5, "color": "#EDC948", "label": "OG Image &amp; Social Sharing", "count": 6}, {"cid": 6, "color": "#B07AA1", "label": "AST \u2014 Rate Limiter Code", "count": 3}, {"cid": 7, "color": "#FF9DA7", "label": "README", "count": 1}];
+
+// HTML-escape helper — prevents XSS when injecting graph data into innerHTML
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Build vis datasets
+const nodesDS = new vis.DataSet(RAW_NODES.map(n => ({
+  id: n.id, label: n.label, color: n.color, size: n.size,
+  font: n.font, title: n.title,
+  _community: n.community, _community_name: n.community_name,
+  _source_file: n.source_file, _file_type: n.file_type, _degree: n.degree,
+})));
+
+const edgesDS = new vis.DataSet(RAW_EDGES.map((e, i) => ({
+  id: i, from: e.from, to: e.to,
+  label: '',
+  title: e.title,
+  dashes: e.dashes,
+  width: e.width,
+  color: e.color,
+  arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+})));
+
+const container = document.getElementById('graph');
+const network = new vis.Network(container, { nodes: nodesDS, edges: edgesDS }, {
+  physics: {
+    enabled: true,
+    solver: 'forceAtlas2Based',
+    forceAtlas2Based: {
+      gravitationalConstant: -60,
+      centralGravity: 0.005,
+      springLength: 120,
+      springConstant: 0.08,
+      damping: 0.4,
+      avoidOverlap: 0.8,
+    },
+    stabilization: { iterations: 200, fit: true },
+  },
+  interaction: {
+    hover: true,
+    tooltipDelay: 100,
+    hideEdgesOnDrag: true,
+    navigationButtons: false,
+    keyboard: false,
+  },
+  nodes: { shape: 'dot', borderWidth: 1.5 },
+  edges: { smooth: { type: 'continuous', roundness: 0.2 }, selectionWidth: 3 },
+});
+
+network.once('stabilizationIterationsDone', () => {
+  network.setOptions({ physics: { enabled: false } });
+});
+
+function showInfo(nodeId) {
+  const n = nodesDS.get(nodeId);
+  if (!n) return;
+  const neighborIds = network.getConnectedNodes(nodeId);
+  const neighborItems = neighborIds.map(nid => {
+    const nb = nodesDS.get(nid);
+    const color = nb ? nb.color.background : '#555';
+    return `<span class="neighbor-link" style="border-left-color:${esc(color)}" onclick="focusNode(${JSON.stringify(nid)})">${esc(nb ? nb.label : nid)}</span>`;
+  }).join('');
+  document.getElementById('info-content').innerHTML = `
+    <div class="field"><b>${esc(n.label)}</b></div>
+    <div class="field">Type: ${esc(n._file_type || 'unknown')}</div>
+    <div class="field">Community: ${esc(n._community_name)}</div>
+    <div class="field">Source: ${esc(n._source_file || '-')}</div>
+    <div class="field">Degree: ${n._degree}</div>
+    ${neighborIds.length ? `<div class="field" style="margin-top:8px;color:#aaa;font-size:11px">Neighbors (${neighborIds.length})</div><div id="neighbors-list">${neighborItems}</div>` : ''}
+  `;
+}
+
+function focusNode(nodeId) {
+  network.focus(nodeId, { scale: 1.4, animation: true });
+  network.selectNodes([nodeId]);
+  showInfo(nodeId);
+}
+
+// Track hovered node — hover detection is more reliable than click params
+let hoveredNodeId = null;
+network.on('hoverNode', params => {
+  hoveredNodeId = params.node;
+  container.style.cursor = 'pointer';
+});
+network.on('blurNode', () => {
+  hoveredNodeId = null;
+  container.style.cursor = 'default';
+});
+container.addEventListener('click', () => {
+  if (hoveredNodeId !== null) {
+    showInfo(hoveredNodeId);
+    network.selectNodes([hoveredNodeId]);
+  }
+});
+network.on('click', params => {
+  if (params.nodes.length > 0) {
+    showInfo(params.nodes[0]);
+  } else if (hoveredNodeId === null) {
+    document.getElementById('info-content').innerHTML = '<span class="empty">Click a node to inspect it</span>';
+  }
+});
+
+const searchInput = document.getElementById('search');
+const searchResults = document.getElementById('search-results');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  searchResults.innerHTML = '';
+  if (!q) { searchResults.style.display = 'none'; return; }
+  const matches = RAW_NODES.filter(n => n.label.toLowerCase().includes(q)).slice(0, 20);
+  if (!matches.length) { searchResults.style.display = 'none'; return; }
+  searchResults.style.display = 'block';
+  matches.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'search-item';
+    el.textContent = n.label;
+    el.style.borderLeft = `3px solid ${n.color.background}`;
+    el.style.paddingLeft = '8px';
+    el.onclick = () => {
+      network.focus(n.id, { scale: 1.5, animation: true });
+      network.selectNodes([n.id]);
+      showInfo(n.id);
+      searchResults.style.display = 'none';
+      searchInput.value = '';
+    };
+    searchResults.appendChild(el);
+  });
+});
+document.addEventListener('click', e => {
+  if (!searchResults.contains(e.target) && e.target !== searchInput)
+    searchResults.style.display = 'none';
+});
+
+const hiddenCommunities = new Set();
+
+const selectAllCb = document.getElementById('select-all-cb');
+
+function updateSelectAllState() {
+  const total = LEGEND.length;
+  const hidden = hiddenCommunities.size;
+  selectAllCb.checked = hidden === 0;
+  selectAllCb.indeterminate = hidden > 0 && hidden < total;
+}
+
+function toggleAllCommunities(hide) {
+  document.querySelectorAll('.legend-item').forEach(item => {
+    hide ? item.classList.add('dimmed') : item.classList.remove('dimmed');
+  });
+  document.querySelectorAll('.legend-cb').forEach(cb => {
+    cb.checked = !hide;
+  });
+  LEGEND.forEach(c => {
+    if (hide) hiddenCommunities.add(c.cid); else hiddenCommunities.delete(c.cid);
+  });
+  const updates = RAW_NODES.map(n => ({ id: n.id, hidden: hide }));
+  nodesDS.update(updates);
+  updateSelectAllState();
+}
+
+const legendEl = document.getElementById('legend');
+LEGEND.forEach(c => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  const cb = document.createElement('input');
+  cb.type = 'checkbox';
+  cb.className = 'legend-cb';
+  cb.checked = true;
+  cb.addEventListener('change', (e) => {
+    e.stopPropagation();
+    if (cb.checked) {
+      hiddenCommunities.delete(c.cid);
+      item.classList.remove('dimmed');
+    } else {
+      hiddenCommunities.add(c.cid);
+      item.classList.add('dimmed');
+    }
+    const updates = RAW_NODES
+      .filter(n => n.community === c.cid)
+      .map(n => ({ id: n.id, hidden: !cb.checked }));
+    nodesDS.update(updates);
+    updateSelectAllState();
+  });
+  item.innerHTML = `<div class="legend-dot" style="background:${c.color}"></div>
+    <span class="legend-label">${c.label}</span>
+    <span class="legend-count">${c.count}</span>`;
+  item.prepend(cb);
+  item.onclick = (e) => {
+    if (e.target === cb) return;
+    cb.checked = !cb.checked;
+    cb.dispatchEvent(new Event('change'));
+  };
+  legendEl.appendChild(item);
+});
+</script>
+<script>
+// Render hyperedges as shaded regions
+const hyperedges = [{"id": "chatbot_request_pipeline", "label": "Chatbot End-to-End Request Pipeline", "nodes": ["indexhtml_call_api", "chatjs_serverless_function", "chatjs_anthropic_api_call"], "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "index.html"}, {"id": "rate_limit_enforcement", "label": "Rate Limiting Enforcement Pattern", "nodes": ["chatjs_rate_limiter", "chatjs_is_rate_limited", "chatjs_cleanup_rate_limit"], "relation": "implement", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "netlify/functions/chat.js"}, {"id": "chatbot_ui_interaction_flow", "label": "Chatbot UI Interaction Flow", "nodes": ["indexhtml_chatbot_ui", "indexhtml_send_message", "indexhtml_append_msg"], "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "index.html"}, {"id": "og_identity_cluster", "label": "OG Image Identity Cluster: person + role + domains + tagline", "members": ["person_urvash_chheda", "role_senior_technical_pm", "domain_data_infrastructure", "domain_ml", "domain_analytics", "tagline_ai_infrastructure"], "relation": "forms_professional_identity", "confidence_score": 1.0, "note": "All identity elements combine to communicate Urvash Chheda's professional brand on the OG image"}, {"id": "og_design_system", "label": "OG Image Design System", "members": ["design_color_palette_og", "design_typography_og", "design_layout_og", "brand_initials_uc", "visual_avatar_3d"], "relation": "forms_visual_identity", "confidence_score": 1.0, "note": "Visual design elements combine to create the OG image's distinctive warm, professional aesthetic"}];
+// afterDrawing passes ctx already transformed to network coordinate space.
+// Draw node positions raw — no manual pan/zoom/DPR math needed.
+network.on('afterDrawing', function(ctx) {
+    hyperedges.forEach(h => {
+        const positions = h.nodes
+            .map(nid => network.getPositions([nid])[nid])
+            .filter(p => p !== undefined);
+        if (positions.length < 2) return;
+        ctx.save();
+        ctx.globalAlpha = 0.12;
+        ctx.fillStyle = '#6366f1';
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        // Centroid and expanded hull in network coordinates
+        const cx = positions.reduce((s, p) => s + p.x, 0) / positions.length;
+        const cy = positions.reduce((s, p) => s + p.y, 0) / positions.length;
+        const expanded = positions.map(p => ({
+            x: cx + (p.x - cx) * 1.15,
+            y: cy + (p.y - cy) * 1.15
+        }));
+        ctx.moveTo(expanded[0].x, expanded[0].y);
+        expanded.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 0.4;
+        ctx.stroke();
+        // Label
+        ctx.globalAlpha = 0.8;
+        ctx.fillStyle = '#4f46e5';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(h.label, cx, cy - 5);
+        ctx.restore();
+    });
+});
+</script>
+</body>
+</html>
