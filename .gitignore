@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.astro/
+.vercel/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Graphify (auto-regen, do not track)
+graphify-out/
