@@ -1,14 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
 @import "tailwindcss";
 
+:root {
+  --ink: #0f0f0f;
+  --ink-2: #3a3a3a;
+  --ink-3: #888;
+  --ink-4: #bbb;
+  --rule: #e2e2e2;
+  --rule-2: #ebebeb;
+  --surface: #fafaf8;
+  --surface-2: #f4f4f1;
+  --surface-3: #eeecea;
+  --red: #c8392b;
+  --mono: 'DM Mono', monospace;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  @apply font-sans bg-surface text-ink antialiased;
+  font-family: var(--sans);
+  background-color: var(--surface);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-  @apply no-underline;
+  text-decoration: none;
 }
