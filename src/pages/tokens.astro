@@ -1,0 +1,170 @@
+---
+import '../styles/global.css';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Design Tokens — urvash.com v4</title>
+  </head>
+  <body>
+    <main class="bg-bg text-ink p-12 max-w-6xl mx-auto">
+      <h1 class="font-serif text-4xl font-bold mb-2">Design Tokens</h1>
+      <p class="text-ink-3 mb-12">Complete palette, typography, and design system.</p>
+
+      <!-- COLORS -->
+      <section class="mb-16">
+        <h2 class="font-serif text-2xl font-bold mb-6">Colors</h2>
+
+        <!-- INK -->
+        <div class="mb-10">
+          <h3 class="font-mono text-xs font-bold tracking-widest uppercase text-ink-3 mb-4">Ink (Text & Foreground)</h3>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded" style="background-color: #0f0f0f; border: 1px solid #e2e2e2;"></div>
+              <div>
+                <p class="font-mono text-sm font-semibold text-ink">--ink</p>
+                <p class="font-mono text-xs text-ink-3">#0f0f0f</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded" style="background-color: #3a3a3a; border: 1px solid #e2e2e2;"></div>
+              <div>
+                <p class="font-mono text-sm font-semibold text-ink">--ink-2</p>
+                <p class="font-mono text-xs text-ink-3">#3a3a3a</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded" style="background-color: #888; border: 1px solid #e2e2e2;"></div>
+              <div>
+                <p class="font-mono text-sm font-semibold text-ink">--ink-3</p>
+                <p class="font-mono text-xs text-ink-3">#888</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded" style="background-color: #bbb; border: 1px solid #e2e2e2;"></div>
+              <div>
+                <p class="font-mono text-sm font-semibold text-ink">--ink-4</p>
+                <p class="font-mono text-xs text-ink-3">#bbb</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RULES -->
+        <div class="mb-10">
+          <h3 class="font-mono text-xs font-bold tracking-widest uppercase text-ink-3 mb-4">Rules (Dividers)</h3>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded" style="background-color: #e2e2e2; border: 1px solid #d0d0d0;"></div>
+              <div>
+                <p class="font-mono text-sm font-semibold text-ink">--rule</p>
+                <p class="font-mono text-xs text-ink-3">#e2e2e2</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded" style="background-color: #ebebeb; border: 1px solid #d9d9d9;"></div>
+              <div>
+                <p class="font-mono text-sm font-semibold text-ink">--rule-2</p>
+                <p class="font-mono text-xs text-ink-3">#ebebeb</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BACKGROUNDS -->
+        <div class="mb-10">
+          <h3 class="font-mono text-xs font-bold tracking-widest uppercase text-ink-3 mb-4">Backgrounds</h3>
+          <div class="grid grid-cols-3 gap-6">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded" style="background-color: #fafaf8; border: 1px solid #e2e2e2;"></div>
+              <div>
+                <p class="font-mono text-sm font-semibold text-ink">--bg</p>
+                <p class="font-mono text-xs text-ink-3">#fafaf8</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded" style="background-color: #f4f4f1; border: 1px solid #e2e2e2;"></div>
+              <div>
+                <p class="font-mono text-sm font-semibold text-ink">--bg-2</p>
+                <p class="font-mono text-xs text-ink-3">#f4f4f1</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded" style="background-color: #eeecea; border: 1px solid #e2e2e2;"></div>
+              <div>
+                <p class="font-mono text-sm font-semibold text-ink">--bg-3</p>
+                <p class="font-mono text-xs text-ink-3">#eeecea</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCENT -->
+        <div>
+          <h3 class="font-mono text-xs font-bold tracking-widest uppercase text-ink-3 mb-4">Accent</h3>
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded" style="background-color: #c8392b; border: 1px solid #e2e2e2;"></div>
+            <div>
+              <p class="font-mono text-sm font-semibold text-ink">--red</p>
+              <p class="font-mono text-xs text-ink-3">#c8392b</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TYPOGRAPHY -->
+      <section class="mb-16">
+        <h2 class="font-serif text-2xl font-bold mb-6">Typography</h2>
+
+        <!-- SERIF -->
+        <div class="mb-10 pb-10 border-b border-rule">
+          <h3 class="font-mono text-xs font-bold tracking-widest uppercase text-ink-3 mb-4">Serif — Instrument Serif</h3>
+          <p class="font-serif text-6xl font-bold mb-2" style="line-height: 1.05;">Aa</p>
+          <p class="font-serif text-4xl mb-4">The quick brown fox jumps over the lazy dog.</p>
+          <p class="font-serif text-2xl mb-4">The quick brown fox jumps over the lazy dog.</p>
+          <p class="font-serif text-lg mb-4">The quick brown fox jumps over the lazy dog.</p>
+          <p class="font-serif text-base">The quick brown fox jumps over the lazy dog.</p>
+        </div>
+
+        <!-- SANS -->
+        <div class="mb-10 pb-10 border-b border-rule">
+          <h3 class="font-mono text-xs font-bold tracking-widest uppercase text-ink-3 mb-4">Sans — DM Sans</h3>
+          <p class="font-sans text-6xl font-bold mb-2">Aa</p>
+          <p class="font-sans text-4xl font-bold mb-2">Aa Bold</p>
+          <p class="font-sans text-4xl font-medium mb-4">Aa Medium</p>
+          <p class="font-sans text-lg mb-2">The quick brown fox jumps over the lazy dog.</p>
+          <p class="font-sans text-base">The quick brown fox jumps over the lazy dog.</p>
+          <p class="font-sans text-sm">The quick brown fox jumps over the lazy dog.</p>
+        </div>
+
+        <!-- MONO -->
+        <div>
+          <h3 class="font-mono text-xs font-bold tracking-widest uppercase text-ink-3 mb-4">Mono — DM Mono</h3>
+          <p class="font-mono text-xl font-semibold mb-2">Aa 500</p>
+          <p class="font-mono text-lg mb-4">The quick brown fox jumps over the lazy dog.</p>
+          <p class="font-mono text-base">The quick brown fox jumps over the lazy dog.</p>
+          <p class="font-mono text-sm">The quick brown fox jumps over the lazy dog.</p>
+        </div>
+      </section>
+
+      <!-- SIZES & SPACING -->
+      <section>
+        <h2 class="font-serif text-2xl font-bold mb-6">Spacing & Layout</h2>
+        <div class="grid grid-cols-2 gap-8">
+          <div>
+            <h3 class="font-mono text-xs font-bold tracking-widest uppercase text-ink-3 mb-4">Gutter</h3>
+            <p class="font-mono text-sm mb-2 text-ink">52px</p>
+            <p class="text-sm text-ink-3">Used for left navigation/label column width</p>
+          </div>
+          <div>
+            <h3 class="font-mono text-xs font-bold tracking-widest uppercase text-ink-3 mb-4">Easing</h3>
+            <p class="font-mono text-sm mb-2 text-ink">cubic-bezier(0.16, 1, 0.3, 1)</p>
+            <p class="text-sm text-ink-3">Used for fade-up animations</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
