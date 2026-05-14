@@ -2,131 +2,302 @@
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Gutter from '../components/Gutter.astro';
+import SectionBar from '../components/SectionBar.astro';
 import '../styles/global.css';
 ---
 
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Urvash Chheda — AI Technical Product Manager</title>
-    <meta name="description" content="Senior Technical Product Manager. I build the foundations modern AI runs on." />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Urvash Chheda — Technical Product Manager</title>
+    <meta name="description" content="Senior Technical PM building the infrastructure modern AI runs on. 12 years across data platforms, ML pipelines, and 0→1 product builds." />
   </head>
   <body>
     <Nav />
 
-    <main>
-      <section class="hero">
-        <Gutter label="intro" borderBottom={false}>
-          <div class="hero-content">
+    <!-- ── HERO ────────────────────────────────────────────────────── -->
+    <section class="hero">
+      <Gutter label="intro" borderBottom={false}>
+        <div class="hero-content">
+          <p class="hero-eyebrow fade-up" style="animation-delay:0s">SENIOR TECHNICAL PRODUCT MANAGER</p>
+          <h1 class="hero-h1 fade-up" style="animation-delay:0.07s">
+            I build the foundations<br>
+            <em class="hero-modern">modern</em> <span class="hero-ai">AI</span> runs on.
+          </h1>
+          <p class="hero-deck fade-up" style="animation-delay:0.14s">
+            Not a PM who delegates technical decisions.<br>
+            Someone who reads the schema, challenges the architecture,<br>
+            and stays accountable to what ships.
+          </p>
+          <div class="hero-rule fade-up" style="animation-delay:0.21s"></div>
+        </div>
+      </Gutter>
+    </section>
 
-            <!-- 1 · Eyebrow -->
-            <p class="hero-eyebrow">SENIOR TECHNICAL PRODUCT MANAGER</p>
+    <!-- ── SUPERPOWER STRIP ────────────────────────────────────────── -->
+    <section class="sp-strip">
+      <Gutter label="pattern" borderBottom={false}>
+        <div class="sp-content">
+          <p class="sp-label">THE PATTERN ACROSS 12 YEARS</p>
+          <p class="sp-quote">
+            Every role has been a variation of the same problem:
+            <em class="sp-dim"> product ambition outpacing the infrastructure it runs on.</em>
+            The work is always closing that gap —
+            <span class="sp-warm">without rebuilding everything from scratch.</span>
+          </p>
+        </div>
+      </Gutter>
+    </section>
 
-            <!-- 2 · H1 -->
-            <h1 class="hero-h1">
-              I build the foundations<br />
-              <em class="hero-modern">modern</em> <span class="hero-ai">AI</span> runs on.
-            </h1>
+    <!-- ── WORK PREVIEW ────────────────────────────────────────────── -->
+    <SectionBar label="WORK" />
+    <section class="work-preview">
+      <Gutter label="work" borderBottom={true}>
+        <div class="wi-list">
 
-            <!-- 3 · Deck -->
-            <p class="hero-deck">
-              Not a PM who delegates technical decisions.
-              Someone who reads the schema, challenges the architecture,
-              and stays accountable to what ships.
-            </p>
+          <a href="/work/insights-service" class="wi-row">
+            <div class="wi-meta">
+              <span class="wi-year">2023–24</span>
+              <span class="wi-tag">ML Platform · Later</span>
+            </div>
+            <div class="wi-body">
+              <h3 class="wi-title">Insights Service</h3>
+              <p class="wi-desc">Rebuilt the data layer underneath Later's analytics — one migration at a time, without stopping product.</p>
+              <p class="wi-hook">The hard part wasn't the architecture. Read why.</p>
+            </div>
+            <div class="wi-metric">
+              <span class="wi-num">4×</span>
+              <span class="wi-unit">faster time to insight</span>
+              <span class="wi-num wi-num-2">90%</span>
+              <span class="wi-unit">query cost reduction</span>
+            </div>
+          </a>
 
-            <!-- 4 · Rule (chatbot slot — Step 08) -->
-            <div class="hero-rule" aria-hidden="true"></div>
+          <a href="/work/later-360" class="wi-row wi-row-border">
+            <div class="wi-meta">
+              <span class="wi-year">2022–23</span>
+              <span class="wi-tag">Enterprise Analytics · Later</span>
+            </div>
+            <div class="wi-body">
+              <h3 class="wi-title">Later 360</h3>
+              <p class="wi-desc">Enterprise analytics for Walmart, DraftKings, Southwest. One configuration layer instead of three custom builds.</p>
+              <p class="wi-hook">The reframe that changed the entire architecture.</p>
+            </div>
+            <div class="wi-metric">
+              <span class="wi-num">4</span>
+              <span class="wi-unit">enterprise clients</span>
+              <span class="wi-num wi-num-2">2×</span>
+              <span class="wi-unit">faster than custom</span>
+            </div>
+          </a>
 
-          </div>
-        </Gutter>
-      </section>
-    </main>
+          <a href="/work/aptean" class="wi-row wi-row-border">
+            <div class="wi-meta">
+              <span class="wi-year">2020–22</span>
+              <span class="wi-tag">Platform Product · Aptean</span>
+            </div>
+            <div class="wi-body">
+              <h3 class="wi-title">Embedded Analytics Platform</h3>
+              <p class="wi-desc">Analytics layer across a $80M ARR SaaS portfolio — built for internal engineering teams as the customer.</p>
+              <p class="wi-hook">The assumption that cost us two months.</p>
+            </div>
+            <div class="wi-metric">
+              <span class="wi-num">$80M</span>
+              <span class="wi-unit">ARR portfolio</span>
+              <span class="wi-num wi-num-2">6</span>
+              <span class="wi-unit">products integrated</span>
+            </div>
+          </a>
+
+        </div>
+      </Gutter>
+    </section>
 
     <Footer />
   </body>
 </html>
 
 <style>
-  /* ── fadeUp — hero only, never used elsewhere ── */
+  /* ── HERO ──────────────────────────────────────────────────────── */
   @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(18px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Hero section wrapper ── */
+  .fade-up {
+    opacity: 0;
+    animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
   .hero {
-    margin-top: 50px; /* nav clearance */
-    border-bottom: 1px solid var(--rule);
+    padding-top: 120px;
+    padding-bottom: 80px;
   }
 
-  /* ── Hero content area (right of gutter) ── */
-  .hero-content {
-    padding: 96px 52px 96px 48px;
-    max-width: 660px;
-  }
+  .hero-content { max-width: 680px; }
 
-  /* ── 1 · Eyebrow ── */
   .hero-eyebrow {
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.18em;
     color: var(--ink-3);
     text-transform: uppercase;
-    margin: 0 0 28px 0;
-    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: 0s;
+    margin: 0 0 24px;
   }
 
-  /* ── 2 · H1 ── */
   .hero-h1 {
     font-family: var(--serif);
     font-size: clamp(36px, 5vw, 58px);
     font-weight: 400;
     line-height: 1.1;
     color: var(--ink);
-    margin: 0 0 32px 0;
-    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: 0.07s;
+    margin: 0 0 24px;
   }
 
-  /* "modern" → italic --ink-2 */
-  .hero-modern {
-    font-style: italic;
-    color: var(--ink-2);
-  }
+  .hero-modern { color: var(--ink-2); font-style: italic; }
+  .hero-ai     { color: var(--red); font-style: normal; }
 
-  /* "AI" → --red, reset italic from parent em */
-  .hero-ai {
-    color: var(--red);
-    font-style: normal;
-  }
-
-  /* ── 3 · Deck ── */
   .hero-deck {
     font-family: var(--sans);
     font-size: 14px;
     line-height: 1.7;
     color: var(--ink-3);
     max-width: 420px;
-    margin: 0 0 48px 0;
-    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: 0.14s;
+    margin: 0 0 40px;
   }
 
-  /* ── 4 · Rule (placeholder for chatbot widget in Step 08) ── */
   .hero-rule {
     width: 40px;
     height: 1px;
-    background-color: var(--rule);
-    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: 0.21s;
+    background: var(--rule);
+  }
+
+  /* ── SUPERPOWER STRIP ─────────────────────────────────────────── */
+  .sp-strip {
+    background: var(--ink);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sp-strip :global(.g-label) { color: rgba(255,255,255,0.2); }
+
+  .sp-content {
+    padding: 64px 0;
+    max-width: 640px;
+  }
+
+  .sp-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+    margin: 0 0 28px;
+  }
+
+  .sp-quote {
+    font-family: var(--serif);
+    font-size: clamp(20px, 2.5vw, 28px);
+    line-height: 1.55;
+    color: #fff;
+    margin: 0;
+  }
+
+  .sp-dim  { color: rgba(255, 255, 255, 0.5); font-style: italic; }
+  .sp-warm { color: #e07060; }
+
+  /* ── WORK PREVIEW ─────────────────────────────────────────────── */
+  .wi-list { width: 100%; }
+
+  .wi-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 140px;
+    gap: 28px;
+    padding: 40px 0;
+    text-decoration: none;
+    color: inherit;
+    align-items: start;
+    transition: opacity 0.14s;
+  }
+
+  .wi-row:hover { opacity: 0.6; }
+
+  .wi-row-border { border-top: 1px solid var(--rule); }
+
+  .wi-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 3px;
+  }
+
+  .wi-year {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-4);
+  }
+
+  .wi-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-4);
+    line-height: 1.4;
+  }
+
+  .wi-title {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0 0 10px;
+  }
+
+  .wi-desc {
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-3);
+    margin: 0 0 12px;
+  }
+
+  .wi-hook {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-style: italic;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .wi-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-align: right;
+    padding-top: 2px;
+  }
+
+  .wi-num {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .wi-num-2 { margin-top: 14px; }
+
+  .wi-unit {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── MOBILE ────────────────────────────────────────────────────── */
+  @media (max-width: 780px) {
+    .wi-row {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .wi-metric { text-align: left; }
   }
 </style>
