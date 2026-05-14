@@ -1,0 +1,47 @@
+---
+interface Props {
+  label?: string;
+  borderBottom?: boolean;
+}
+const { label = '', borderBottom = false } = Astro.props;
+---
+<div class={`g-row${borderBottom ? ' border-b' : ''}`}>
+  <div class="g-left">
+    {label && <span class="g-label">{label}</span>}
+  </div>
+  <slot />
+</div>
+
+<style>
+  .g-row {
+    display: grid;
+    grid-template-columns: var(--gutter) 1fr;
+  }
+  .border-b {
+    border-bottom: 1px solid var(--rule);
+  }
+  .g-left {
+    border-right: 1px solid var(--rule);
+    position: relative;
+    min-height: 60px;
+  }
+  .g-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    writing-mode: vertical-rl;
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%) rotate(180deg);
+    white-space: nowrap;
+  }
+  @media (max-width: 780px) {
+    .g-row {
+      grid-template-columns: 1fr;
+    }
+    .g-left { display: none; }
+  }
+</style>

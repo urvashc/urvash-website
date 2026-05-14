@@ -15,6 +15,7 @@
   --mono: 'DM Mono', monospace;
   --serif: 'Instrument Serif', Georgia, serif;
   --sans: 'DM Sans', system-ui, sans-serif;
+  --gutter: 52px;
 }
 
 html {

@@ -1,0 +1,93 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Gutter from '../components/Gutter.astro';
+import SectionBar from '../components/SectionBar.astro';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Components — urvash.com v4</title>
+</head>
+<body>
+
+<Nav current="home" />
+
+<main>
+  <!-- ── 1. SectionBar ─────────────────────── -->
+  <div class="preview-section">
+    <p class="preview-label">01 — SectionBar</p>
+    <SectionBar label="work" />
+    <SectionBar label="case studies" link={{ href: '/work', text: 'view all' }} />
+  </div>
+
+  <!-- ── 2. Gutter ─────────────────────────── -->
+  <div class="preview-section">
+    <p class="preview-label">02 — Gutter</p>
+    <Gutter label="experience" borderBottom={true}>
+      <div class="preview-content">
+        Content sits here. Gutter provides the 52px left column with rotating vertical label.
+      </div>
+    </Gutter>
+    <Gutter label="projects" borderBottom={true}>
+      <div class="preview-content">
+        Second gutter row — label changes per section.
+      </div>
+    </Gutter>
+  </div>
+
+  <!-- ── 3. Nav ─────────────────────────────── -->
+  <div class="preview-section">
+    <p class="preview-label">03 — Nav (fixed at top ↑ — photo slot shows UC initials)</p>
+    <p class="preview-note">
+      Nav is position:fixed — it is the bar at the top of this page.<br />
+      Photo slot: UC initials circle (replace with real photo before Step 18).
+    </p>
+  </div>
+
+  <!-- ── 4. Footer ─────────────────────────── -->
+  <div class="preview-section">
+    <p class="preview-label">04 — Footer (renders below)</p>
+  </div>
+</main>
+
+<Footer />
+
+</body>
+</html>
+
+<style>
+  body {
+    padding-top: 50px;
+  }
+  main {
+    min-height: calc(100vh - 50px - 57px);
+  }
+  .preview-section {
+    padding: 40px 52px 32px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .preview-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 20px;
+  }
+  .preview-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.7;
+  }
+  .preview-content {
+    padding: 40px 48px;
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.7;
+  }
+</style>
