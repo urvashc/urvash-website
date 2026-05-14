@@ -1,17 +1,132 @@
 ---
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Gutter from '../components/Gutter.astro';
 import '../styles/global.css';
 ---
+
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>urvash.com — v4</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Urvash Chheda — AI Technical Product Manager</title>
+    <meta name="description" content="Senior Technical Product Manager. I build the foundations modern AI runs on." />
   </head>
-  <body class="bg-neutral-50 text-neutral-900">
-    <main class="max-w-2xl mx-auto p-12">
-      <h1 class="text-4xl font-bold">v4 skeleton.</h1>
-      <p class="mt-2 text-neutral-600">Astro 5 · TypeScript · Tailwind 4. Step 01 proof.</p>
+  <body>
+    <Nav />
+
+    <main>
+      <section class="hero">
+        <Gutter label="intro" borderBottom={false}>
+          <div class="hero-content">
+
+            <!-- 1 · Eyebrow -->
+            <p class="hero-eyebrow">SENIOR TECHNICAL PRODUCT MANAGER</p>
+
+            <!-- 2 · H1 -->
+            <h1 class="hero-h1">
+              I build the foundations<br />
+              <em class="hero-modern">modern</em> <span class="hero-ai">AI</span> runs on.
+            </h1>
+
+            <!-- 3 · Deck -->
+            <p class="hero-deck">
+              Not a PM who delegates technical decisions.
+              Someone who reads the schema, challenges the architecture,
+              and stays accountable to what ships.
+            </p>
+
+            <!-- 4 · Rule (chatbot slot — Step 08) -->
+            <div class="hero-rule" aria-hidden="true"></div>
+
+          </div>
+        </Gutter>
+      </section>
     </main>
+
+    <Footer />
   </body>
 </html>
+
+<style>
+  /* ── fadeUp — hero only, never used elsewhere ── */
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ── Hero section wrapper ── */
+  .hero {
+    margin-top: 50px; /* nav clearance */
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── Hero content area (right of gutter) ── */
+  .hero-content {
+    padding: 96px 52px 96px 48px;
+    max-width: 660px;
+  }
+
+  /* ── 1 · Eyebrow ── */
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin: 0 0 28px 0;
+    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0s;
+  }
+
+  /* ── 2 · H1 ── */
+  .hero-h1 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--ink);
+    margin: 0 0 32px 0;
+    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.07s;
+  }
+
+  /* "modern" → italic --ink-2 */
+  .hero-modern {
+    font-style: italic;
+    color: var(--ink-2);
+  }
+
+  /* "AI" → --red, reset italic from parent em */
+  .hero-ai {
+    color: var(--red);
+    font-style: normal;
+  }
+
+  /* ── 3 · Deck ── */
+  .hero-deck {
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink-3);
+    max-width: 420px;
+    margin: 0 0 48px 0;
+    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.14s;
+  }
+
+  /* ── 4 · Rule (placeholder for chatbot widget in Step 08) ── */
+  .hero-rule {
+    width: 40px;
+    height: 1px;
+    background-color: var(--rule);
+    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.21s;
+  }
+</style>
