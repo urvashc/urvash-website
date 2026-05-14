@@ -6,7 +6,7 @@ html {
 }
 
 body {
-  @apply font-sans bg-bg text-ink antialiased;
+  @apply font-sans bg-surface text-ink antialiased;
 }
 
 a {

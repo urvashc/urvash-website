@@ -10,9 +10,9 @@ export default {
         'ink-4': '#bbb',
         rule: '#e2e2e2',
         'rule-2': '#ebebeb',
-        bg: '#fafaf8',
-        'bg-2': '#f4f4f1',
-        'bg-3': '#eeecea',
+        surface: '#fafaf8',
+        'surface-2': '#f4f4f1',
+        'surface-3': '#eeecea',
         red: '#c8392b',
       },
       fontFamily: {
