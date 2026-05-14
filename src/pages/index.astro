@@ -114,6 +114,24 @@ import '../styles/global.css';
       </Gutter>
     </section>
 
+    <!-- ── PERSON ────────────────────────────────────────────────────── -->
+    <SectionBar label="THE PERSON" link={{ href: "/about", text: "About" }} />
+    <section class="ps-section">
+      <div class="ps-g"></div>
+      <div class="ps-l">
+        <div class="ps-name">Urvash<br><em>Chheda.</em></div>
+        <p class="ps-body">I've spent eight years as a product person who couldn't stop reading the schema.</p>
+      </div>
+      <div class="ps-r">
+        <div class="ps-facts">
+          <div class="ps-fact"><span class="ps-fk">Based</span><span class="ps-fv">Vancouver, BC</span></div>
+          <div class="ps-fact"><span class="ps-fk">Currently</span><span class="ps-fv">At Later</span></div>
+          <div class="ps-fact"><span class="ps-fk">Building</span><span class="ps-fv">FinTrack · this site · Obsidian second brain</span></div>
+          <div class="ps-fact"><span class="ps-fk">Contact</span><span class="ps-fv">urvash@hey.com · <a href="https://linkedin.com/in/urvashc" class="ps-link">LinkedIn →</a></span></div>
+        </div>
+      </div>
+    </section>
+
     <Footer />
   </body>
 </html>
@@ -290,6 +308,77 @@ import '../styles/global.css';
     font-size: 10px;
     color: var(--ink-4);
     letter-spacing: 0.04em;
+  }
+
+  /* ── PERSON ───────────────────────────────────────────────────── */
+  .ps-section {
+    display: grid;
+    grid-template-columns: var(--gutter) 1fr 1fr;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ps-g {
+    border-right: 1px solid var(--rule);
+  }
+  .ps-l {
+    padding: 36px 40px;
+    border-right: 1px solid var(--rule);
+  }
+  .ps-name {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+  }
+  .ps-name em {
+    font-style: italic;
+    color: var(--ink-2);
+  }
+  .ps-body {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.82;
+    max-width: 320px;
+  }
+  .ps-r {
+    padding: 36px 40px;
+  }
+  .ps-facts {
+    display: flex;
+    flex-direction: column;
+  }
+  .ps-fact {
+    display: flex;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: flex-start;
+  }
+  .ps-fact:last-child {
+    border-bottom: none;
+  }
+  .ps-fk {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    min-width: 76px;
+    padding-top: 1px;
+  }
+  .ps-fv {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+  .ps-link {
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+  .ps-link:hover {
+    color: var(--ink);
   }
 
   /* ── MOBILE ────────────────────────────────────────────────────── */
