@@ -132,6 +132,19 @@ import '../styles/global.css';
       </div>
     </section>
 
+    {/* --- Final CTA --- */}
+    <section class="cta-wrap">
+      <Gutter label="contact" borderBottom={false}>
+        <div class="cta-inner">
+          <p class="cta-headline">Want to talk?</p>
+          <div class="cta-btns">
+            <a href="mailto:urvash@hey.com" class="cta-btn">urvash@hey.com</a>
+            <a href="https://linkedin.com/in/urvashc" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn--outline">LinkedIn →</a>
+          </div>
+        </div>
+      </Gutter>
+    </section>
+
     <Footer />
   </body>
 </html>
@@ -378,6 +391,48 @@ import '../styles/global.css';
     text-decoration: none;
   }
   .ps-link:hover {
+    color: var(--ink);
+  }
+
+  /* ── Final CTA ────────────────────────────────────────────────── */
+  .cta-wrap {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .cta-inner {
+    padding: 64px 0 72px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .cta-headline {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1;
+    margin: 0;
+  }
+  .cta-btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .cta-btn {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    background: var(--ink);
+    color: var(--surface);
+    border: 1px solid var(--ink);
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+  .cta-btn:hover { opacity: 0.75; }
+  .cta-btn--outline {
+    background: transparent;
     color: var(--ink);
   }
 
