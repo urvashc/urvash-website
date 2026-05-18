@@ -3,6 +3,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Gutter from '../components/Gutter.astro';
 import SectionBar from '../components/SectionBar.astro';
+import Chatbot from '../components/Chatbot';
 import '../styles/global.css';
 ---
 
@@ -28,7 +29,9 @@ import '../styles/global.css';
           <p class="hero-deck fade-up" style="animation-delay:0.14s">
             Not a PM who delegates technical decisions. Someone who reads the schema, challenges the architecture, and stays accountable to what ships.
           </p>
-          <div class="hero-rule fade-up" style="animation-delay:0.21s"></div>
+          <div class="fade-up" style="animation-delay:0.21s">
+            <Chatbot client:load />
+          </div>
         </div>
       </Gutter>
     </section>
@@ -122,7 +125,7 @@ import '../styles/global.css';
       </div>
       <div class="ps-r">
         <div class="ps-facts">
-<div class="ps-fact"><span class="ps-fk">Currently</span><span class="ps-fv">At Later</span></div>
+          <div class="ps-fact"><span class="ps-fk">Currently</span><span class="ps-fv">At Later</span></div>
           <div class="ps-fact"><span class="ps-fk">Building</span><span class="ps-fv">FinTrack · this site · Obsidian second brain</span></div>
           <div class="ps-fact"><span class="ps-fk">Contact</span><span class="ps-fv">urvash@hey.com · <a href="https://linkedin.com/in/urvashc" class="ps-link">LinkedIn →</a></span></div>
         </div>
@@ -193,12 +196,6 @@ import '../styles/global.css';
     color: var(--ink-3);
     max-width: 420px;
     margin: 0 0 40px;
-  }
-
-  .hero-rule {
-    width: 40px;
-    height: 1px;
-    background: var(--rule);
   }
 
   /* ── SUPERPOWER STRIP ─────────────────────────────────────────── */
