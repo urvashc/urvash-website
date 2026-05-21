@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First 90 Days: MagicLinks Senior PM</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark:#0C3B35;--dark-mid:#1A5449;--mid:#1A7A6E;--accent:#A8FF3A;
+      --white:#FFFFFF;--off-white:#F4F8F6;--border:#C8DDD8;
+      --text:#1C2E2A;--text-muted:#52756D;
+      --shadow:0 1px 4px rgba(12,59,53,0.10),0 6px 18px rgba(12,59,53,0.07);
+      --font-d:'DM Serif Display',Georgia,serif;
+      --font-b:'Inter',-apple-system,sans-serif;
+      --sb:240px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font-b);background:#0a0a0a;font-size:15px;}
+
+    /* GATE */
+    #gate{position:fixed;inset:0;background:rgba(12,59,53,0.97);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s;}
+    #gate.gone{opacity:0;pointer-events:none;}
+    .gate-card{background:var(--white);border-radius:14px;padding:44px 52px;width:420px;text-align:center;box-shadow:0 16px 60px rgba(0,0,0,0.40);}
+    .gate-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:28px;}
+    .gate-logo-banner{width:220px;height:56px;overflow:hidden;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+    .gate-logo-banner img{width:220px;display:block;}
+    .gate-input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;color:var(--dark);font-family:var(--font-b);outline:none;transition:border-color 0.2s;margin-bottom:12px;}
+    .gate-input:focus{border-color:var(--mid);}
+    .gate-input.shake{animation:shake 0.4s;border-color:#EF4444;}
+    .gate-btn{width:100%;padding:13px;background:var(--dark);color:var(--white);border:none;border-radius:8px;font-size:15px;font-weight:600;font-family:var(--font-b);cursor:pointer;transition:background 0.2s;}
+    .gate-btn:hover{background:var(--dark-mid);}
+    .gate-err{font-size:13px;color:#EF4444;margin-top:8px;min-height:18px;}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+
+    /* SIDEBAR */
+    #slide-menu{position:fixed;left:0;top:0;bottom:0;width:var(--sb);background:rgba(10,34,30,0.98);backdrop-filter:blur(16px);border-right:1px solid rgba(168,255,58,0.10);z-index:400;display:flex;flex-direction:column;overflow-y:auto;}
+    .sm-header{padding:16px 18px 14px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;}
+    .sm-logo-wrap{width:150px;height:38px;overflow:hidden;border-radius:4px;display:flex;align-items:center;}
+    .sm-logo-wrap img{width:150px;display:block;}
+    .sm-divider{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.28);padding:9px 18px 7px;flex-shrink:0;}
+    .sm-item{display:flex;align-items:flex-start;gap:9px;padding:9px 18px;cursor:pointer;transition:background 0.15s;border:none;background:none;text-align:left;width:100%;border-bottom:1px solid rgba(255,255,255,0.04);}
+    .sm-item:hover{background:rgba(168,255,58,0.07);}
+    .sm-item.active-slide{background:rgba(168,255,58,0.11);}
+    .sm-num{font-size:10px;font-weight:700;color:rgba(168,255,58,0.60);min-width:20px;margin-top:2px;}
+    .sm-title{font-size:12px;color:rgba(255,255,255,0.72);line-height:1.4;}
+
+    /* SHELL */
+    #pres{position:fixed;left:var(--sb);right:0;top:0;bottom:0;overflow:hidden;}
+    .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.3s ease;user-select:none;}
+    .slide.active{opacity:1;pointer-events:all;}
+    .sc{flex:1;padding:22px 46px 68px;display:flex;flex-direction:column;overflow:hidden;}
+
+    /* PROGRESS */
+    #prog-track{position:fixed;bottom:0;left:var(--sb);right:0;height:3px;background:rgba(255,255,255,0.04);z-index:200;}
+    #prog{height:100%;background:var(--accent);transition:width 0.4s ease;width:8.33%;}
+
+    /* NAV */
+    #nav{position:fixed;bottom:14px;left:var(--sb);right:0;display:flex;justify-content:center;align-items:center;z-index:300;opacity:0;pointer-events:none;transition:opacity 0.4s;}
+    #nav.visible{opacity:1;pointer-events:all;}
+    #nav-pill{display:flex;align-items:center;gap:6px;background:rgba(12,59,53,0.88);backdrop-filter:blur(12px);border:1px solid rgba(168,255,58,0.15);border-radius:28px;padding:7px 14px;}
+    #nav-pill button{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.60);font-size:18px;line-height:1;padding:3px 9px;border-radius:6px;transition:background 0.15s,color 0.15s;font-family:var(--font-b);}
+    #nav-pill button:hover{background:rgba(168,255,58,0.12);color:#A8FF3A;}
+    #nav-pill button:disabled{opacity:0.25;cursor:default;}
+    #nav-lbl{font-size:12px;letter-spacing:1.5px;font-weight:600;color:rgba(255,255,255,0.55);min-width:52px;text-align:center;}
+    .nav-sep{width:1px;height:18px;background:rgba(255,255,255,0.15);margin:0 4px;}
+    #btn-mode{font-size:11px!important;letter-spacing:0.8px;padding:4px 10px!important;border-radius:12px!important;font-weight:600!important;}
+    #btn-mode.animating{background:rgba(168,255,58,0.18)!important;color:#A8FF3A!important;}
+
+    /* REVEAL */
+    [data-rv]{opacity:0;transform:translateY(10px);transition:opacity 0.38s ease,transform 0.38s ease;}
+    [data-rv].on{opacity:1;transform:translateY(0);}
+
+    /* BG */
+    .bg-dark{background:var(--dark);}
+    .bg-white{background:var(--white);}
+    .bg-off{background:var(--off-white);}
+
+    /* SHARED */
+    .lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:5px;color:var(--mid);}
+    .ttl{font-family:var(--font-d);font-size:clamp(18px,2.2vw,28px);line-height:1.2;color:var(--dark);margin-bottom:4px;}
+
+    /* S01 */
+    .s01 .sc{justify-content:center;padding-left:72px;}
+    .s01::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 85% 50%,rgba(168,255,58,0.06) 0%,transparent 60%);pointer-events:none;}
+    .s01 .hl{font-family:var(--font-d);font-size:clamp(30px,4vw,56px);color:var(--white);line-height:1.15;margin-bottom:4px;}
+    .s01 .hl-accent{color:var(--accent);font-style:italic;}
+    .s01 .byline{margin-top:26px;font-size:15px;color:rgba(255,255,255,0.60);}
+    .s01 .byline strong{color:var(--white);}
+    .s01-logo-wrap{width:200px;height:52px;overflow:hidden;border-radius:5px;display:flex;align-items:center;margin-bottom:28px;}
+    .s01-logo-wrap img{width:200px;display:block;}
+
+    /* S02 */
+    .s02-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;margin-top:10px;min-height:0;}
+    .sig-card{background:var(--white);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow);border-top:3px solid var(--border);display:flex;flex-direction:column;}
+    .sig-card.p0{border-top-color:var(--dark);}
+    .sig-card.p1{border-top-color:var(--mid);}
+    .sig-card.p2{border-top-color:var(--border);}
+    .sig-header{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+    .sig-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;}
+    .sig-card.p0 .sig-icon{background:rgba(12,59,53,0.08);}
+    .sig-card.p1 .sig-icon{background:rgba(26,122,110,0.08);}
+    .sig-card.p2 .sig-icon{background:rgba(200,221,216,0.35);}
+    .sig-tag{font-size:14px;font-weight:800;letter-spacing:0.5px;}
+    .sig-card.p0 .sig-tag{color:var(--dark);}
+    .sig-card.p1 .sig-tag{color:var(--mid);}
+    .sig-card.p2 .sig-tag{color:var(--text-muted);}
+    .sig-divider{height:1px;background:var(--border);margin:6px 0;}
+    .sig-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+    .sig-desc{font-size:13px;color:var(--text-muted);line-height:1.45;flex:1;}
+    .sig-stake{margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-size:11px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:0.8px;}
+    .s02-fifth{margin-top:8px;padding:11px 16px;background:var(--dark);border-radius:8px;flex-shrink:0;display:flex;align-items:center;gap:12px;}
+    .s02-fifth-badge{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);background:rgba(168,255,58,0.12);padding:4px 9px;border-radius:4px;white-space:nowrap;}
+    .s02-fifth-text{font-size:14px;color:rgba(255,255,255,0.88);line-height:1.4;}
+    .s02-squad{margin-top:8px;padding:11px 15px;background:var(--off-white);border-radius:8px;font-size:14px;line-height:1.6;flex-shrink:0;border-left:3px solid var(--mid);}
+    .s02-squad strong{color:var(--dark);}
+
+    /* S03 */
+    .pri-rows{display:flex;flex-direction:column;gap:9px;margin-top:10px;flex:1;min-height:0;}
+    .pri-row{display:grid;grid-template-columns:28px 180px 1fr;gap:14px;align-items:center;background:var(--white);border-radius:8px;padding:12px 16px;box-shadow:var(--shadow);flex:1;}
+    .pri-num{font-family:var(--font-d);font-size:24px;color:var(--border);line-height:1;}
+    .pri-what{font-size:17px;font-weight:700;color:var(--dark);line-height:1.3;}
+    .pri-why{font-size:14px;color:var(--text-muted);line-height:1.5;}
+    .pri-why strong{color:var(--text);}
+
+    /* S04 */
+    .phase-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px;flex:1;min-height:0;}
+    .phase-col{background:var(--white);border-radius:8px;padding:13px;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;}
+    .phase-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+    .phase-col:nth-child(1) .phase-label{color:var(--dark);}
+    .phase-col:nth-child(2) .phase-label{color:var(--mid);}
+    .phase-col:nth-child(3) .phase-label{color:var(--text-muted);}
+    .phase-title{font-family:var(--font-d);font-size:15px;color:var(--dark);margin-bottom:8px;line-height:1.3;}
+    .phase-tracks{display:flex;flex-direction:column;gap:7px;flex:1;min-height:0;}
+    .track{padding:9px 11px;border-radius:6px;font-size:12px;line-height:1.5;background:var(--off-white);border:1px solid var(--border);color:var(--text);}
+    .track-lbl{font-size:12px;font-weight:800;letter-spacing:0.8px;color:var(--mid);text-transform:uppercase;margin-bottom:5px;}
+    .phase-squad{margin-top:9px;padding-top:8px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted);line-height:1.6;flex-shrink:0;}
+    .phase-squad strong{color:var(--dark);}
+
+    /* S05 */
+    .s05-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;margin-top:10px;min-height:0;}
+    .step-list{display:flex;flex-direction:column;gap:7px;}
+    .step{display:flex;gap:11px;align-items:center;background:var(--white);border-radius:8px;padding:12px 14px;box-shadow:var(--shadow);flex:1;}
+    .sn{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:var(--dark);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
+    .st{font-size:13px;color:var(--text);line-height:1.5;}
+    .st strong{color:var(--dark);font-size:14px;}
+    .anchor-box{background:var(--dark);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:0;}
+    .anchor-box .ah{font-family:var(--font-d);font-size:19px;color:var(--accent);margin-bottom:8px;text-align:center;}
+    .anchor-box p{font-size:14px;color:rgba(255,255,255,0.85);line-height:1.6;text-align:center;}
+    .anchor-outcomes{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.12);display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .ao{display:flex;align-items:flex-start;gap:8px;justify-content:center;}
+    .ao-val{font-family:var(--font-d);font-size:20px;color:var(--accent);line-height:1;}
+    .ao-lbl{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;line-height:1.35;}
+    .anchor-timeline{display:flex;align-items:flex-start;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.12);}
+    .tl-step{display:flex;flex-direction:column;align-items:center;flex:1;}
+    .tl-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-bottom:5px;}
+    .tl-label{font-size:10px;font-weight:800;color:var(--accent);text-align:center;letter-spacing:0.5px;}
+    .tl-sub{font-size:9px;color:rgba(255,255,255,0.45);text-align:center;margin-top:2px;line-height:1.3;}
+    .tl-line{flex:0 0 20px;height:1px;background:rgba(168,255,58,0.30);margin-top:4px;}
+    .anchor-apply{margin-top:10px;padding-top:10px;border-top:1px solid rgba(168,255,58,0.20);display:flex;align-items:flex-start;gap:10px;}
+    .anchor-apply-icon{font-size:16px;flex-shrink:0;}
+    .anchor-apply-lbl{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:3px;}
+    .anchor-apply-txt{font-size:12px;color:rgba(255,255,255,0.70);line-height:1.5;}
+    .anchor-tag{margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.10);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(168,255,58,0.5);font-weight:700;text-align:center;}
+
+    /* S06 */
+    .s06-frame{background:var(--dark);color:var(--white);border-radius:8px;padding:12px 16px;margin-top:10px;font-size:13px;line-height:1.6;flex-shrink:0;}
+    .s06-frame strong{color:var(--accent);}
+    .s06-section-break{margin-top:11px;margin-bottom:4px;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);border-top:1px solid var(--border);padding-top:8px;}
+    .week-plan{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:7px;}
+    .wk{background:var(--white);border-radius:8px;padding:12px 13px;box-shadow:var(--shadow);}
+    .wk-lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:5px;}
+    .wk-sub{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:5px;}
+    .wk-txt{font-size:13px;color:var(--text);line-height:1.55;}
+    .wk-txt strong{color:var(--dark);}
+    .s06-design{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:9px;flex-shrink:0;}
+    .s06-design-col{background:var(--off-white);border-radius:8px;padding:12px 14px;border-left:3px solid var(--mid);}
+    .s06-design-col.ai{border-left-color:var(--accent);background:rgba(168,255,58,0.05);}
+    .s06-design-lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:5px;}
+    .s06-design-col.ai .s06-design-lbl{color:var(--dark);}
+    .s06-design-txt{font-size:13px;color:var(--text);line-height:1.55;}
+
+    /* S07 */
+    .s07-diag{display:flex;flex-direction:column;gap:7px;margin-top:10px;}
+    .diag-step{display:flex;gap:11px;align-items:flex-start;background:var(--white);border-radius:8px;padding:10px 13px;box-shadow:var(--shadow);}
+    .ds-num{width:22px;height:22px;border-radius:50%;background:var(--dark);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
+    .ds-title{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+    .ds-body{font-size:13px;color:var(--text-muted);line-height:1.5;}
+    .s07-bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;flex:1;min-height:0;}
+    .s07-col{background:var(--white);border-radius:8px;padding:13px 15px;box-shadow:var(--shadow);display:flex;flex-direction:column;}
+    .col-hdr{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--dark);margin-bottom:9px;padding-bottom:7px;border-bottom:2px solid var(--border);flex-shrink:0;}
+    .mvp-item{padding:6px 0;font-size:13px;color:var(--text);border-bottom:1px solid var(--border);line-height:1.4;display:flex;align-items:flex-start;gap:7px;}
+    .mvp-item:last-child{border-bottom:none;}
+    .mvp-item::before{flex-shrink:0;font-weight:700;font-size:12px;margin-top:1px;}
+    .mvp-item.yes::before{content:"check";font-family:inherit;content:"✓";color:var(--mid);}
+    .mvp-item.no::before{content:"✕";color:var(--text-muted);}
+    .mvp-item.no{color:var(--text-muted);}
+    .col-note{margin-top:9px;font-size:12px;color:var(--mid);font-style:italic;flex-shrink:0;}
+    .p0-framework{background:var(--dark);border-radius:8px;padding:14px 16px;flex:1;display:flex;flex-direction:column;}
+    .p0-fw-lbl{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+    .p0-rule{font-size:13px;color:rgba(255,255,255,0.82);line-height:1.65;}
+    .p0-rule strong{color:var(--accent);}
+    .p0-rule em{color:rgba(255,255,255,0.55);font-style:normal;}
+
+    /* S08 */
+    .s08-banner{background:var(--dark);border-radius:8px;padding:11px 16px;margin-top:10px;font-size:13px;color:rgba(255,255,255,0.85);line-height:1.5;flex-shrink:0;}
+    .s08-banner strong{color:var(--accent);}
+    .s08-questions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px;}
+    .q-card{background:var(--white);border-radius:8px;padding:12px 14px;box-shadow:var(--shadow);display:flex;gap:10px;align-items:flex-start;}
+    .q-num{width:24px;height:24px;border-radius:50%;background:var(--dark);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+    .q-title{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+    .q-body{font-size:12px;color:var(--text-muted);line-height:1.5;}
+    .s08-body{display:grid;grid-template-columns:1.2fr 1fr;gap:9px;margin-top:9px;flex:1;min-height:0;}
+    .s08-hyp{background:var(--off-white);border-radius:8px;padding:13px 15px;border-left:4px solid var(--dark);}
+    .s08-hyp-lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:6px;}
+    .s08-hyp-txt{font-size:13px;color:var(--text);line-height:1.6;}
+    .s08-hyp-txt strong{color:var(--dark);}
+    .s08-d90{background:var(--white);border-radius:8px;padding:12px 14px;box-shadow:var(--shadow);}
+    .s08-d90-lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:6px;}
+    .s08-d90-item{font-size:13px;color:var(--text);padding:4px 0;border-bottom:1px solid var(--border);line-height:1.4;display:flex;gap:6px;}
+    .s08-d90-item:last-child{border-bottom:none;}
+    .s08-d90-item::before{content:"to";color:var(--mid);font-weight:700;flex-shrink:0;}
+    .s08-vision-banner{background:var(--dark);border-radius:10px;padding:20px 24px;margin-top:4px;flex-shrink:0;border-left:5px solid var(--accent);display:flex;align-items:flex-start;gap:16px;box-shadow:0 4px 20px rgba(12,59,53,0.25);}
+    .s08-vision-icon{font-size:24px;flex-shrink:0;margin-top:2px;}
+    .s08-vision-lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
+    .s08-vision-txt{font-size:15px;color:rgba(255,255,255,0.92);line-height:1.6;}
+
+    /* S09 */
+    .def-list{display:flex;flex-direction:column;gap:8px;margin-top:10px;flex:1;min-height:0;}
+    .def-row{background:var(--white);border-radius:8px;border-left:4px solid var(--mid);padding:11px 15px;box-shadow:var(--shadow);display:flex;gap:16px;align-items:center;flex:1;}
+    .def-what{font-size:16px;font-weight:700;color:var(--dark);width:210px;flex-shrink:0;}
+    .def-why{font-size:14px;color:var(--text-muted);line-height:1.5;}
+    .s09-protocol{margin-top:10px;background:var(--dark);border-radius:8px;padding:13px 16px;border-left:4px solid var(--accent);flex-shrink:0;}
+    .s09-proto-lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+    .s09-proto-txt{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;}
+    .s09-proto-txt strong{color:var(--white);}
+
+    /* S10 */
+    .s10-intro{font-size:13px;color:var(--text-muted);margin-bottom:9px;line-height:1.5;}
+    .s10-intro strong{color:var(--text);}
+    .rhythm-rows{display:flex;flex-direction:column;gap:7px;}
+    .rr{background:var(--white);border-radius:8px;padding:11px 15px;box-shadow:var(--shadow);}
+    .rr-hd{display:flex;align-items:center;gap:9px;margin-bottom:5px;flex-wrap:wrap;}
+    .rr-badge{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;border-radius:4px;}
+    .badge-w{background:var(--dark);color:var(--white);}
+    .badge-m{background:var(--mid);color:var(--white);}
+    .badge-q{background:var(--off-white);color:var(--text-muted);border:1px solid var(--border);}
+    .ai-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(168,255,58,0.15);color:var(--dark);padding:2px 7px;border-radius:4px;border:1px solid rgba(168,255,58,0.3);}
+    .rr-subtitle{font-size:12px;color:var(--text-muted);}
+    .rr-body{font-size:13px;color:var(--text);line-height:1.55;}
+    .rr-body strong{color:var(--dark);}
+    .s10-bidi{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:9px;flex:1;min-height:0;}
+    .bidi-col{background:var(--white);border-radius:8px;padding:14px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;}
+    .bidi-lbl{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--dark);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--border);}
+    .bidi-txt{font-size:14px;color:var(--text);line-height:1.6;}
+    .bidi-txt strong{color:var(--dark);}
+
+    /* S11 */
+    .prove-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;flex:1;min-height:0;}
+    .prove-card{background:var(--white);border-radius:8px;padding:13px 15px;box-shadow:var(--shadow);display:flex;flex-direction:column;border-top:3px solid var(--border);}
+    .prove-card:nth-child(1){border-top-color:var(--dark);}
+    .prove-card:nth-child(2){border-top-color:var(--mid);}
+    .prove-card:nth-child(3){border-top-color:var(--mid);}
+    .prove-card:nth-child(4){border-top-color:var(--border);}
+    .prove-who{font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dark);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--border);}
+    .prove-row{display:flex;gap:10px;align-items:flex-start;padding:5px 0;border-bottom:1px solid var(--border);}
+    .prove-row:last-child{border-bottom:none;}
+    .prove-row-lbl{font-size:9px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;width:82px;flex-shrink:0;padding-top:2px;}
+    .prove-row-lbl.outcome{color:var(--dark);}
+    .prove-row-lbl.indicator{color:var(--mid);}
+    .prove-row-lbl.open{color:var(--text-muted);}
+    .prove-row-txt{font-size:13px;color:var(--text);line-height:1.5;}
+
+    /* S12 */
+    .s12 .sc{justify-content:center;}
+    .s12 .sub{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.30);margin-bottom:24px;}
+    .bp-list{display:flex;flex-direction:column;gap:16px;}
+    .bp{display:flex;gap:16px;align-items:flex-start;}
+    .bpn{font-family:var(--font-d);font-size:30px;color:rgba(255,255,255,0.10);line-height:1;flex-shrink:0;width:28px;}
+    .bpt{font-size:14px;color:rgba(255,255,255,0.80);line-height:1.65;}
+    .bpt strong{color:var(--white);}
+    .final-block{margin-top:26px;border-top:1px solid rgba(255,255,255,0.10);padding-top:22px;}
+    .final-line-1{font-family:var(--font-d);font-size:clamp(15px,1.9vw,22px);color:var(--accent);line-height:1.35;}
+  </style>
+</head>
+<body>
+
+<!-- GATE -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-logo">
+      <div class="gate-logo-banner"><img src="magiclinks-logo.png" alt="MagicLinks"></div>
+    </div>
+    <input type="password" id="pw" class="gate-input" placeholder="Password" autocomplete="off">
+    <button class="gate-btn" onclick="unlock()">Enter</button>
+    <div class="gate-err" id="pw-err"></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div id="prog-track"><div id="prog"></div></div>
+
+<!-- SIDEBAR -->
+<div id="slide-menu">
+  <div class="sm-header">
+    <div class="sm-logo-wrap"><img src="magiclinks-logo.png" alt="MagicLinks"></div>
+  </div>
+  <div class="sm-divider">Slides</div>
+  <button class="sm-item" onclick="jumpTo(0)"><span class="sm-num">01</span><span class="sm-title">Title</span></button>
+  <button class="sm-item" onclick="jumpTo(1)"><span class="sm-num">02</span><span class="sm-title">What I Heard</span></button>
+  <button class="sm-item" onclick="jumpTo(2)"><span class="sm-num">03</span><span class="sm-title">Why This Order</span></button>
+  <button class="sm-item" onclick="jumpTo(3)"><span class="sm-num">04</span><span class="sm-title">90-Day Plan</span></button>
+  <button class="sm-item" onclick="jumpTo(4)"><span class="sm-num">05</span><span class="sm-title">Data Accuracy</span></button>
+  <button class="sm-item" onclick="jumpTo(5)"><span class="sm-num">06</span><span class="sm-title">Mobile P0</span></button>
+  <button class="sm-item" onclick="jumpTo(6)"><span class="sm-num">07</span><span class="sm-title">Brand Portal</span></button>
+  <button class="sm-item" onclick="jumpTo(7)"><span class="sm-num">08</span><span class="sm-title">Match Intelligence v2</span></button>
+  <button class="sm-item" onclick="jumpTo(8)"><span class="sm-num">09</span><span class="sm-title">What Gets Deferred</span></button>
+  <button class="sm-item" onclick="jumpTo(9)"><span class="sm-num">10</span><span class="sm-title">Operating Rhythm</span></button>
+  <button class="sm-item" onclick="jumpTo(10)"><span class="sm-num">11</span><span class="sm-title">Day 90 State</span></button>
+  <button class="sm-item" onclick="jumpTo(11)"><span class="sm-num">12</span><span class="sm-title">How This Was Built</span></button>
+</div>
+
+<!-- NAV -->
+<div id="nav">
+  <div id="nav-pill">
+    <button id="btn-prev" onclick="navBack(event)">&#8249;</button>
+    <span id="nav-lbl">01 / 12</span>
+    <button id="btn-next" onclick="navFwd(event)">&#8250;</button>
+    <div class="nav-sep"></div>
+    <button id="btn-mode" onclick="toggleMode(event)">&#9654; Walk Through</button>
+  </div>
+</div>
+
+<!-- SLIDES -->
+<div id="pres">
+
+<!-- S01 -->
+<div class="slide s01 bg-dark active" data-s="0">
+  <div class="sc">
+    <div class="s01-logo-wrap" data-rv="1"><img src="magiclinks-logo.png" alt="MagicLinks"></div>
+    <div class="hl" data-rv="2">First 90 Days.</div>
+    <div class="hl" data-rv="3">What I'd fix, build,</div>
+    <div class="hl hl-accent" data-rv="4">and bet on. In that order.</div>
+    <div class="byline" data-rv="4"><strong>Urvash Chheda</strong> &nbsp;·&nbsp; Senior PM &nbsp;·&nbsp; May 2026</div>
+  </div>
+</div>
+
+<!-- S02 -->
+<div class="slide s02 bg-white" data-s="1">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">First Two Weeks</div>
+    <div class="ttl">Five Signals. One Squad. Clear Order Of Operations.</div>
+    <div class="s02-grid">
+      <div class="sig-card p0" data-rv="1">
+        <div class="sig-header"><div class="sig-icon">📊</div><div class="sig-tag">1. Retention Risk</div></div>
+        <div class="sig-divider"></div>
+        <div class="sig-title">Reporting dashboards are wrong</div>
+        <div class="sig-desc">Campaign Success flags inaccurate data and mismatched information across reporting dashboards. Every renewal conversation starts on uncertain footing. If the numbers can't be trusted, neither can the relationship.</div>
+        <div class="sig-stake">Churn Risk At Every Renewal</div>
+      </div>
+      <div class="sig-card p0" data-rv="2">
+        <div class="sig-header"><div class="sig-icon">📱</div><div class="sig-tag">2. Revenue Risk</div></div>
+        <div class="sig-divider"></div>
+        <div class="sig-title">Mobile app not working for top creators</div>
+        <div class="sig-desc">Link creation is not working well. Transaction tracking looks off. Top creators, your highest-earning cohort, are the ones most affected. Every day this is unfixed is revenue not earned by the people who drive the platform.</div>
+        <div class="sig-stake">Direct Revenue Impact, Right Now</div>
+      </div>
+      <div class="sig-card p1" data-rv="3">
+        <div class="sig-header"><div class="sig-icon">🏢</div><div class="sig-tag">3. Growth Risk</div></div>
+        <div class="sig-divider"></div>
+        <div class="sig-title">Sales is losing deals to competitors</div>
+        <div class="sig-desc">Brands want a transparent portal to log in and see their campaigns. Competitors have one. MagicLinks doesn't. Sales is losing active deals specifically on this gap, not on price, not on creator quality.</div>
+        <div class="sig-stake">New Revenue Blocked</div>
+      </div>
+      <div class="sig-card p2" data-rv="4">
+        <div class="sig-header"><div class="sig-icon">🧠</div><div class="sig-tag">4. Strategic Bet</div></div>
+        <div class="sig-divider"></div>
+        <div class="sig-title">CEO wants Match Intelligence v2</div>
+        <div class="sig-desc">Better creator-brand matching to lift campaign ROI. The highest-leverage long-term investment on the table. Before designing v2, I need to fully understand what v1 is doing, what data it uses, and where the gap is.</div>
+        <div class="sig-stake">Competitive Differentiation</div>
+      </div>
+    </div>
+    <div class="s02-fifth" data-rv="5">
+      <div class="s02-fifth-badge">5th Signal · Company-Wide</div>
+      <div class="s02-fifth-text">Broad frustration with product visibility: no one knows what's shipping, when, or why bets are being made. This isn't just a communication problem. It's a trust problem. It shapes how I design every team interaction, not just slide 10.</div>
+    </div>
+    <div class="s02-squad" data-rv="6">
+      <strong>Squad: Technical Lead (my primary partner) + 3 engineers + 1 designer.</strong> The Technical Lead runs day-to-day engineering decisions and manages the team. I delegate the problem to them, not a task list. Every resource call below lives inside this constraint.
+    </div>
+  </div>
+</div>
+
+<!-- S03 -->
+<div class="slide s03 bg-off" data-s="2">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">Prioritization</div>
+    <div class="ttl">Why This Order, Specifically At MagicLinks</div>
+    <div class="pri-rows">
+      <div class="pri-row" data-rv="1">
+        <div class="pri-num">1</div>
+        <div class="pri-what">Fix Reporting Data</div>
+        <div class="pri-why">Campaign Success touches <strong>every renewal conversation</strong>. Inaccurate dashboards at renewal time aren't a support ticket, they're a churn event. I can't build anything credible on a measurement layer I don't trust. At Later, I rebuilt analytics infrastructure before shipping any new feature. Same principle applies here.</div>
+      </div>
+      <div class="pri-row" data-rv="2">
+        <div class="pri-num">2</div>
+        <div class="pri-what">Fix Mobile (Parallel Track)</div>
+        <div class="pri-why">The brief says the app is "not working well" for link creation and transaction tracking looks off. <strong>Top creators can't earn reliably right now.</strong> This runs in parallel with data: different engineers, different problem space. I won't conflate "not working well" with a specific root cause until I've investigated. The fix path determines the timeline.</div>
+      </div>
+      <div class="pri-row" data-rv="3">
+        <div class="pri-num">3</div>
+        <div class="pri-what">Build Brand Portal</div>
+        <div class="pri-why">Sales is losing deals on a specific, named gap. But I won't scope this from assumptions. Before writing a single feature, I'll <strong>listen to multiple lost-deal sales calls</strong>, run deep-dives with the sales team, reach out to lost customers and at-risk renewals directly, and do a full competitor teardown (Aspire, LTK, impact.com). Scope is defined by the market, not intuition.</div>
+      </div>
+      <div class="pri-row" data-rv="4">
+        <div class="pri-num">4</div>
+        <div class="pri-what">Design Match Intelligence v2</div>
+        <div class="pri-why">Before designing v2, I need to understand v1 fully: <strong>what data it uses, what the baseline ROI is, what the CEO's specific target is</strong>, and what purchase-intent signals we're not yet capturing. Only after that does a v2 hypothesis become defensible. Clean data from phase 1 is a prerequisite: 30 days of stable reporting unlocks the design sprint.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S04 -->
+<div class="slide s04 bg-white" data-s="3">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">The Plan</div>
+    <div class="ttl">90 Days. Three Phases. Technical Lead + 3 Engineers + 1 Designer.</div>
+    <div class="phase-grid" data-rv="1">
+      <div class="phase-col">
+        <div class="phase-label">Phase 1: Days 1-30</div>
+        <div class="phase-title">Fix The Foundation</div>
+        <div class="phase-tracks">
+          <div class="track"><div class="track-lbl">Track 1: Data Accuracy</div>Shadow Campaign Success in live renewal preps. Map every manual reconciliation step. Audit the reporting pipeline with Tech Lead + Eng 2: pull raw event logs, not aggregates. Trace divergence to source (join error? stale cache? attribution window?). Define "correct metric" with the team before writing code. Fix. Send proactive client-facing changelog when resolved.</div>
+          <div class="track"><div class="track-lbl">Track 2: Mobile P0</div>Investigate link creation issues and transaction display problems. Root cause determines fix path and timeline. Eng 3 owns investigation. Designer maps the broken interaction before code is touched. Scope: link creation and transaction display only.</div>
+        </div>
+        <div class="phase-squad"><strong>Tech Lead + Eng 2:</strong> Data pipeline<br><strong>Eng 3 + Designer:</strong> Mobile P0<br><strong>Eng 4:</strong> Swings to bottleneck by day 7</div>
+      </div>
+      <div class="phase-col">
+        <div class="phase-label">Phase 2: Days 31-60</div>
+        <div class="phase-title">Close The Deal Gap</div>
+        <div class="phase-tracks">
+          <div class="track"><div class="track-lbl">Track 1: Brand Portal MVP</div>Scope defined from lost-deal calls, customer interviews, and competitor teardown. I define the feature list and validate it with sales, Campaign Success, and brand stakeholders before code starts. Sales is a critical input, not the sole approver. AI-generated prototypes validate UX with real brands before any production code.</div>
+          <div class="track"><div class="track-lbl">Track 2: Reporting Pipeline Health</div>Pipeline health tracked weekly. Trust signal is behavioral: has Campaign Success stopped manually reconciling? Yes means fixed. No means investigation resumes. This is active, not passive. I run the check weekly and report status to leadership.</div>
+          <div class="track"><div class="track-lbl">Track 3: Match Intelligence v2 Pre-Work</div>I and the Tech Lead lead the v1 audit as primary decision makers: what data inputs, what matching logic, what is the baseline ROI. We collaborate with the CEO weekly on v2 objectives and the target lift, with Campaign Success on baseline match-to-conversion data, and with engineering on data layer feasibility. CEO alignment happens before the design sprint begins.</div>
+        </div>
+        <div class="phase-squad"><strong>Designer:</strong> Portal UX (primary)<br><strong>Tech Lead + Eng 4:</strong> MI v2 pre-work<br><strong>Eng 2+3:</strong> Portal build</div>
+      </div>
+      <div class="phase-col">
+        <div class="phase-label">Phase 3: Days 61-90</div>
+        <div class="phase-title">Design The Strategic Bet</div>
+        <div class="phase-tracks">
+          <div class="track"><div class="track-lbl">Track 1: Match Intelligence v2 Design Sprint</div>Discovery completed. Working hypothesis formed. Design prototype built. Written spec with explicit falsification criteria and CEO's target ROI lift as the bar. Engineering estimate attached. Go/no-go recommendation by day 90. Not a shipped product: a decision-ready spec.</div>
+          <div class="track"><div class="track-lbl">Track 2: Brand Portal Beta + Refinement</div>Brand portal live with beta brands. Eng 2+3 close only issues beta brands flag as blockers, no new features. Win rate on portal-influenced deals tracked from day 1 of beta. Sales team using portal in active pitches is the adoption signal.</div>
+        </div>
+        <div class="phase-squad"><strong>Designer + Tech Lead:</strong> MI v2<br><strong>Eng 2+3:</strong> Portal beta<br><strong>Eng 4:</strong> MI v2 tech spec</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S05 -->
+<div class="slide s05 bg-off" data-s="4">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">Phase 1, Track 1</div>
+    <div class="ttl">Data Accuracy: How I'll Actually Diagnose It</div>
+    <div class="s05-layout">
+      <div class="step-list">
+        <div class="step" data-rv="1">
+          <div class="sn">1</div>
+          <div class="st"><strong>Week 1: Observe Before Hypothesizing.</strong> I join Campaign Success for live renewal preps. Not to read the Jira tickets: to watch where they open a second tab. That pause is the actual bug report. I map every manual step and note exactly which fields they cross-check. By Friday I have a hypothesis: attribution window? Deduplication? Timezone handling? I state it explicitly, then test it with data.</div>
+        </div>
+        <div class="step" data-rv="2">
+          <div class="sn">2</div>
+          <div class="st"><strong>Week 2: Find The One Place.</strong> I pull raw event logs with Tech Lead + Eng 2 at every pipeline stage: ingestion, transformation, aggregation. We build a comparison table for 5 real campaigns, source event count vs. dashboard output. The discrepancy points to one specific place: a join, a cache, a window mismatch. That one place. Not a broad rewrite.</div>
+        </div>
+        <div class="step" data-rv="3">
+          <div class="sn">3</div>
+          <div class="st"><strong>Week 3: Define, Fix, Communicate. In That Order.</strong> I write the definition of "correct metric" jointly with Campaign Success before a line of code is touched. This is a joint decision, not an engineering spec. Fix deployed. Client communication drafted: what changed, what it means for historical data, what they should expect. Campaign Success co-signs the outreach, not a handoff.</div>
+        </div>
+        <div class="step" data-rv="4">
+          <div class="sn">4</div>
+          <div class="st"><strong>Week 4: Verify Behavior, Not The Dashboard.</strong> The real signal isn't "numbers look right." It's: did Campaign Success stop the manual cross-check? I count steps per renewal prep. Target: under 5. Still reconciling means my diagnosis was incomplete. I go back to Week 2.</div>
+        </div>
+      </div>
+      <div class="anchor-box" data-rv="5">
+        <div class="ah">I've Diagnosed This Before.</div>
+        <p>At Later, all analytics ran on the core product database: no time series, always one day stale. CSMs spent 2-3 hours per week pulling numbers manually for client calls. I diagnosed it as a data infrastructure problem dressed as a feature request. Wrote the PRD and RFC. Led the 6-month rebuild.</p>
+        <div class="anchor-outcomes">
+          <div class="ao"><div><div class="ao-val">70%</div><div class="ao-lbl">reduction in CSM manual reporting time</div></div></div>
+          <div class="ao"><div><div class="ao-val">&lt;8</div><div class="ao-lbl">support tickets/week (from 20+)</div></div></div>
+          <div class="ao"><div><div class="ao-val">5</div><div class="ao-lbl">enterprise accounts closed post-launch</div></div></div>
+          <div class="ao"><div><div class="ao-val">5-10m</div><div class="ao-lbl">data freshness (from 1-day lag)</div></div></div>
+        </div>
+        <div class="anchor-timeline">
+          <div class="tl-step">
+            <div class="tl-dot"></div>
+            <div class="tl-label">Diagnose</div>
+            <div class="tl-sub">Shadow CSMs, map manual steps</div>
+          </div>
+          <div class="tl-line"></div>
+          <div class="tl-step">
+            <div class="tl-dot"></div>
+            <div class="tl-label">Rebuild</div>
+            <div class="tl-sub">PRD, RFC, 6-month delivery</div>
+          </div>
+          <div class="tl-line"></div>
+          <div class="tl-step">
+            <div class="tl-dot"></div>
+            <div class="tl-label">Verify</div>
+            <div class="tl-sub">Behavior change, not dashboards</div>
+          </div>
+        </div>
+        <div class="anchor-apply">
+          <div class="anchor-apply-icon">&#x1F501;</div>
+          <div>
+            <div class="anchor-apply-lbl">Applying At MagicLinks</div>
+            <div class="anchor-apply-txt">Same diagnosis pattern: shadow the team, find the one broken place, define correct before fixing, verify through behavior not UI.</div>
+          </div>
+        </div>
+        <div class="anchor-tag">Later Analytics Rebuild · 2023-2024</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S06 -->
+<div class="slide s06 bg-white" data-s="5">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">Phase 1, Track 2</div>
+    <div class="ttl">Mobile P0: Diagnose Before Committing To A Timeline</div>
+    <div class="s06-frame" data-rv="1">The brief says the app is <strong>"not working well" for link creation</strong> and <strong>"transaction tracking looks off."</strong> I won't label this a crash or a data bug until I know which it is. A rendering issue takes days. An API contract break takes weeks. Transaction "looking off" could be display rounding (hours) or a pipeline issue (weeks). These are completely different fix paths. I won't commit to a date before I know what I'm fixing.</div>
+    <div class="s06-section-break">Weekly Investigation Plan</div>
+    <div class="week-plan" data-rv="2">
+      <div class="wk">
+        <div class="wk-lbl">Week 1</div>
+        <div class="wk-sub">Reproduce + Characterize</div>
+        <div class="wk-txt">Eng 3 pulls error logs, segments by device OS, app version, and creator tier. I reach out directly to the highest-revenue creators affected: exact sequence, exact screen, what happens next. Reproduce in dev environment by day 5.<br><br><strong>Hypothesis by day 5:</strong> client-side rendering issue or server-side API/data issue? Designer maps both broken interaction flows before any code is written.</div>
+      </div>
+      <div class="wk">
+        <div class="wk-lbl">Week 2</div>
+        <div class="wk-sub">Root Cause + Fix Path Locked</div>
+        <div class="wk-txt">Tech Lead + Eng 3 confirm root cause. Two paths:<br><strong>(A) Rendering bug:</strong> fix ships in week 3. Designer validates UX before release.<br><strong>(B) API/data issue:</strong> 3-week coordinated fix with different resource allocation.<br><br>Transaction tracking traced separately. Display rounding or upstream data? <strong>Public timeline only after root cause is confirmed.</strong></div>
+      </div>
+      <div class="wk">
+        <div class="wk-lbl">Week 3+</div>
+        <div class="wk-sub">Fix, Validate, Confirm</div>
+        <div class="wk-txt">Fix validated with the highest-revenue creators affected first, before any wide release. Three sign-offs required before wide release:<br><strong>(1)</strong> Creator confirms it works.<br><strong>(2)</strong> Campaign Success confirms transaction view matches admin panel.<br><strong>(3)</strong> Designer validates no adjacent flow breaks.<br><br>Not done until all three confirm.</div>
+      </div>
+    </div>
+    <div class="s06-section-break">Design Approach</div>
+    <div class="s06-design" data-rv="3">
+      <div class="s06-design-col">
+        <div class="s06-design-lbl">Designer's Role (Not Just Review)</div>
+        <div class="s06-design-txt">Designer is involved from day 1, not called in after engineering is done. They map the broken interaction before Eng 3 writes code, specify the corrected flow, and own UX validation of the fix. Even a bug fix can break adjacent flows; a designer spec prevents that.</div>
+      </div>
+      <div class="s06-design-col ai">
+        <div class="s06-design-lbl">AI-Accelerated Prototyping</div>
+        <div class="s06-design-txt">Designer uses Claude or v0.dev to generate functional UI prototypes of the corrected flow in hours, not days. Share async with the top affected creators via Maze or Loom. Collect structured feedback in 48hrs. Iterate before production code is written. Reduces rework and proves the fix works before it ships.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S07 -->
+<div class="slide s07 bg-off" data-s="6">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">Phase 2: Days 31-60</div>
+    <div class="ttl">Brand Portal: Scope From The Market, Build With AI</div>
+    <div class="s07-diag" data-rv="1">
+      <div class="diag-step">
+        <div class="ds-num">1</div>
+        <div><div class="ds-title">Discovery First: Multiple Inputs Before A Feature Is Named</div>
+        <div class="ds-body">Listen to multiple lost-deal sales calls, the exact moment they lost the deal, the exact objection. Deep-dive with the sales team on what "transparent" means to brands. Reach out to lost customers and at-risk renewal accounts directly. Run a full competitor teardown: what do Aspire, LTK, and impact.com actually show brands in their portals?</div></div>
+      </div>
+      <div class="diag-step">
+        <div class="ds-num">2</div>
+        <div><div class="ds-title">Scope Locked By Frequency, Not Intuition</div>
+        <div class="ds-body">MVP = features cited in multiple lost deals as an explicit blocker. Nice-to-have = mentioned but not a dealbreaker. Deferred = never came up. Scope validated with sales, Campaign Success, and brand stakeholders before code starts. If discovery changes the list, scope changes before building starts, not after.</div></div>
+      </div>
+      <div class="diag-step">
+        <div class="ds-num">3</div>
+        <div><div class="ds-title">AI-Accelerated Build: Prototype Before Production Code</div>
+        <div class="ds-body">Designer uses Claude/v0.dev to generate a functional portal prototype in days, not weeks. Share with beta brands for structured feedback. Iterate on the prototype, not production code. Only once brands confirm the prototype solves their objection does engineering build the real thing. Reduces time-to-value and rework risk dramatically.</div></div>
+      </div>
+    </div>
+    <div class="s07-bottom" data-rv="2">
+      <div class="s07-col">
+        <div class="col-hdr">Expected MVP Scope (Hypothesis, Pre-Discovery)</div>
+        <div class="mvp-item yes">Transparent brand login: the word "transparent" is in the brief</div>
+        <div class="mvp-item yes">Live campaign performance view: core visibility ask</div>
+        <div class="mvp-item yes">Creator roster and basic spend summary</div>
+        <div class="mvp-item no">Custom reporting, white-labeling, API access: defer unless discovery says otherwise</div>
+        <div class="col-note">Scope finalizes after discovery. Designer leads product experience, not engineering.</div>
+      </div>
+      <div class="s07-col">
+        <div class="p0-framework">
+          <div class="p0-fw-lbl">When Does The Portal Pause?</div>
+          <div class="p0-rule">Simple rule: if something is <strong>breaking current revenue</strong> or <strong>visible to existing clients within 7 days</strong>, the portal pauses.<br><br>I write a trade-off memo to leadership within 24hrs: what drops, what it costs in pipeline, and what signal brings it back. The memo goes out before any scope changes, not after.<br><br>The portal is in month 2 <em>specifically</em> because it can pause. Data and mobile cannot. This is not an accident. It's the sequencing decision.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S08 -->
+<div class="slide s08 bg-white" data-s="7">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">Phase 3: Days 61-90</div>
+    <div class="ttl">Match Intelligence v2: Understand v1 Before Designing v2</div>
+    <div class="s08-banner" data-rv="1">The CEO has asked for v2. Before I design anything, I run a structured discovery. A v2 built on assumptions about v1 is a v2 built on sand. The 30-day data stability window in phase 1 exists precisely to make this discovery possible and the answers trustworthy.</div>
+    <div class="s08-questions" data-rv="2">
+      <div class="q-card"><div class="q-num">1</div><div><div class="q-title">What Is v1 Actually Doing Today?</div><div class="q-body">What data inputs does it use: follower count, engagement rate, category tags, historical campaign performance? I'll work with the campaign performance team to understand what they observe in campaign outcomes vs. what v1 predicted. Where is v1 getting it wrong?</div></div></div>
+      <div class="q-card"><div class="q-num">2</div><div><div class="q-title">What's The Baseline ROI And The CEO's Target?</div><div class="q-body">What is the current match-to-conversion rate? What lift does the CEO specifically expect from v2? Are we optimizing for brand campaign ROI, creator earnings, or platform GMV? These are different objective functions with different models.</div></div></div>
+      <div class="q-card"><div class="q-num">3</div><div><div class="q-title">What Data Is v1 Missing?</div><div class="q-body">Hypothesis: v1 uses audience-side signals. v2 should use purchase-intent signals: what a creator's audience actually buys, not how many follow them. MagicLinks has years of transaction data at scale. No competitor has this. Does our data layer expose it cleanly enough to use?</div></div></div>
+      <div class="q-card"><div class="q-num">4</div><div><div class="q-title">What Do Brands And Creators Actually Want?</div><div class="q-body">The brand and creator teams are closest to this feedback. Top creator conversations reveal what better matching means to them. Are we solving for their problem, or the platform's optimization metric? These aren't always the same answer.</div></div></div>
+    </div>
+    <div class="s08-body" data-rv="3">
+      <div class="s08-hyp">
+        <div class="s08-hyp-lbl">Working Hypothesis (Post-Discovery)</div>
+        <div class="s08-hyp-txt">v1 ranks on audience-side signals. v2 bets that <strong>purchase-intent signal: what a creator's audience actually buys</strong> is a stronger ROI predictor. MagicLinks has transaction data at scale that no competitor can replicate. If the hypothesis holds, Match Intelligence v2 isn't just a feature upgrade. It's the beginning of a defensible moat: a compounding, proprietary asset built from every campaign that runs on the platform.</div>
+      </div>
+      <div class="s08-d90">
+        <div class="s08-d90-lbl">Day 90 Deliverable To CEO</div>
+        <div class="s08-d90-item">Discovery complete: v1 fully understood, gaps documented</div>
+        <div class="s08-d90-item">Working hypothesis with explicit falsification criteria</div>
+        <div class="s08-d90-item">Design prototype of v2 matching experience</div>
+        <div class="s08-d90-item">Engineering estimate for full build cycle</div>
+        <div class="s08-d90-item">Go/no-go recommendation with CEO's target ROI lift as the bar</div>
+      </div>
+    </div>
+    <div class="s08-vision-banner" data-rv="3">
+      <div class="s08-vision-icon">&#127919;</div>
+      <div>
+        <div class="s08-vision-lbl">1-Year Vision</div>
+        <div class="s08-vision-txt">Match Intelligence becomes what makes MagicLinks un-replicable. Not the portal, not the mobile app. A matching engine trained on proprietary transaction data, accumulated across thousands of campaigns. This is the asset competitors cannot buy their way into.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S09 -->
+<div class="slide s09 bg-off" data-s="8">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">Transparency</div>
+    <div class="ttl">What I'm Explicitly Not Doing In 90 Days: And Why</div>
+    <div class="def-list">
+      <div class="def-row" data-rv="1"><div class="def-what">Match Intelligence v2 Build</div><div class="def-why">Discovery work in phase 2 and design sprint in phase 3 are prerequisites. Building v2 before completing discovery produces a worse algorithm faster. The day 90 go/no-go recommendation is what unlocks the build, not impatience.</div></div>
+      <div class="def-row" data-rv="2"><div class="def-what">Brand Portal v2 Features</div><div class="def-why">Custom reporting, white-labeling, API access, multi-user permissions. If none of these appeared in lost-deal debriefs as explicit blockers, they don't ship in MVP. Revisit after beta brands tell us what they actually need next, not the backlog.</div></div>
+      <div class="def-row" data-rv="3"><div class="def-what">Mobile App Redesign</div><div class="def-why">Phase 1 scope is link creation and transaction tracking, what the brief flags. A full redesign is a multi-quarter initiative requiring a separate resourcing conversation. Conflating redesign with P0 fixes loses both.</div></div>
+      <div class="def-row" data-rv="4"><div class="def-what">Cross-Product Analytics Platform</div><div class="def-why">Requires dedicated analytics engineering capacity this squad doesn't have. Right diagnosis, wrong time, wrong resourcing. This is a roadmap conversation for Q3 at the earliest.</div></div>
+    </div>
+    <div class="s09-protocol" data-rv="5">
+      <div class="s09-proto-lbl">Trade-Off Log Protocol</div>
+      <div class="s09-proto-txt">Every dropped item gets three things in writing: <strong>what it costs</strong> (in pipeline, retention, or velocity), <strong>the explicit condition that brings it back</strong> (e.g., "if Match Intelligence v2 go/no-go is approved, build starts in Q3"), and <strong>a timestamp</strong>. This log is public, searchable, and referenced in every roadmap review. No verbal updates, no Slack pings treated as decisions. Written, accountable, auditable.</div>
+    </div>
+  </div>
+</div>
+
+<!-- S10 -->
+<div class="slide s10 bg-white" data-s="9">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">Communication</div>
+    <div class="ttl">AI-Augmented, Bidirectional, Async-First</div>
+    <div class="s10-intro">The brief calls out company-wide frustration with product visibility. The solution isn't more meetings. It's a communication system that's always on and works in both directions.</div>
+    <div class="rhythm-rows">
+      <div class="rr" data-rv="1">
+        <div class="rr-hd"><span class="rr-badge badge-w">Weekly</span><span class="ai-badge">AI-Drafted</span><span class="rr-subtitle">Every Friday · Public Slack Channel</span></div>
+        <div class="rr-body">Claude drafts the decision log from my notes each week. I review and ship it. Not a status update: a <strong>decision artifact</strong>. What I know, what I don't, what changed, what dropped and why. Searchable and linkable: future disagreements get resolved by pointing at the log, not by relitigating. Anyone in the company can see what product is doing without asking.</div>
+      </div>
+      <div class="rr" data-rv="2">
+        <div class="rr-hd"><span class="rr-badge badge-m">Monthly</span><span class="ai-badge">AI-Summarized</span><span class="rr-subtitle">One-Page Roadmap Letter · Leadership</span></div>
+        <div class="rr-body">AI summarizes what shipped, what dropped, what changed since last month. I write the "why this bet" section by hand. That part can't be delegated. <strong>Leadership reads it in 3 minutes</strong> and knows exactly what product is optimizing for and what trade-offs were made.</div>
+      </div>
+      <div class="rr" data-rv="3">
+        <div class="rr-hd"><span class="rr-badge badge-q">Quarterly</span><span class="rr-subtitle">Trade-Off Presentation · All Stakeholders</span></div>
+        <div class="rr-body"><strong>3 bets I'm fully committed to. Everything else on the deferred list with explicit revival conditions.</strong> Stakeholders see what I considered and rejected, not just what I chose. This is what builds trust over time, not just delivery, but the reasoning behind what didn't ship.</div>
+      </div>
+    </div>
+    <div class="s10-bidi" data-rv="4">
+      <div class="bidi-col">
+        <div class="bidi-lbl">Stakeholder Feedback Loop</div>
+        <div class="bidi-txt">I send structured prompts, not broadcasts. "Sales: does this portal scope match what you heard in last week's calls?" Specific owner, specific question, tracked response. <strong>Silence is a signal:</strong> if a stakeholder stops engaging with my updates, I flag it as a relationship risk before it becomes an escalation.</div>
+      </div>
+      <div class="bidi-col">
+        <div class="bidi-lbl">Handling Pushback</div>
+        <div class="bidi-txt">When pushback arrives, "why isn't Match Intelligence v2 shipping?" or "the portal scope is wrong," I respond in writing within 24hrs: acknowledge the concern, explain the trade-off, confirm the next step. Every response is logged. <strong>No disagreement goes unresolved in Slack threads.</strong> Written, dated, owned.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S11 -->
+<div class="slide s11 bg-off" data-s="10">
+  <div class="sc" style="padding-top:18px;">
+    <div class="lbl">Day 90</div>
+    <div class="ttl">What I'll Be Able To Prove: By Stakeholder</div>
+    <div class="prove-grid">
+      <div class="prove-card" data-rv="1">
+        <div class="prove-who">CEO</div>
+        <div class="prove-row"><div class="prove-row-lbl outcome">Outcome</div><div class="prove-row-txt">Match Intelligence v2 go/no-go spec delivered. Discovery complete and documented. Go/no-go recommendation includes CEO's target ROI lift as the explicit bar. Engineering estimate attached.</div></div>
+        <div class="prove-row"><div class="prove-row-lbl indicator">Leading Indicator</div><div class="prove-row-txt">Reporting pipeline stable 30+ days (confirmed by Campaign Success behavior change in weeks 4-8). Data integrity was a prerequisite for v2: if it's stable, the hypothesis is testable.</div></div>
+        <div class="prove-row"><div class="prove-row-lbl open">Open Question</div><div class="prove-row-txt">Does purchase-intent signal differ enough from engagement rate to justify the build cycle? The spec will answer this, and explicitly state if the answer is no.</div></div>
+      </div>
+      <div class="prove-card" data-rv="2">
+        <div class="prove-who">Sales</div>
+        <div class="prove-row"><div class="prove-row-lbl outcome">Outcome</div><div class="prove-row-txt">Brand portal in active sales cycles. Win/loss rate on portal-influenced deals tracked from beta day 1. At least 1 deal has cited the portal as a differentiator, not just awareness.</div></div>
+        <div class="prove-row"><div class="prove-row-lbl indicator">Leading Indicator</div><div class="prove-row-txt">Sales team citing portal in pitches within 14 days of beta launch. If they're not using it voluntarily, the scope may have missed the core objection.</div></div>
+        <div class="prove-row"><div class="prove-row-lbl open">Open Question</div><div class="prove-row-txt">What do beta brands actually want next? The v2 feature list should come from them, not from the deferred backlog we wrote in month 1.</div></div>
+      </div>
+      <div class="prove-card" data-rv="3">
+        <div class="prove-who">Campaign Success</div>
+        <div class="prove-row"><div class="prove-row-lbl outcome">Outcome</div><div class="prove-row-txt">Manual reconciliation steps per renewal prep: under 5, down from baseline. Reporting pipeline stable 30+ days. Client-facing changelog sent when data was corrected.</div></div>
+        <div class="prove-row"><div class="prove-row-lbl indicator">Leading Indicator</div><div class="prove-row-txt">Week 4 check: did Campaign Success stop opening the second tab? Behavior change, not dashboard appearance, is the signal that the fix actually worked.</div></div>
+        <div class="prove-row"><div class="prove-row-lbl open">Open Question</div><div class="prove-row-txt">Did fixing the reporting pipeline expose adjacent data integrity issues downstream? The fix may reveal the next problem to solve.</div></div>
+      </div>
+      <div class="prove-card" data-rv="4">
+        <div class="prove-who">Engineering</div>
+        <div class="prove-row"><div class="prove-row-lbl outcome">Outcome</div><div class="prove-row-txt">Clear Q3 roadmap with explicit prioritization rationale and a shared vision for the rest of 2026. Every deferred item has a documented revival condition. Match Intelligence v2 build plan ready to execute if go/no-go is approved.</div></div>
+        <div class="prove-row"><div class="prove-row-lbl indicator">Leading Indicator</div><div class="prove-row-txt">Team can explain the prioritization rationale without asking me. If they can defend it in a cross-functional meeting, I've done my job communicating the "why."</div></div>
+        <div class="prove-row"><div class="prove-row-lbl open">Open Question</div><div class="prove-row-txt">Does the data layer actually support the purchase-intent hypothesis? The tech spec will answer this, and shape whether v2 is a 2-month build or a 6-month one.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S12 -->
+<div class="slide s12 bg-dark" data-s="11">
+  <div class="sc">
+    <div class="sub">How This Was Built</div>
+    <div class="bp-list">
+      <div class="bp" data-rv="1">
+        <div class="bpn">1</div>
+        <div class="bpt"><strong>AI As A Relentless Thinking Partner.</strong> This deck was built across a few focused sessions and pre-mortems using two simulated interviewer personas. Every claim was challenged before it stayed in the deck: squad allocation logic, the Match Intelligence v2 sequencing rationale, the brand portal discovery process, the data accuracy approach. Anything I couldn't defend out loud was cut. The version you're reading is what survived pressure testing.</div>
+      </div>
+      <div class="bp" data-rv="2">
+        <div class="bpn">2</div>
+        <div class="bpt"><strong>Built On Documented Decisions, Not Frameworks.</strong> I've built a second-brain vault rooted in my work at Later: every meaningful product call documented, with rationale and trade-offs. I've added decision logs from previous roles that never made it into a resume bullet, capturing context a resume can't carry. The Later analytics story in slide 5 is drawn directly from that record. The trade-off log protocol in slide 9 is how I actually handled mid-quarter scope changes at Later. Nothing in this deck is invented for the interview.</div>
+      </div>
+      <div class="bp" data-rv="3">
+        <div class="bpn">3</div>
+        <div class="bpt"><strong>The Format Is The Point.</strong> This deck is written in code, version-controlled on GitHub, and hosted at a password-protected URL. Desktop-optimized. No attachment, no slides export. A PM interviewing for a role that ships AI products should demonstrate what building with AI actually looks like, not just describe it.</div>
+      </div>
+    </div>
+    <div class="final-block" data-rv="4">
+      <div class="final-line-1">The next generation of PMs don't just use AI. They build and ship with it. This deck is a small example of what that looks like.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+  const PW='PM@MagicLinks';
+  const REVEAL_MAX=[4,6,4,1,5,4,3,3,5,4,4,4];
+  let cur=0,rev=0,mode='review';
+  const slides=[...document.querySelectorAll('.slide')];
+  const N=slides.length;
+
+  function unlock(){
+    if(document.getElementById('pw').value===PW){
+      const g=document.getElementById('gate');
+      g.classList.add('gone');
+      setTimeout(()=>g.remove(),600);
+      document.getElementById('nav').classList.add('visible');
+      if(mode==='review')revealItems(cur,REVEAL_MAX[cur]);
+    }else{
+      const inp=document.getElementById('pw');
+      document.getElementById('pw-err').textContent='Incorrect.';
+      inp.classList.add('shake');
+      setTimeout(()=>{inp.classList.remove('shake');inp.value='';},450);
+    }
+  }
+  document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+
+  function revealItems(si,upTo){slides[si].querySelectorAll('[data-rv]').forEach(el=>{if(parseInt(el.dataset.rv)<=upTo)el.classList.add('on');});}
+  function resetReveal(si){slides[si].querySelectorAll('[data-rv]').forEach(el=>el.classList.remove('on'));}
+
+  function goTo(n,showAll){
+    if(n<0||n>=N)return;
+    slides[cur].classList.remove('active');
+    cur=n;rev=0;
+    resetReveal(cur);
+    slides[cur].classList.add('active');
+    if(showAll||mode==='review'){rev=REVEAL_MAX[cur];revealItems(cur,rev);}
+    updateHUD();updateMenuActive();
+  }
+
+  function advance(){
+    if(mode==='present'){
+      if(rev<REVEAL_MAX[cur]){rev++;revealItems(cur,rev);updateHUD();}
+      else if(cur<N-1)goTo(cur+1,false);
+    }else{if(cur<N-1)goTo(cur+1,true);}
+  }
+
+  function retreat(){
+    if(mode==='present'){
+      if(rev>0){rev--;slides[cur].querySelectorAll('[data-rv]').forEach(el=>{if(parseInt(el.dataset.rv)>rev)el.classList.remove('on');});updateHUD();}
+      else if(cur>0){goTo(cur-1,false);rev=REVEAL_MAX[cur];revealItems(cur,rev);updateHUD();}
+    }else{if(cur>0)goTo(cur-1,true);}
+  }
+
+  function jumpTo(n){goTo(n,mode==='review');}
+
+  function toggleMode(e){
+    e.stopPropagation();
+    mode=mode==='review'?'present':'review';
+    const btn=document.getElementById('btn-mode');
+    if(mode==='present'){btn.innerHTML='&#9633; Show All';btn.classList.add('animating');resetReveal(cur);rev=0;updateHUD();}
+    else{btn.innerHTML='&#9654; Walk Through';btn.classList.remove('animating');rev=REVEAL_MAX[cur];revealItems(cur,rev);updateHUD();}
+  }
+
+  function navFwd(e){e.stopPropagation();advance();}
+  function navBack(e){e.stopPropagation();retreat();}
+
+  function updateHUD(){
+    document.getElementById('prog').style.width=((cur+1)/N*100)+'%';
+    document.getElementById('nav-lbl').textContent=String(cur+1).padStart(2,'0')+' / '+String(N).padStart(2,'0');
+    document.getElementById('btn-prev').disabled=(cur===0&&(mode==='review'||rev===0));
+    document.getElementById('btn-next').disabled=(cur===N-1&&(mode==='review'||rev===REVEAL_MAX[cur]));
+  }
+
+  function updateMenuActive(){document.querySelectorAll('.sm-item').forEach((el,i)=>el.classList.toggle('active-slide',i===cur));}
+
+  document.addEventListener('keydown',e=>{
+    if(document.getElementById('gate'))return;
+    if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();advance();}
+    if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();retreat();}
+  });
+  document.getElementById('pres').addEventListener('click',()=>{if(document.getElementById('gate'))return;advance();});
+
+  updateHUD();updateMenuActive();
+</script>
+</body>
+</html>
