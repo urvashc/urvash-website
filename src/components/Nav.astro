@@ -122,3 +122,8 @@ const { current } = Astro.props;
     .nav-logo { padding-left: 0; }
   }
 </style>
+<script>
+  document.getElementById('js-ask-btn')?.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('chat:open', { detail: { seed: '' } }));
+  });
+</script>

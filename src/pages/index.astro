@@ -3,7 +3,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Gutter from '../components/Gutter.astro';
 import SectionBar from '../components/SectionBar.astro';
-import Chatbot from '../components/Chatbot';
+import ChatRoot from '../components/ChatRoot';
 import '../styles/global.css';
 ---
 
@@ -16,6 +16,9 @@ import '../styles/global.css';
   </head>
   <body>
     <Nav />
+
+    <!-- Global chat drawer — listens for chat:open events from Nav + CTAs -->
+    <ChatRoot client:load />
 
     <!-- ── HERO ────────────────────────────────────────────────────── -->
     <section class="hero">
@@ -30,7 +33,11 @@ import '../styles/global.css';
             Not a PM who delegates technical decisions. Someone who reads the schema, challenges the architecture, and stays accountable to what ships.
           </p>
           <div class="fade-up" style="animation-delay:0.21s">
-            <Chatbot client:load />
+            <!-- Hero trigger — fires the global drawer -->
+            <button id="hero-ask-btn" class="hero-ask-btn" aria-label="Open chat">
+              <span class="hero-ask-line"></span>
+              Ask me anything
+            </button>
           </div>
         </div>
       </Gutter>
@@ -115,6 +122,15 @@ import '../styles/global.css';
       </Gutter>
     </section>
 
+    <!-- ── POST-WORK CHATBOT CTA ───────────────────────────────────── -->
+    <section class="pwc-section">
+      <Gutter label="ask" borderBottom={false}>
+        <button id="work-ask-btn" class="pwc-btn" aria-label="Open chat about case studies">
+          Read the case studies. Interrogate me on them. →
+        </button>
+      </Gutter>
+    </section>
+
     <!-- ── PERSON ────────────────────────────────────────────────────── -->
     <SectionBar label="THE PERSON" link={{ href: "/about", text: "About" }} />
     <section class="ps-section">
@@ -146,6 +162,21 @@ import '../styles/global.css';
     </section>
 
     <Footer />
+
+    <!-- ── Event wiring ─────────────────────────────────────────────── -->
+    <script>
+      // Hero trigger — no seed, just open
+      document.getElementById('hero-ask-btn')?.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('chat:open', { detail: { seed: '' } }));
+      });
+
+      // Post-work CTA — pre-seeds the input
+      document.getElementById('work-ask-btn')?.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('chat:open', {
+          detail: { seed: 'Walk me through your case studies.' },
+        }));
+      });
+    </script>
   </body>
 </html>
 
@@ -196,6 +227,33 @@ import '../styles/global.css';
     color: var(--ink-3);
     max-width: 420px;
     margin: 0 0 40px;
+  }
+
+  /* Hero ask button — matches old Chatbot trigger style */
+  .hero-ask-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    transition: color 0.15s;
+  }
+
+  .hero-ask-btn:hover { color: var(--ink); }
+
+  .hero-ask-line {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: currentColor;
+    flex-shrink: 0;
   }
 
   /* ── SUPERPOWER STRIP ─────────────────────────────────────────── */
@@ -317,6 +375,30 @@ import '../styles/global.css';
     color: var(--ink-3);
     letter-spacing: 0.04em;
   }
+
+  /* ── POST-WORK CTA ────────────────────────────────────────────── */
+  .pwc-section {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .pwc-btn {
+    display: block;
+    background: none;
+    border: none;
+    padding: 40px 0;
+    cursor: pointer;
+    font-family: var(--serif);
+    font-size: clamp(18px, 2.2vw, 26px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-2);
+    text-align: left;
+    transition: color 0.15s;
+    width: 100%;
+  }
+
+  .pwc-btn:hover { color: var(--ink); }
 
   /* ── PERSON ───────────────────────────────────────────────────── */
   .ps-section {
@@ -441,5 +523,12 @@ import '../styles/global.css';
       gap: 16px;
     }
     .wi-metric { text-align: left; }
+
+    .ps-section {
+      grid-template-columns: 1fr;
+    }
+    .ps-g { display: none; }
+    .ps-l { border-right: none; padding: 28px 20px; }
+    .ps-r { padding: 0 20px 28px; }
   }
 </style>
