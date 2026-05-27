@@ -1,0 +1,245 @@
+---
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Gutter from '../../components/Gutter.astro';
+import SectionBar from '../../components/SectionBar.astro';
+import ChatRoot from '../../components/ChatRoot';
+import '../../styles/global.css';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Work — Urvash Chheda</title>
+    <meta name="description" content="Three case studies in data infrastructure, ML platforms, and enterprise analytics." />
+  </head>
+  <body>
+    <Nav current="work" />
+
+    <ChatRoot client:load />
+
+    <!-- ── PAGE HEADER ───────────────────────────────────────────────── -->
+    <section class="work-header">
+      <Gutter label="work" borderBottom={false}>
+        <div class="wh-content">
+          <p class="wh-eyebrow fade-up" style="animation-delay:0s">CASE STUDIES</p>
+          <h1 class="wh-h1 fade-up" style="animation-delay:0.07s">
+            Three things I built.<br>
+            <em>What I actually learned.</em>
+          </h1>
+        </div>
+      </Gutter>
+    </section>
+
+    <!-- ── CASE STUDY ROWS ───────────────────────────────────────────── -->
+    <SectionBar label="SELECTED WORK" />
+    <section class="work-list-section">
+      <Gutter label="cases" borderBottom={true}>
+        <div class="wl-list">
+
+          <div class="wl-row fade-up" style="animation-delay:0.14s">
+            <div class="wl-meta">
+              <span class="wl-year">2023–24</span>
+              <span class="wl-tag">ML Platform · Later</span>
+            </div>
+            <h3 class="wl-title">Insights Service</h3>
+            <div class="wl-metrics">
+              <span class="wl-metric">4× faster queries</span>
+              <span class="wl-sep">·</span>
+              <span class="wl-metric">90% cost reduction</span>
+            </div>
+          </div>
+
+          <div class="wl-row wl-row-border fade-up" style="animation-delay:0.21s">
+            <div class="wl-meta">
+              <span class="wl-year">2022–23</span>
+              <span class="wl-tag">Enterprise Analytics · Later</span>
+            </div>
+            <h3 class="wl-title">Later 360</h3>
+            <div class="wl-metrics">
+              <span class="wl-metric">4 enterprise clients</span>
+              <span class="wl-sep">·</span>
+              <span class="wl-metric">2× faster than custom</span>
+            </div>
+          </div>
+
+          <div class="wl-row wl-row-border fade-up" style="animation-delay:0.28s">
+            <div class="wl-meta">
+              <span class="wl-year">2020–22</span>
+              <span class="wl-tag">Platform Product · Aptean</span>
+            </div>
+            <h3 class="wl-title">Embedded Analytics Platform</h3>
+            <div class="wl-metrics">
+              <span class="wl-metric">$80M ARR portfolio</span>
+              <span class="wl-sep">·</span>
+              <span class="wl-metric">6 products integrated</span>
+            </div>
+          </div>
+
+        </div>
+      </Gutter>
+    </section>
+
+    <!-- ── POST-WORK CHATBOT CTA ─────────────────────────────────────── -->
+    <section class="pwc-section">
+      <Gutter label="ask" borderBottom={false}>
+        <button id="work-ask-btn" class="pwc-btn" aria-label="Open chat about case studies">
+          Read the case studies. Interrogate me on them. →
+        </button>
+      </Gutter>
+    </section>
+
+    <Footer />
+
+    <script>
+      document.getElementById('work-ask-btn')?.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('chat:open', {
+          detail: { seed: 'Walk me through your case studies.' },
+        }));
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    opacity: 0;
+    animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  /* ── PAGE HEADER ───────────────────────────────────────────────── */
+  .work-header {
+    padding-top: 120px;
+    padding-bottom: 80px;
+  }
+
+  .wh-content { max-width: 640px; }
+
+  .wh-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin: 0 0 24px;
+  }
+
+  .wh-h1 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .wh-h1 em {
+    color: var(--ink-2);
+    font-style: italic;
+  }
+
+  /* ── CASE STUDY LIST ───────────────────────────────────────────── */
+  .wl-list {
+    width: 100%;
+    border-top: 1px solid var(--rule);
+  }
+
+  .wl-row {
+    display: grid;
+    grid-template-columns: 130px 1fr auto;
+    gap: 28px;
+    padding: 40px 0;
+    align-items: center;
+  }
+
+  .wl-row-border {
+    border-top: 1px solid var(--rule);
+  }
+
+  .wl-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 2px;
+  }
+
+  .wl-year {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  .wl-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.4;
+  }
+
+  .wl-title {
+    font-family: var(--serif);
+    font-size: clamp(22px, 2.5vw, 30px);
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .wl-metrics {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .wl-metric {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  .wl-sep {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-4);
+  }
+
+  /* ── POST-WORK CTA ─────────────────────────────────────────────── */
+  .pwc-section {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .pwc-btn {
+    display: block;
+    background: none;
+    border: none;
+    padding: 40px 0;
+    cursor: pointer;
+    font-family: var(--serif);
+    font-size: clamp(18px, 2.2vw, 26px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-2);
+    text-align: left;
+    transition: color 0.15s;
+    width: 100%;
+  }
+
+  .pwc-btn:hover { color: var(--ink); }
+
+  /* ── MOBILE ────────────────────────────────────────────────────── */
+  @media (max-width: 780px) {
+    .wl-row {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .wl-metrics {
+      flex-wrap: wrap;
+    }
+  }
+</style>
