@@ -10,12 +10,13 @@ interface Props {
   period: string;
   tag: string;
   title: string;
+  description?: string;
   metrics: Array<{ value: string; label: string }>;
   honestBlock: { label: string; body: string; variant: 'red' | 'grey' };
   pills: string[];
 }
 
-const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
+const { period, tag, title, description, metrics, honestBlock, pills } = Astro.props;
 ---
 
 <html lang="en">
@@ -23,6 +24,7 @@ const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} — Urvash Chheda</title>
+    {description && <meta name="description" content={description} />}
   </head>
   <body>
     <Nav current="work" />
@@ -44,7 +46,7 @@ const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
     <!-- METRICS -->
     <SectionBar label="IMPACT" />
     <section class="csm-section">
-      <Gutter label="metrics" borderBottom={true}>
+      <Gutter label="metrics" borderBottom={false}>
         <div class="csm-row">
           {metrics.map((m, i) => (
             <div class={`csm-block${i > 0 ? ' csm-block-border' : ''}`}>
@@ -87,14 +89,14 @@ const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
 
     <!-- SIDE PROJECTS (optional named slot) -->
     {Astro.slots.has('sideProjects') && (
-      <div>
+      <Fragment>
         <SectionBar label="ALSO" />
         <section class="cside-section">
           <Gutter label="side" borderBottom={false}>
             <slot name="sideProjects" />
           </Gutter>
         </section>
-      </div>
+      </Fragment>
     )}
 
     <Footer />
@@ -145,8 +147,6 @@ const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
   }
 
   /* ── METRICS ────────────────────────────────────────────────────── */
-  .csm-section { }
-
   .csm-row {
     display: flex;
     align-items: flex-start;
@@ -183,8 +183,6 @@ const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
   }
 
   /* ── BODY ───────────────────────────────────────────────────────── */
-  .csb-section { }
-
   .csb-content {
     max-width: 640px;
     padding: 48px 0;
