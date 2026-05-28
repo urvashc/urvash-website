@@ -89,7 +89,7 @@ const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
     {Astro.slots.has('sideProjects') && (
       <div>
         <SectionBar label="ALSO" />
-        <section class="css-section">
+        <section class="cside-section">
           <Gutter label="side" borderBottom={false}>
             <slot name="sideProjects" />
           </Gutter>
@@ -145,7 +145,7 @@ const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
   }
 
   /* ── METRICS ────────────────────────────────────────────────────── */
-  .csm-section { border-top: 1px solid var(--rule); }
+  .csm-section { }
 
   .csm-row {
     display: flex;
@@ -183,7 +183,7 @@ const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
   }
 
   /* ── BODY ───────────────────────────────────────────────────────── */
-  .csb-section { border-top: 1px solid var(--rule); }
+  .csb-section { }
 
   .csb-content {
     max-width: 640px;
@@ -249,7 +249,7 @@ const { period, tag, title, metrics, honestBlock, pills } = Astro.props;
   }
 
   /* ── SIDE PROJECTS ──────────────────────────────────────────────── */
-  .css-section { padding: 48px 0; }
+  .cside-section { padding: 48px 0; }
 
   /* ── MOBILE ─────────────────────────────────────────────────────── */
   @media (max-width: 780px) {
