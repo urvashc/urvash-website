@@ -3,6 +3,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import SectionBar from '../components/SectionBar.astro';
 import ChatRoot from '../components/ChatRoot';
+import SEOHead from '../components/SEOHead.astro';
 import '../styles/global.css';
 ---
 
@@ -12,9 +13,16 @@ import '../styles/global.css';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>About — Urvash Chheda</title>
     <meta name="description" content="Senior Technical PM. 12 years building the data infrastructure that product ambition runs on." />
+    <SEOHead
+      title="About — Urvash Chheda"
+      description="Senior Technical PM. 12 years building the data infrastructure that product ambition runs on."
+    />
   </head>
   <body>
     <Nav />
+    <ChatRoot client:load />
+
+    <main id="main-content">
     <section class="pg-header">
       <div class="pg-g"></div>
       <div class="pg-hero-c">
@@ -84,168 +92,9 @@ import '../styles/global.css';
         </div>
       </div>
     </section>
-    <Footer />
-    <ChatRoot client:load />
-  </body>
-</html>
+    </main>
 
-<style>
-  .pg-header{display:grid;grid-template-columns:var(--gutter) 1fr;border-bottom:1px solid var(--rule);max-width:1280px;margin:0 auto;padding-top:100px}
-  .pg-g{border-right:1px solid var(--rule)}
-  .pg-hero-c{padding:48px 52px 52px}
-  .pg-ew{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-3);margin:0 0 20px}
-  .pg-h1{font-family:var(--serif);font-size:clamp(32px,4.5vw,52px);font-weight:400;line-height:1.15;color:var(--ink);margin:0}
-  .pg-h1 em{font-style:italic;color:var(--ink-2)}
-  .about-layout{display:grid;grid-template-columns:var(--gutter) 280px 1fr;border-bottom:1px solid var(--rule);max-width:1280px;margin:0 auto}
-  .al-g{border-right:1px solid var(--rule)}
-  .al-left{padding:40px 32px 48px;border-right:1px solid var(--rule)}
-  .al-photo{width:100%;aspect-ratio:4/5;background:var(--surface-3,#eeecea);display:flex;align-items:center;justify-content:center;margin-bottom:28px;overflow:hidden}
-  .al-initials{font-family:var(--serif);font-size:36px;font-style:italic;color:var(--ink-3);letter-spacing:-0.02em}
-  .al-quick{display:flex;flex-direction:column}
-  .al-qi{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-bottom:1px solid var(--rule)}
-  .al-qi:last-child{border-bottom:none}
-  .al-qk{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3)}
-  .al-qv{font-family:var(--sans);font-size:13px;line-height:1.5;color:var(--ink-2)}
-  .al-link{color:var(--red);text-decoration:none;transition:opacity 0.13s}
-  .al-link:hover{opacity:0.7}
-  .al-right{padding:40px 52px 52px}
-  .al-section-label{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-3);margin-bottom:20px}
-  .al-para{font-family:var(--sans);font-size:15px;line-height:1.8;color:var(--ink-2);margin:0 0 20px;max-width:620px}
-  .al-para strong{color:var(--ink);font-weight:500}
-  .al-human{margin:28px 0 0;padding:20px 24px;border-left:2px solid var(--surface-3,#eeecea);background:var(--surface-2,#f4f4f1);max-width:620px}
-  .al-human-text{font-family:var(--serif);font-size:16px;font-style:italic;line-height:1.7;color:var(--ink-2);margin:0}
-  .tools-layout{display:grid;grid-template-columns:var(--gutter) 1fr;border-bottom:1px solid var(--rule);max-width:1280px;margin:0 auto}
-  .tl-g{border-right:1px solid var(--rule)}
-  .tl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:40px 52px}
-  .tl-item{padding:0 32px 0 0}
-  .tl-item:not(:first-child){padding-left:32px;border-left:1px solid var(--rule)}
-  .tl-name{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink);margin-bottom:10px}
-  .tl-why{font-family:var(--sans);font-size:13px;line-height:1.7;color:var(--ink-3)}
-  .principles-layout{display:grid;grid-template-columns:var(--gutter) 1fr;border-bottom:1px solid var(--rule);max-width:1280px;margin:0 auto}
-  .pr-g{border-right:1px solid var(--rule)}
-  .pr-grid{display:grid;grid-template-columns:repeat(3,1fr);padding:40px 52px;gap:0}
-  .pr-item{padding:0 40px 0 0}
-  .pr-item:not(:first-child){padding-left:40px;border-left:1px solid var(--rule)}
-  .pr-n{font-family:var(--mono);font-size:36px;font-weight:300;color:var(--rule);line-height:1;margin-bottom:16px;letter-spacing:-0.02em}
-  .pr-title{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);margin-bottom:12px;line-height:1.3}
-  .pr-body{font-family:var(--sans);font-size:13px;line-height:1.75;color:var(--ink-3)}
-  .soc-layout{display:grid;grid-template-columns:var(--gutter) 1fr;border-bottom:1px solid var(--rule);max-width:1280px;margin:0 auto}
-  .soc-g{border-right:1px solid var(--rule)}
-  .soc-grid{display:grid;grid-template-columns:1fr 1fr;padding:40px 52px;gap:52px}
-  .soc-item{display:flex;flex-direction:column;gap:16px}
-  .soc-q{font-family:var(--serif);font-size:16px;font-style:italic;line-height:1.75;color:var(--ink-2);margin:0}
-  .soc-attr{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.04em}
-  .cta-wrap{display:grid;grid-template-columns:var(--gutter) 1fr;border-bottom:1px solid var(--rule);max-width:1280px;margin:0 auto}
-  .cta-g{border-right:1px solid var(--rule)}
-  .cta-inner{padding:64px 52px 72px;display:flex;align-items:center;gap:40px;flex-wrap:wrap}
-  .cta-headline{font-family:var(--serif);font-size:clamp(28px,3.5vw,42px);font-weight:400;color:var(--ink);line-height:1;margin:0}
-  .cta-btns{display:flex;gap:12px;flex-wrap:wrap}
-  .cta-btn{font-family:var(--sans);font-size:14px;letter-spacing:0.02em;background:var(--ink);color:#fff;border:1px solid var(--ink);padding:10px 20px;text-decoration:none;transition:opacity 0.15s ease}
-  .cta-btn:hover{opacity:0.75}
-  .cta-btn--outline{background:transparent;color:var(--ink)}
-  @media(max-width:780px){
-    .pg-header,.about-layout{grid-template-columns:1fr}
-    .pg-g,.al-g,.al-left{display:none}
-    .pg-hero-c{padding:80px 20px 36px}
-    .al-right{padding:32px 20px}
-    .tools-layout,.principles-layout,.soc-layout,.cta-wrap{grid-template-columns:1fr}
-    .tl-g,.pr-g,.soc-g,.cta-g{display:none}
-    .tl-grid{grid-template-columns:1fr;padding:32px 20px;gap:28px}
-    .tl-item,.tl-item:not(:first-child){padding:0;border-left:none;border-top:1px solid var(--rule);padding-top:20px}
-    .tl-item:first-child{border-top:none;padding-top:0}
-    .pr-grid{grid-template-columns:1fr;padding:32px 20px;gap:32px}
-    .pr-item,.pr-item:not(:first-child){padding:0;border-left:none}
-    .soc-grid{grid-template-columns:1fr;padding:32px 20px;gap:36px}
-    .cta-inner{padding:48px 20px;flex-direction:column;align-items:flex-start}
-  }
-</style>---
-import Nav from '../../components/Nav.astro';
-import Footer from '../../components/Footer.astro';
-import SectionBar from '../../components/SectionBar.astro';
-import ChatRoot from '../../components/ChatRoot';
-import '../../styles/global.css';
----
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>About — Urvash Chheda</title>
-    <meta name="description" content="Senior Technical PM. 12 years building the data infrastructure that product ambition runs on." />
-  </head>
-  <body>
-    <Nav />
-    <section class="pg-header">
-      <div class="pg-g"></div>
-      <div class="pg-hero-c">
-        <p class="pg-ew">About</p>
-        <h1 class="pg-h1">The longer version,<br /><em>for people who want it.</em></h1>
-      </div>
-    </section>
-    <div class="about-layout">
-      <div class="al-g"></div>
-      <div class="al-left">
-        <div class="al-photo"><span class="al-initials">UC</span></div>
-        <div class="al-quick">
-          <div class="al-qi"><span class="al-qk">Based</span><span class="al-qv">Vancouver, BC</span></div>
-          <div class="al-qi"><span class="al-qk">Currently</span><span class="al-qv">Later — Analytics &amp; Data Engineering</span></div>
-          <div class="al-qi"><span class="al-qk">Scope</span><span class="al-qv">2 teams · ~6 engineers · Analytics + Data Engineering ownership</span></div>
-          <div class="al-qi"><span class="al-qk">Before</span><span class="al-qv">Aptean · earlier roles</span></div>
-          <div class="al-qi"><span class="al-qk">Education</span><span class="al-qv">B.Eng — placeholder</span></div>
-          <div class="al-qi"><span class="al-qk">LinkedIn</span><span class="al-qv"><a href="https://linkedin.com/in/urvashc" target="_blank" rel="noopener noreferrer" class="al-link">linkedin.com/in/urvashc →</a></span></div>
-          <div class="al-qi"><span class="al-qk">Email</span><span class="al-qv"><a href="mailto:urvash@hey.com" class="al-link">urvash@hey.com</a></span></div>
-        </div>
-      </div>
-      <div class="al-right">
-        <div class="al-section-label">Background</div>
-        <p class="al-para">I've spent 12 years at companies where the data infrastructure was always slightly behind what the product needed it to be. That specific tension — <strong>product ambition outpacing its own foundation</strong> — is the problem I keep getting hired to solve. At this point I think I just find it interesting.</p>
-        <p class="al-para">My technical depth is real but specific. I can read a dbt model, trace a dependency graph, write SQL well enough to validate a data model from the query layer, review an API contract and spot where it'll break at scale. What I do with that is <strong>make the technical conversation faster and the decisions cheaper</strong> — without anyone needing to translate in the room.</p>
-        <div class="al-human"><p class="al-human-text">[Personal detail TBD — replace before launch]</p></div>
-        <div class="al-section-label" style="margin-top: 36px">Outside of work</div>
-        <p class="al-para">I build personal tools as a way of thinking. FinTrack started as a weekend project to understand what it actually feels like to ship with an LLM at the core — it's now something I use every day. I've also been building an AI-powered second brain in Obsidian that connects my work across every project. I take it more seriously than I probably should, and it has become genuinely useful.</p>
-        <p class="al-para">I've been documenting decisions as I make them — in writing, with trade-offs, with what I'd do differently — for eight years. It turns out that's more useful than I expected. The pattern recognition starts working when the archive gets long enough.</p>
-      </div>
-    </div>
-    <SectionBar label="TOOLS I ACTUALLY USE" />
-    <div class="tools-layout">
-      <div class="tl-g"></div>
-      <div class="tl-grid">
-        <div class="tl-item"><div class="tl-name">Claude</div><div class="tl-why">Because the API call is faster than a meeting, and the hard part is the eval layer — figuring out when the model is confidently wrong.</div></div>
-        <div class="tl-item"><div class="tl-name">Supabase</div><div class="tl-why">Every schema decision is a product decision. I want to be the one making it, not approving it after the fact.</div></div>
-        <div class="tl-item"><div class="tl-name">Obsidian</div><div class="tl-why">Running decision log across 8 years of product calls. Not a productivity trick — the pattern recognition starts working when the archive gets long enough.</div></div>
-        <div class="tl-item"><div class="tl-name">dbt + BigQuery</div><div class="tl-why">The stack I build on, not just adjacent to. If I'm speccing a data product and I haven't touched the model, the spec is incomplete.</div></div>
-        <div class="tl-item"><div class="tl-name">Linear</div><div class="tl-why">I keep an explicit dropped-items list every sprint. A dropped item that isn't documented is a commitment that doesn't exist.</div></div>
-      </div>
-    </div>
-    <SectionBar label="WORKING PRINCIPLES" />
-    <div class="principles-layout">
-      <div class="pr-g"></div>
-      <div class="pr-grid">
-        <div class="pr-item"><div class="pr-n">01</div><div class="pr-title">Say no before it gets expensive</div><div class="pr-body">The cost of a wrong decision compounds with time. Being wrong fast and cheap beats being right slowly and expensively. That requires willingness to kill work I personally championed.</div></div>
-        <div class="pr-item"><div class="pr-n">02</div><div class="pr-title">Read the actual data</div><div class="pr-body">I don't trust dashboards I haven't traced back to a source. Decisions about data products need to be made from raw data, not summaries of summaries. The signal lives in the table.</div></div>
-        <div class="pr-item"><div class="pr-n">03</div><div class="pr-title">The architecture is the roadmap</div><div class="pr-body">Most product constraints aren't strategic — they're structural. Understanding the data model tells you more about what's actually possible than any discovery session.</div></div>
-      </div>
-    </div>
-    <SectionBar label="WHAT COLLEAGUES SAY" />
-    <div class="soc-layout">
-      <div class="soc-g"></div>
-      <div class="soc-grid">
-        <div class="soc-item"><p class="soc-q">"[Real recommendation — pull from LinkedIn. From an engineer or CTO-level. Names a decision or moment, not a trait.]"</p><div class="soc-attr"><strong>[Name, Title]</strong> · [Company]</div></div>
-        <div class="soc-item"><p class="soc-q">"[Second recommendation — different voice. One about how you think, one about how you operate.]"</p><div class="soc-attr"><strong>[Name, Title]</strong> · [Company]</div></div>
-      </div>
-    </div>
-    <section class="cta-wrap">
-      <div class="cta-g"></div>
-      <div class="cta-inner">
-        <p class="cta-headline">Want to talk?</p>
-        <div class="cta-btns">
-          <a href="mailto:urvash@hey.com" class="cta-btn">urvash@hey.com</a>
-          <a href="https://linkedin.com/in/urvashc" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn--outline">LinkedIn →</a>
-        </div>
-      </div>
-    </section>
     <Footer />
-    <ChatRoot client:load />
   </body>
 </html>
 
