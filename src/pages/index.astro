@@ -4,6 +4,7 @@ import Footer from '../components/Footer.astro';
 import Gutter from '../components/Gutter.astro';
 import SectionBar from '../components/SectionBar.astro';
 import ChatRoot from '../components/ChatRoot';
+import SEOHead from '../components/SEOHead.astro';
 import '../styles/global.css';
 ---
 
@@ -13,6 +14,7 @@ import '../styles/global.css';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Urvash Chheda — Technical Product Manager</title>
     <meta name="description" content="Senior Technical PM building the infrastructure modern AI runs on. 12 years across data platforms, ML pipelines, and 0→1 product builds." />
+    <SEOHead title="Urvash Chheda — Technical Product Manager" description="Senior Technical PM building the infrastructure modern AI runs on. 12 years across data platforms, ML pipelines, and 0→1 product builds." />
   </head>
   <body>
     <Nav />
@@ -20,6 +22,7 @@ import '../styles/global.css';
     <!-- Global chat drawer — listens for chat:open events from Nav + CTAs -->
     <ChatRoot client:load />
 
+    <main id="main-content">
     <!-- ── HERO ────────────────────────────────────────────────────── -->
     <section class="hero">
       <Gutter label="intro" borderBottom={false}>
@@ -160,6 +163,8 @@ import '../styles/global.css';
         </div>
       </Gutter>
     </section>
+
+    </main>
 
     <Footer />
 

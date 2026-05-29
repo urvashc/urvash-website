@@ -4,6 +4,7 @@ import Footer from '../../components/Footer.astro';
 import SectionBar from '../../components/SectionBar.astro';
 import Gutter from '../../components/Gutter.astro';
 import ChatRoot from '../../components/ChatRoot.tsx';
+import SEOHead from '../../components/SEOHead.astro';
 ---
 
 <!DOCTYPE html>
@@ -13,11 +14,13 @@ import ChatRoot from '../../components/ChatRoot.tsx';
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Work — Urvash Chheda</title>
   <meta name="description" content="Three case studies in data infrastructure, ML platforms, and enterprise analytics.">
+  <SEOHead title="Work — Urvash Chheda" description="Three case studies in data infrastructure, ML platforms, and enterprise analytics." />
 </head>
 <body>
   <Nav current="work" />
   <ChatRoot client:load />
 
+  <main id="main-content">
   <!-- ── PAGE HEADER ─────────────────────────────────────────────── -->
   <section class="work-header">
     <Gutter label="work">
@@ -36,7 +39,7 @@ import ChatRoot from '../../components/ChatRoot.tsx';
   <section class="work-list-section">
     <Gutter label="cases" class="border-b">
       <div class="wl-list">
-        <div class="wl-row fade-up" style="animation-delay: 0.14s">
+        <a href="/work/insights-service" class="wl-row fade-up" style="animation-delay: 0.14s; text-decoration:none; color:inherit; display:grid;">
           <div class="wl-meta">
             <span class="wl-year">2023–24</span>
             <span class="wl-tag">ML Platform · Later</span>
@@ -47,8 +50,8 @@ import ChatRoot from '../../components/ChatRoot.tsx';
             <span class="wl-sep">·</span>
             <span class="wl-metric">90% cost reduction</span>
           </div>
-        </div>
-        <div class="wl-row wl-row-border fade-up" style="animation-delay: 0.21s">
+        </a>
+        <a href="/work/later-360" class="wl-row wl-row-border fade-up" style="animation-delay: 0.21s; text-decoration:none; color:inherit; display:grid;">
           <div class="wl-meta">
             <span class="wl-year">2022–23</span>
             <span class="wl-tag">Enterprise Analytics · Later</span>
@@ -59,8 +62,8 @@ import ChatRoot from '../../components/ChatRoot.tsx';
             <span class="wl-sep">·</span>
             <span class="wl-metric">2× faster than custom</span>
           </div>
-        </div>
-        <div class="wl-row wl-row-border fade-up" style="animation-delay: 0.28s">
+        </a>
+        <a href="/work/aptean" class="wl-row wl-row-border fade-up" style="animation-delay: 0.28s; text-decoration:none; color:inherit; display:grid;">
           <div class="wl-meta">
             <span class="wl-year">2020–22</span>
             <span class="wl-tag">Platform Product · Aptean</span>
@@ -71,7 +74,7 @@ import ChatRoot from '../../components/ChatRoot.tsx';
             <span class="wl-sep">·</span>
             <span class="wl-metric">6 products integrated</span>
           </div>
-        </div>
+        </a>
       </div>
     </Gutter>
   </section>
@@ -117,6 +120,8 @@ import ChatRoot from '../../components/ChatRoot.tsx';
       </button>
     </Gutter>
   </section>
+
+  </main>
 
   <Footer />
 </body>

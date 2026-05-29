@@ -32,3 +32,22 @@ body {
 a {
   text-decoration: none;
 }
+
+/* skip nav */
+.skip-nav { position: absolute; top: -100%; left: 16px; z-index: 9999; padding: 8px 16px; background: var(--ink); color: var(--surface); font-family: var(--mono); font-size: 12px; text-decoration: none; }
+.skip-nav:focus { top: 0; }
+/* focus visible */
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+/* about mobile */
+@media (max-width: 780px) {
+  .about-layout { grid-template-columns: 1fr !important; }
+  .al-g { display: none !important; }
+  .al-left { padding: 32px 20px 0; border-right: none !important; }
+  .al-right { padding: 24px 20px 48px; }
+  .tools-layout, .principles-layout, .soc-layout { grid-template-columns: 1fr !important; }
+  .tl-g, .pr-g, .soc-g { display: none !important; }
+  .tl-grid, .pr-grid { padding: 0 20px 40px; }
+  .soc-grid { padding: 0 20px 40px; grid-template-columns: 1fr !important; }
+  .hero-content { padding: 100px 20px 60px !important; }
+  .cta-inner { padding: 40px 20px !important; }
+}

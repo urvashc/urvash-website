@@ -4,6 +4,7 @@ import Footer from '../components/Footer.astro';
 import Gutter from '../components/Gutter.astro';
 import SectionBar from '../components/SectionBar.astro';
 import ChatRoot from '../components/ChatRoot';
+import SEOHead from '../components/SEOHead.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -16,7 +17,7 @@ interface Props {
   pills: string[];
 }
 
-const { period, tag, title, description, metrics, honestBlock, pills } = Astro.props;
+const { period, tag, title, description = 'Senior Technical PM — case study.', metrics, honestBlock, pills } = Astro.props;
 ---
 
 <html lang="en">
@@ -25,6 +26,7 @@ const { period, tag, title, description, metrics, honestBlock, pills } = Astro.p
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} — Urvash Chheda</title>
     {description && <meta name="description" content={description} />}
+    <SEOHead title={title} description={description} />
   </head>
   <body>
     <Nav current="work" />
