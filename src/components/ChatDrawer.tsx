@@ -134,7 +134,9 @@ export default function ChatDrawer({ open, seed = '', onClose }: Props) {
               fontFamily: 'var(--mono)',
               fontSize: '13px',
               lineHeight: 1,
-              padding: '4px 6px',
+              padding: '12px 14px',
+              minWidth: '44px',
+              minHeight: '44px',
               transition: 'color 0.15s',
             }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--ink)')}
