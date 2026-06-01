@@ -26,22 +26,31 @@ import '../styles/global.css';
     <!-- ── HERO ────────────────────────────────────────────────────── -->
     <section class="hero">
       <Gutter label="intro" borderBottom={false}>
-        <div class="hero-content">
-          <p class="hero-eyebrow fade-up" style="animation-delay:0s">SENIOR TECHNICAL PRODUCT MANAGER</p>
-          <h1 class="hero-h1 fade-up" style="animation-delay:0.07s">
-            I build the foundations<br>
-            <em class="hero-modern">modern</em> <span class="hero-ai">AI</span> runs on.
-          </h1>
-          <p class="hero-deck fade-up" style="animation-delay:0.14s">
-            Not a PM who delegates technical decisions. Someone who reads the schema, challenges the architecture, and stays accountable to what ships.
-          </p>
-          <div class="fade-up" style="animation-delay:0.21s">
-            <!-- Hero trigger — fires the global drawer -->
-            <button id="hero-ask-btn" class="hero-ask-btn" aria-label="Open chat">
-              <span class="hero-ask-line"></span>
-              Ask me anything
-            </button>
+        <div class="hero-wrap">
+          <div class="hero-content">
+            <p class="hero-eyebrow fade-up" style="animation-delay:0s">SENIOR TECHNICAL PRODUCT MANAGER</p>
+            <h1 class="hero-h1 fade-up" style="animation-delay:0.07s">
+              I build the foundations<br>
+              <em class="hero-modern">modern</em> <span class="hero-ai">AI</span> runs on.
+            </h1>
+            <p class="hero-deck fade-up" style="animation-delay:0.14s">
+              Not a PM who delegates technical decisions. Someone who reads the schema, challenges the architecture, and stays accountable to what ships.
+            </p>
+            <div class="fade-up" style="animation-delay:0.21s">
+              <button id="hero-ask-btn" class="hero-ask-btn" aria-label="Open chat">
+                <span class="hero-dot"></span>
+                ask me anything
+              </button>
+            </div>
           </div>
+          <aside class="hero-teaser fade-up" style="animation-delay:0.28s" aria-label="Suggested questions">
+            <p class="ht-label">Try it</p>
+            <div class="ht-chips">
+              <button class="ht-chip" data-seed="Walk me through the Later 360 architecture decision">Walk me through the Later 360 architecture decision</button>
+              <button class="ht-chip" data-seed="Why DynamoDB over BigQuery for the ML serving layer?">Why DynamoDB over BigQuery for the ML serving layer?</button>
+              <button class="ht-chip" data-seed="What would you do differently on the Aptean platform?">What would you do differently on the Aptean platform?</button>
+            </div>
+          </aside>
         </div>
       </Gutter>
     </section>
@@ -156,6 +165,7 @@ import '../styles/global.css';
       <Gutter label="contact" borderBottom={false}>
         <div class="cta-inner">
           <p class="cta-headline">Want to talk?</p>
+          <p class="cta-avail">Always open to interesting conversations.</p>
           <div class="cta-btns">
             <a href="mailto:me@urvash.com" class="cta-btn">me@urvash.com</a>
             <a href="https://linkedin.com/in/urvashchheda" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn--outline">LinkedIn →</a>
@@ -173,6 +183,15 @@ import '../styles/global.css';
       // Hero trigger — no seed, just open
       document.getElementById('hero-ask-btn')?.addEventListener('click', () => {
         window.dispatchEvent(new CustomEvent('chat:open', { detail: { seed: '' } }));
+      });
+
+      // Hero teaser chips — pre-seed with the chip's question
+      document.querySelectorAll<HTMLButtonElement>('.ht-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.dispatchEvent(new CustomEvent('chat:open', {
+            detail: { seed: btn.dataset.seed ?? '' },
+          }));
+        });
       });
 
       // Post-work CTA — pre-seeds the input
@@ -202,7 +221,51 @@ import '../styles/global.css';
     padding-bottom: 80px;
   }
 
-  .hero-content { max-width: 680px; }
+  .hero-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 80px;
+    align-items: start;
+  }
+
+  .hero-content { max-width: 560px; }
+
+  /* ── HERO TEASER ──────────────────────────────────────────────── */
+  .hero-teaser {
+    border-left: 1px solid var(--rule);
+    padding-left: 40px;
+    padding-top: 6px;
+  }
+
+  .ht-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 18px;
+  }
+
+  .ht-chips {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ht-chip {
+    background: none;
+    border: none;
+    border-top: 1px solid var(--rule);
+    padding: 14px 0;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--ink-3);
+    text-align: left;
+    transition: color 0.15s;
+  }
+  .ht-chip:last-child { border-bottom: 1px solid var(--rule); }
+  .ht-chip:hover { color: var(--ink); }
 
   .hero-eyebrow {
     font-family: var(--mono);
@@ -234,30 +297,28 @@ import '../styles/global.css';
     margin: 0 0 40px;
   }
 
-  /* Hero ask button — matches old Chatbot trigger style */
   .hero-ask-btn {
     background: none;
-    border: none;
-    padding: 0;
+    border: 1px solid var(--rule);
+    padding: 11px 20px;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    transition: color 0.15s;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    transition: background 0.15s;
   }
+  .hero-ask-btn:hover { background: var(--surface-2); }
 
-  .hero-ask-btn:hover { color: var(--ink); }
-
-  .hero-ask-line {
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: currentColor;
+  .hero-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34,197,94,0.2);
     flex-shrink: 0;
   }
 
@@ -521,8 +582,23 @@ import '../styles/global.css';
     color: var(--ink);
   }
 
+  .cta-avail {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink-3);
+    font-style: italic;
+    margin: 0;
+    flex-basis: 100%;
+    width: 100%;
+  }
+
   /* ── MOBILE ────────────────────────────────────────────────────── */
   @media (max-width: 780px) {
+    .hero-wrap {
+      grid-template-columns: 1fr;
+    }
+    .hero-teaser { display: none; }
+
     .wi-row {
       grid-template-columns: 1fr;
       gap: 16px;
