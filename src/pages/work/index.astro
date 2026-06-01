@@ -3,7 +3,7 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import SectionBar from '../../components/SectionBar.astro';
 import Gutter from '../../components/Gutter.astro';
-import ChatRoot from '../../components/ChatRoot.tsx';
+import ChatRoot from '../../components/ChatRoot';
 import SEOHead from '../../components/SEOHead.astro';
 import '../../styles/global.css';
 ---
@@ -173,25 +173,6 @@ import '../../styles/global.css';
 .wl-metrics { display: flex; align-items: center; gap: 10px; }
 .wl-metric  { font-family: var(--sans); font-size: 13px; color: var(--ink-3); }
 .wl-sep     { font-family: var(--mono); font-size: 12px; color: var(--ink-4); }
-
-/* POST-WORK CTA */
-.pwc-section { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-.pwc-btn {
-  display: block;
-  background: none;
-  border: none;
-  padding: 40px 0;
-  cursor: pointer;
-  font-family: var(--serif);
-  font-size: clamp(18px, 2.2vw, 26px);
-  font-weight: 400;
-  font-style: italic;
-  color: var(--ink-2);
-  text-align: left;
-  transition: color 0.15s;
-  width: 100%;
-}
-.pwc-btn:hover { color: var(--ink); }
 
 /* SIDE PROJECTS */
 .sp-section { padding: 64px 0; }
