@@ -11,7 +11,7 @@ export default defineConfig({
   webServer: {
     command: 'npx astro dev --port 4321',
     url: 'http://localhost:4321',
-    reuseExistingServer: false,
+    reuseExistingServer: !!process.env.CI,
     timeout: 60_000,
   },
   projects: [
