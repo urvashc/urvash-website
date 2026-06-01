@@ -15,9 +15,10 @@ interface Props {
   metrics: Array<{ value: string; label: string }>;
   honestBlock: { label: string; body: string; variant: 'red' | 'grey' };
   pills: string[];
+  nextStudy?: { label: string; href: string };
 }
 
-const { period, tag, title, description = 'Senior Technical PM — case study.', metrics, honestBlock, pills } = Astro.props;
+const { period, tag, title, description = 'Senior Technical PM — case study.', metrics, honestBlock, pills, nextStudy } = Astro.props;
 ---
 
 <html lang="en">
@@ -49,9 +50,9 @@ const { period, tag, title, description = 'Senior Technical PM — case study.',
     <SectionBar label="IMPACT" />
     <section class="csm-section">
       <Gutter label="metrics" borderBottom={false}>
-        <div class="csm-row">
-          {metrics.map((m, i) => (
-            <div class={`csm-block${i > 0 ? ' csm-block-border' : ''}`}>
+        <div class="csm-grid">
+          {metrics.map((m) => (
+            <div class="csm-block">
               <span class="csm-value">{m.value}</span>
               <span class="csm-label">{m.label}</span>
             </div>
@@ -101,10 +102,13 @@ const { period, tag, title, description = 'Senior Technical PM — case study.',
       </Fragment>
     )}
 
-    <!-- BACK NAV -->
+    <!-- BACK / NEXT NAV -->
     <section class="csbk-section">
       <Gutter label="" borderBottom={false}>
-        <a href="/work" style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;display:block;padding:32px 0;">← All work</a>
+        <div class="csbk-row">
+          <a href="/work" class="csbk-link">← All work</a>
+          {nextStudy && <a href={nextStudy.href} class="csbk-link">{nextStudy.label} →</a>}
+        </div>
       </Gutter>
     </section>
 
@@ -115,8 +119,8 @@ const { period, tag, title, description = 'Senior Technical PM — case study.',
 <style>
   /* ── HEADER ─────────────────────────────────────────────────────── */
   .csh-section {
-    padding-top: 120px;
-    padding-bottom: 64px;
+    padding-top: 88px;
+    padding-bottom: 40px;
   }
 
   .csh-content { max-width: 720px; }
@@ -156,22 +160,28 @@ const { period, tag, title, description = 'Senior Technical PM — case study.',
   }
 
   /* ── METRICS ────────────────────────────────────────────────────── */
-  .csm-row {
-    display: flex;
-    align-items: flex-start;
-    padding: 48px 0;
+  .csm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 28px 0 36px;
   }
 
   .csm-block {
     display: flex;
     flex-direction: column;
-    padding-right: 40px;
+    padding: 20px 32px 20px 0;
+    border-bottom: 1px solid var(--rule);
   }
 
-  .csm-block-border {
-    padding-left: 40px;
+  .csm-block:nth-child(even) {
+    padding-left: 32px;
+    padding-right: 0;
     border-left: 1px solid var(--rule);
   }
+
+  /* Remove bottom border for last row (handles 2×2, 2×3, and odd counts) */
+  .csm-block:last-child { border-bottom: none; }
+  .csm-block:nth-last-child(2):nth-child(odd) { border-bottom: none; }
 
   .csm-value {
     font-family: var(--serif);
@@ -258,19 +268,30 @@ const { period, tag, title, description = 'Senior Technical PM — case study.',
   /* ── SIDE PROJECTS ──────────────────────────────────────────────── */
   .cside-section { padding: 48px 0; }
 
+  /* ── BACK / NEXT NAV ────────────────────────────────────────────── */
+  .csbk-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 0;
+  }
+  .csbk-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    text-decoration: none;
+    transition: color 0.14s;
+  }
+  .csbk-link:hover { color: var(--ink); }
+
   /* ── MOBILE ─────────────────────────────────────────────────────── */
   @media (max-width: 780px) {
-    .csh-section { padding-top: 80px; }
+    .csh-section { padding-top: 72px; }
 
-    .csm-row {
-      flex-direction: column;
-      gap: 28px;
-    }
-
-    .csm-block,
-    .csm-block-border {
-      padding: 0;
-      border-left: none;
-    }
+    .csm-grid { grid-template-columns: 1fr; }
+    .csm-block { border-bottom: 1px solid var(--rule); }
+    .csm-block:nth-child(even) { padding-left: 0; border-left: none; }
+    .csm-block:nth-last-child(2):nth-child(odd) { border-bottom: 1px solid var(--rule); }
+    .csm-block:last-child { border-bottom: none; }
   }
 </style>
