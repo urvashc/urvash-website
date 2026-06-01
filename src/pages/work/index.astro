@@ -58,9 +58,9 @@ import SEOHead from '../../components/SEOHead.astro';
           </div>
           <h2 class="wl-title">Later 360</h2>
           <div class="wl-metrics">
-            <span class="wl-metric">4 enterprise clients</span>
+            <span class="wl-metric">5 enterprise clients</span>
             <span class="wl-sep">·</span>
-            <span class="wl-metric">2× faster than custom</span>
+            <span class="wl-metric">60%+ SQL tickets reduced</span>
           </div>
         </a>
         <a href="/work/aptean" class="wl-row wl-row-border fade-up" style="animation-delay: 0.28s; text-decoration:none; color:inherit; display:grid;">
@@ -70,7 +70,7 @@ import SEOHead from '../../components/SEOHead.astro';
           </div>
           <h2 class="wl-title">Embedded Analytics Platform</h2>
           <div class="wl-metrics">
-            <span class="wl-metric">$80M ARR portfolio</span>
+            <span class="wl-metric">$80M+ ARR portfolio</span>
             <span class="wl-sep">·</span>
             <span class="wl-metric">10+ products integrated</span>
           </div>
@@ -109,15 +109,6 @@ import SEOHead from '../../components/SEOHead.astro';
         </div>
 
       </div>
-    </Gutter>
-  </section>
-
-  <!-- ── POST-WORK CHATBOT CTA ─────────────────────────────────────── -->
-  <section class="pwc-section">
-    <Gutter label="ask">
-      <button id="work-ask-btn" class="pwc-btn" aria-label="Open chat about case studies">
-        Read the case studies. Interrogate me on them. →
-      </button>
     </Gutter>
   </section>
 
@@ -275,8 +266,3 @@ import SEOHead from '../../components/SEOHead.astro';
 }
 </style>
 
-<script>
-  document.getElementById("work-ask-btn")?.addEventListener("click", () => {
-    window.dispatchEvent(new CustomEvent("chat:open", { detail: { seed: "Walk me through your case studies." } }));
-  });
-</script>
