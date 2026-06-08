@@ -32,6 +32,17 @@ a:hover { color: var(--accent); }
 /* Clear fixed footer on all pages */
 main { padding-bottom: 5rem; }
 
+/* ── Section label ─────────────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--text-dim);
+  letter-spacing: .12em;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid var(--accent);
+  padding-left: 0.75rem;
+}
+
 /* ── Curtain transition ─────────────────────────────────────────── */
 #curtain {
   position: fixed;
