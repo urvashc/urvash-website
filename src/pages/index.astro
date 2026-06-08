@@ -22,11 +22,12 @@ const description = 'AI Technical Product Manager building at the intersection o
     <section class="hero">
       <div class="hero-left">
         <h1 class="hero-name" id="hero-name">Urvash Chheda</h1>
-        <p class="hero-role">AI Technical Product Manager</p>
-        <p class="hero-tagline">I build the interface between human intent and machine capability.</p>
+        <p class="hero-role">Senior Technical Product Manager</p>
+        <p class="hero-tagline">I build the foundations modern AI runs on.</p>
+        <p class="hero-subtext">Not a PM who delegates technical decisions. Someone who reads the schema, challenges the architecture, and stays accountable to what ships.</p>
         <div class="hero-stats">
           <div class="stat-pill">
-            <span class="stat-num">7+</span>
+            <span class="stat-num">8+</span>
             <span class="stat-label">years experience</span>
           </div>
           <div class="stat-pill">
@@ -38,6 +39,10 @@ const description = 'AI Technical Product Manager building at the intersection o
             <span class="stat-label">companies</span>
           </div>
         </div>
+        <button class="hero-ask-btn" id="hero-ask-btn" aria-label="Ask me anything">
+          <span class="hero-ask-dot"></span>
+          <span>ask me anything</span>
+        </button>
       </div>
 
       <div class="hero-right">
@@ -58,31 +63,40 @@ const description = 'AI Technical Product Manager building at the intersection o
         <span class="s-bracket">[</span>01<span class="s-bracket">]</span> · SELECTED WORK
       </div>
       <div class="work-cards">
-        <a href="/work/mavrck" class="work-card">
-          <div class="card-tag">[AI · PRODUCT]</div>
-          <div class="card-title">Mavrck AI Influencer Matching</div>
-          <p class="card-desc">Reduced manual influencer vetting by 70% through semantic matching pipeline</p>
-          <div class="card-foot">2023 · Mavrck</div>
-        </a>
-        <a href="/work/creator-intelligence" class="work-card">
+        <a href="/work/insights-service" class="work-card">
           <div class="card-tag">[ML · PLATFORM]</div>
-          <div class="card-title">Creator Intelligence Platform</div>
-          <p class="card-desc">Built real-time creator scoring across 50M+ profiles using LLM enrichment</p>
-          <div class="card-foot">2024 · LTK</div>
+          <div class="card-title">ML Centralization — Insights Service</div>
+          <p class="card-desc">Unified ML inference for 10+ models across 4 teams — eliminated duplicate integrations and fixed payout errors across 200+ campaigns</p>
+          <div class="card-foot">2024 · Later</div>
+        </a>
+        <a href="/work/later-360" class="work-card">
+          <div class="card-tag">[ANALYTICS · ENTERPRISE]</div>
+          <div class="card-title">Later 360 — Enterprise Analytics</div>
+          <p class="card-desc">Delivered 60% faster reporting for 5+ enterprise clients — unlocking millions in revenue</p>
+          <div class="card-foot">2024 · Later</div>
         </a>
       </div>
     </section>
 
-    <!-- ── [02] CURRENTLY ─────────────────────────────────────────── -->
+    <!-- ── [02] THE PATTERN ──────────────────────────────────────── -->
+    <section class="section philosophy">
+      <div class="section-label">
+        <span class="s-bracket">[</span>02<span class="s-bracket">]</span> · THE PATTERN
+      </div>
+      <p class="philosophy-lead"><em>Every role has been a variation of the same problem: product ambition outpacing the infrastructure it runs on.</em></p>
+      <p class="philosophy-body">The work is always closing that gap — without rebuilding everything from scratch.</p>
+    </section>
+
+    <!-- ── [03] CURRENTLY ─────────────────────────────────────────── -->
     <section class="section currently">
       <div class="section-label">
-        <span class="s-bracket">[</span>02<span class="s-bracket">]</span> · CURRENTLY
+        <span class="s-bracket">[</span>03<span class="s-bracket">]</span> · CURRENTLY
       </div>
       <div class="currently-grid">
         <div class="currently-col">
           <div class="col-heading">Building</div>
-          <div class="col-item"><span class="col-arrow">→</span>AI search at LTK</div>
-          <div class="col-item"><span class="col-arrow">→</span>personal knowledge infrastructure</div>
+          <div class="col-item"><span class="col-arrow">→</span>data platform transformation at Later</div>
+          <div class="col-item"><span class="col-arrow">→</span>FinTrack — personal financial intelligence engine</div>
         </div>
         <div class="currently-col">
           <div class="col-heading">Thinking about</div>
@@ -144,6 +158,10 @@ const description = 'AI Technical Product Manager building at the intersection o
         scramble();
       }, 300);
     }
+
+    document.getElementById('hero-ask-btn')?.addEventListener('click', () => {
+      document.getElementById('chat-trigger')?.click();
+    });
   </script>
 </BaseLayout>
 
@@ -162,10 +180,12 @@ const description = 'AI Technical Product Manager building at the intersection o
 
   .section-label {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 1rem;
     color: var(--text-dim);
     letter-spacing: 0.12em;
     margin-bottom: 1.5rem;
+    border-left: 3px solid var(--accent);
+    padding-left: 0.75rem;
   }
 
   .s-bracket { color: var(--text-dimmer); }
@@ -242,7 +262,7 @@ const description = 'AI Technical Product Manager building at the intersection o
   .hero-photo-wrap {
     position: relative;
     width: 100%;
-    max-width: 280px;
+    max-width: 340px;
     overflow: hidden;
   }
 
@@ -347,9 +367,70 @@ const description = 'AI Technical Product Manager building at the intersection o
     }
 
     .hero-right { justify-content: flex-start; }
-    .hero-photo-wrap { max-width: 200px; }
+    .hero-photo-wrap { max-width: 220px; }
     .hero-stats { gap: 1rem; flex-wrap: wrap; }
     .work-cards { grid-template-columns: 1fr; }
     .currently-grid { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  /* ── Hero subtext ──────────────────────────────────────────────────── */
+  .hero-subtext {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 0.75rem;
+    line-height: 1.7;
+    max-width: 480px;
+  }
+
+  /* ── Hero ask button ──────────────────────────────────────────────── */
+  .hero-ask-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 2rem;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    padding: 0.6rem 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .hero-ask-btn:hover {
+    background: rgba(0, 255, 136, 0.06);
+  }
+  .hero-ask-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse-dot 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.75); }
+  }
+
+  /* ── Philosophy ───────────────────────────────────────────────────── */
+  .philosophy-lead {
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 2vw, 1.7rem);
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.5;
+    max-width: 720px;
+    margin: 0 0 1rem 0;
+  }
+  .philosophy-body {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0;
   }
 </style>

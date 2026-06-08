@@ -15,9 +15,7 @@ const { currentPage = 'home' } = Astro.props;
   <a href="/about" class={`nav-link ${currentPage === 'about' ? 'active' : ''}`} data-page="about">
     {currentPage === 'about' ? '[about]' : 'about'}
   </a>
-  <a href="/ask" class={`nav-link ${currentPage === 'ask' ? 'active' : ''}`} data-page="ask">
-    {currentPage === 'ask' ? '[ask me]' : 'ask me'}
-  </a>
+  <button class="nav-link" id="nav-ask-btn" data-page="ask">ask me</button>
   <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme"></button>
 </nav>
 
@@ -33,6 +31,7 @@ const { currentPage = 'home' } = Astro.props;
     align-items: center;
     gap: 2rem;
     background: transparent;
+    justify-content: flex-end;
   }
 
   /* Gradient fade so content scrolls cleanly under the nav */
@@ -62,6 +61,14 @@ const { currentPage = 'home' } = Astro.props;
     font-weight: 500;
   }
 
+  .site-nav .nav-link[id="nav-ask-btn"] {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+  }
+
   .theme-btn {
     margin-left: auto;
     background: none;
@@ -78,6 +85,10 @@ const { currentPage = 'home' } = Astro.props;
 </style>
 
 <script>
+  document.getElementById('nav-ask-btn')?.addEventListener('click', () => {
+    document.getElementById('chat-trigger')?.click();
+  });
+
   const toggle = document.getElementById('theme-toggle') as HTMLButtonElement;
 
   function getLabel(theme: string) {
