@@ -1,0 +1,49 @@
+---
+import CaseStudy from '../../layouts/CaseStudy.astro';
+---
+
+<CaseStudy
+  period="2022–23"
+  tag="Enterprise Analytics"
+  title="Later 360 — One Data Model for Every Enterprise Client"
+  description="Enterprise analytics for Walmart, DraftKings, Southwest — one configuration layer instead of three custom builds."
+  metrics={[
+    { value: "60%+", label: "Reduction in ad hoc SQL tickets" },
+    { value: "5", label: "Enterprise clients on shared infrastructure" },
+    { value: "4 wk", label: "Investment to eliminate per-client SQL debt" },
+    { value: "0", label: "Net-new SQL written per client, post-migration" },
+  ]}
+  honestBlock={{
+    variant: "grey",
+    label: "THE THING I'D UNDO",
+    body: "I waited until client five to make the platform case. At clients one and two, bespoke SQL was the right call — the pattern wasn't established, custom builds shipped faster. By client three, the maintenance cost was visible. I didn't make the investment proposal until client five. That gap created four clients of migration overhead and weeks of fragile SQL I then had to defend in incident reviews. The decision to build the unified layer was right. Making it later than I should have is the thing I'd undo.",
+  }}
+  pills={["dbt", "BigQuery", "GCP", "SQL", "Python", "Affiliate Analytics", "Enterprise Analytics"]}
+  nextStudy={{ label: "Aptean", href: "/work/aptean" }}
+>
+  <p>
+    Enterprise analytics at Later meant serving five high-value clients — each $1M+ ARR — with
+    dashboards across affiliate, paid, and organic channels. The early approach was pragmatic:
+    write bespoke SQL per client, ship fast, move on. Three clients in, it was working. It was
+    also quietly breaking. Every new client multiplied the maintenance surface: custom query logic
+    per source, no shared models, upstream schema changes silently breaking one client's report
+    without touching another's. Service desk tickets for ad hoc SQL fixes were the leading
+    indicator that the architecture was wrong.
+  </p>
+  <p>
+    The case to leadership was straightforward but uncomfortable: stop shipping the next client
+    until we build the platform that ships all future clients faster. A four-week investment to
+    normalize cross-source data into a unified dbt modelling layer — affiliate, paid, organic —
+    in exchange for zero net-new SQL written per client from that point forward. Leadership
+    pushed back. The preference was to keep shipping. The counter was explicit: every new client
+    on bespoke SQL adds maintenance surface that compounds. A four-week investment now versus
+    accumulating weeks of fragile maintenance per future client is not a close call.
+  </p>
+  <p>
+    The unified dbt layer shipped. All five enterprise clients onboarded on shared infrastructure.
+    Service desk ticket volume for ad hoc SQL fixes dropped 60%+ against the pre-migration
+    baseline. New clients onboard on the same models — no net-new SQL written per client from
+    client four onward. The schema normalization across affiliate, paid, and organic sources was
+    the hard technical problem. Convincing leadership to pause delivery to make it happen was harder.
+  </p>
+</CaseStudy>

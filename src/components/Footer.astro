@@ -1,0 +1,81 @@
+---
+// email + LinkedIn are placeholders — fill before Step 18 cutover
+---
+<footer class="site-footer">
+  <div class="sf-g"></div>
+  <div class="sf-main">
+    <a href="/" class="sf-logo">UC</a>
+    <a href="/" class="sf-link">home</a>
+    <a href="/work" class="sf-link">work</a>
+    <a href="/about" class="sf-link">about</a>
+  </div>
+  <div class="sf-contact">
+    <a href="mailto:me@urvash.com" class="sf-clink">email →</a>
+    <a
+      href="https://linkedin.com/in/urvashchheda"
+      class="sf-clink"
+      target="_blank"
+      rel="noopener noreferrer"
+    >linkedin →</a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    display: grid;
+    grid-template-columns: var(--gutter) 1fr auto;
+    border-top: 1px solid var(--rule);
+    background: var(--surface-2);
+  }
+  .sf-g {
+    border-right: 1px solid var(--rule);
+  }
+  .sf-main {
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .sf-logo {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .sf-link {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-4);
+    text-decoration: none;
+    transition: color 0.12s;
+    letter-spacing: 0.04em;
+    padding: 10px 8px;
+  }
+  .sf-link:hover {
+    color: var(--ink);
+  }
+  .sf-contact {
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-left: 1px solid var(--rule);
+  }
+  .sf-clink {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    text-decoration: none;
+    transition: color 0.12s;
+    padding: 10px 8px;
+  }
+  .sf-clink:hover {
+    color: var(--red);
+  }
+  @media (max-width: 780px) {
+    .site-footer { grid-template-columns: 1fr auto; }
+    .sf-g { display: none; }
+  }
+</style>

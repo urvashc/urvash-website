@@ -1,0 +1,269 @@
+---
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import SectionBar from '../../components/SectionBar.astro';
+import Gutter from '../../components/Gutter.astro';
+import ChatRoot from '../../components/ChatRoot.tsx';
+import SEOHead from '../../components/SEOHead.astro';
+import '../../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Work — Urvash Chheda</title>
+  <meta name="description" content="Three case studies in data infrastructure, ML platforms, and enterprise analytics.">
+  <SEOHead title="Work — Urvash Chheda" description="Three case studies in data infrastructure, ML platforms, and enterprise analytics." />
+</head>
+<body>
+  <Nav current="work" />
+  <ChatRoot client:load />
+
+  <main id="main-content">
+  <!-- ── PAGE HEADER ─────────────────────────────────────────────── -->
+  <section class="work-header">
+    <Gutter label="work">
+      <div class="wh-content">
+        <p class="wh-eyebrow fade-up" style="animation-delay: 0s">CASE STUDIES</p>
+        <h1 class="wh-h1 fade-up" style="animation-delay: 0.07s">
+          Three things I built.<br>
+          <em>What I actually learned.</em>
+        </h1>
+      </div>
+    </Gutter>
+  </section>
+
+  <!-- ── CASE STUDY ROWS ─────────────────────────────────────────── -->
+  <SectionBar label="SELECTED WORK" />
+  <section class="work-list-section">
+    <Gutter label="cases" class="border-b">
+      <div class="wl-list">
+        <a href="/work/insights-service" class="wl-row fade-up" style="animation-delay: 0.14s; text-decoration:none; color:inherit; display:grid;">
+          <div class="wl-meta">
+            <span class="wl-year">2023–24</span>
+            <span class="wl-tag">ML Platform · Later</span>
+          </div>
+          <h2 class="wl-title">Insights Service</h2>
+          <div class="wl-metrics">
+            <span class="wl-metric">4× faster queries</span>
+            <span class="wl-sep">·</span>
+            <span class="wl-metric">90% cost reduction</span>
+          </div>
+        </a>
+        <a href="/work/later-360" class="wl-row wl-row-border fade-up" style="animation-delay: 0.21s; text-decoration:none; color:inherit; display:grid;">
+          <div class="wl-meta">
+            <span class="wl-year">2022–23</span>
+            <span class="wl-tag">Enterprise Analytics · Later</span>
+          </div>
+          <h2 class="wl-title">Later 360</h2>
+          <div class="wl-metrics">
+            <span class="wl-metric">5 enterprise clients</span>
+            <span class="wl-sep">·</span>
+            <span class="wl-metric">60%+ SQL tickets reduced</span>
+          </div>
+        </a>
+        <a href="/work/aptean" class="wl-row wl-row-border fade-up" style="animation-delay: 0.28s; text-decoration:none; color:inherit; display:grid;">
+          <div class="wl-meta">
+            <span class="wl-year">2020–22</span>
+            <span class="wl-tag">Platform Product · Aptean</span>
+          </div>
+          <h2 class="wl-title">Embedded Analytics Platform</h2>
+          <div class="wl-metrics">
+            <span class="wl-metric">$80M+ ARR portfolio</span>
+            <span class="wl-sep">·</span>
+            <span class="wl-metric">10+ products integrated</span>
+          </div>
+        </a>
+      </div>
+    </Gutter>
+  </section>
+
+  <!-- ── SIDE PROJECTS ───────────────────────────────────────────── -->
+  <SectionBar label="SIDE PROJECTS" />
+  <section class="sp-section">
+    <Gutter label="built">
+      <div class="sp-grid">
+
+        <!-- FinTrack -->
+        <div class="sp-card">
+          <div class="sp-meta">
+            <span class="sp-period">2024–ongoing</span>
+            <span class="sp-tag">Applied AI</span>
+          </div>
+          <h2 class="sp-title">FinTrack</h2>
+          <p class="sp-body">Privacy-first personal finance tracker. CSV import, Claude Haiku categorization, Supabase RLS. No third-party bank aggregators.</p>
+          <p class="sp-note">The interesting part wasn't the UI. It was the review step — transaction names from card issuers are dirty, and auto-applying wrong categories silently corrupts your budget. AI handles the volume. Human handles the edge cases.</p>
+          <a class="sp-link" href="https://urvash-budget-app.vercel.app" target="_blank" rel="noopener noreferrer">Live demo →</a>
+        </div>
+
+        <!-- This website -->
+        <div class="sp-card">
+          <div class="sp-meta">
+            <span class="sp-period">2025–ongoing</span>
+            <span class="sp-tag">Meta</span>
+          </div>
+          <h2 class="sp-title">This website</h2>
+          <p class="sp-body">Treated the portfolio as a product problem. Built with Astro, Vercel, and an Obsidian second brain as the knowledge layer. The AI chatbot in the nav answers questions about my work — same design decisions I make at the job.</p>
+          <p class="sp-note sp-note--honest">Started with static HTML. Hit the wall when I needed server-side routes for the chatbot API. Migrated to Astro. Lost two days choosing.</p>
+        </div>
+
+      </div>
+    </Gutter>
+  </section>
+
+  </main>
+
+  <Footer />
+</body>
+</html>
+
+<style>
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* WORK HEADER */
+.work-header { padding-top: 88px; padding-bottom: 48px; }
+.wh-content  { max-width: 640px; }
+.wh-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin: 0 0 24px;
+}
+.wh-h1 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0;
+}
+.wh-h1 em { color: var(--ink-2); font-style: italic; }
+
+/* WORK LIST */
+.wl-list { width: 100%; border-top: 1px solid var(--rule); }
+.wl-row {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  gap: 28px;
+  padding: 40px 0;
+  align-items: center;
+}
+.wl-row-border { border-top: 1px solid var(--rule); }
+.wl-meta   { display: flex; flex-direction: column; gap: 6px; padding-top: 2px; }
+.wl-year   { font-family: var(--mono); font-size: 13px; color: var(--ink-3); }
+.wl-tag    { font-family: var(--mono); font-size: 11px; color: var(--ink-3); line-height: 1.4; }
+.wl-title  {
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.5vw, 30px);
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0;
+}
+.wl-metrics { display: flex; align-items: center; gap: 10px; }
+.wl-metric  { font-family: var(--sans); font-size: 13px; color: var(--ink-3); }
+.wl-sep     { font-family: var(--mono); font-size: 12px; color: var(--ink-4); }
+
+/* POST-WORK CTA */
+.pwc-section { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.pwc-btn {
+  display: block;
+  background: none;
+  border: none;
+  padding: 40px 0;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink-2);
+  text-align: left;
+  transition: color 0.15s;
+  width: 100%;
+}
+.pwc-btn:hover { color: var(--ink); }
+
+/* SIDE PROJECTS */
+.sp-section { padding: 64px 0; }
+.sp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  width: 100%;
+}
+.sp-card {
+  border-top: 1px solid var(--rule);
+  padding-top: 32px;
+}
+.sp-meta {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+.sp-period {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.sp-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.sp-title {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+.sp-body {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  margin: 0 0 16px;
+}
+.sp-note {
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-3);
+  border-left: 2px solid var(--rule);
+  padding-left: 14px;
+  margin: 0 0 20px;
+}
+.sp-note--honest {
+  border-left-color: var(--red);
+  color: var(--ink-2);
+}
+.sp-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.sp-link:hover { color: var(--ink); }
+
+@media (max-width: 780px) {
+  .wl-row     { grid-template-columns: 1fr; gap: 10px; }
+  .wl-metrics { flex-wrap: wrap; }
+  .sp-grid    { grid-template-columns: 1fr; }
+}
+</style>
+
