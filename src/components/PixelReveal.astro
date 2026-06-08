@@ -1,0 +1,65 @@
+---
+---
+<canvas id="pixel-canvas" class="pixel-canvas" aria-hidden="true"></canvas>
+
+<style>
+  .pixel-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('pixel-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+
+  window.addEventListener('load', () => {
+    const W = canvas.offsetWidth;
+    const H = canvas.offsetHeight;
+    canvas.width = W;
+    canvas.height = H;
+
+    if (W === 0 || H === 0) return;
+
+    const SIZE = 10;
+    const cols = Math.ceil(W / SIZE);
+    const rows = Math.ceil(H / SIZE);
+
+    let pixels: { x: number; y: number; alpha: number }[] = [];
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++)
+        pixels.push({ x: c * SIZE, y: r * SIZE, alpha: 1 });
+
+    pixels = pixels.sort(() => Math.random() - 0.5);
+
+    let revealed = 0;
+    const total = pixels.length;
+    const DURATION = 1200;
+    const PER_FRAME = Math.ceil(total / (DURATION / 16));
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of pixels) {
+        if (p.alpha > 0) {
+          ctx.fillStyle = `rgba(0,0,0,${p.alpha})`;
+          ctx.fillRect(p.x, p.y, SIZE, SIZE);
+        }
+      }
+    }
+
+    function tick() {
+      for (let i = 0; i < PER_FRAME && revealed < total; i++) {
+        pixels[revealed].alpha = 0;
+        revealed++;
+      }
+      draw();
+      if (revealed < total) requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  });
+</script>

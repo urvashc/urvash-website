@@ -1,0 +1,268 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+
+interface Metric { value: string; label: string; }
+
+interface Props {
+  title: string;
+  description: string;
+  company: string;
+  role: string;
+  headline: string;
+  metrics: Metric[];
+  honestLabel: string;
+  honestBody: string;
+  honestVariant: 'red' | 'grey';
+  tags: string[];
+  nextStudy?: { label: string; href: string };
+}
+
+const {
+  title, description, company, role, headline,
+  metrics, honestLabel, honestBody, honestVariant,
+  tags, nextStudy,
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description} currentPage="work">
+  <main class="page-cs">
+
+    <a href="/work" class="cs-back">← work</a>
+
+    <!-- ── Header ─────────────────────────────────────────────────── -->
+    <header class="cs-header">
+      <div class="cs-company">{company}</div>
+      <div class="cs-role">{role}</div>
+      <h1 class="cs-headline">{headline}</h1>
+
+      <!-- Stat bar -->
+      <div class="cs-stats">
+        {metrics.map(m => (
+          <div class="cs-stat">
+            <span class="cs-stat-val">{m.value}</span>
+            <span class="cs-stat-label">{m.label}</span>
+          </div>
+        ))}
+      </div>
+    </header>
+
+    <!-- ── Body sections (via slot) ────────────────────────────────── -->
+    <div class="cs-body">
+      <slot />
+
+      <!-- Honest block -->
+      <div class={`cs-honest cs-honest--${honestVariant}`}>
+        <div class="cs-honest-label">{honestLabel}</div>
+        <p class="cs-honest-body">{honestBody}</p>
+      </div>
+
+      <!-- Tech tags -->
+      <div class="cs-tags">
+        {tags.map(t => <span class="cs-tag">{t}</span>)}
+      </div>
+
+      <!-- Next study -->
+      {nextStudy && (
+        <div class="cs-next">
+          <a href={nextStudy.href} class="cs-next-link">
+            Next: {nextStudy.label} →
+          </a>
+        </div>
+      )}
+    </div>
+
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* ── Page ─────────────────────────────────────────────────────────── */
+  .page-cs {
+    position: relative;
+    z-index: 1;
+    padding: 0 var(--pad-r) 0 var(--pad-l);
+  }
+
+  /* ── Back link ────────────────────────────────────────────────────── */
+  .cs-back {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    margin-top: 7rem;
+    margin-bottom: 2rem;
+    transition: color 0.18s ease;
+  }
+  .cs-back:hover { color: var(--text); }
+
+  /* ── Header ───────────────────────────────────────────────────────── */
+  .cs-header {
+    padding-bottom: 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 3rem;
+    margin-bottom: 0;
+  }
+
+  .cs-company {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .cs-role {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-bottom: 1.25rem;
+  }
+
+  .cs-headline {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.8vw, 3rem);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.15;
+    max-width: 760px;
+    margin: 0 0 2.5rem;
+  }
+
+  /* ── Stat bar ─────────────────────────────────────────────────────── */
+  .cs-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    padding: 1.75rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cs-stat { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .cs-stat-val {
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .cs-stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* ── Body ─────────────────────────────────────────────────────────── */
+  .cs-body {
+    max-width: 680px;
+    padding-top: 0.5rem;
+  }
+
+  /* Section structure — used by all case study pages */
+  :global(.cs-sec-head) {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  :global(.cs-p) {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.9;
+    margin-bottom: 1.1rem;
+  }
+
+  :global(.cs-callout) {
+    background: var(--surface);
+    border-left: 2px solid var(--accent);
+    padding: 1.25rem 1.5rem;
+    margin: 2rem 0;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  /* ── Honest block ─────────────────────────────────────────────────── */
+  .cs-honest {
+    margin-top: 3rem;
+    padding: 1.5rem 1.75rem;
+    border-left: 2px solid var(--border);
+  }
+
+  .cs-honest--red { border-left-color: var(--accent); }
+  .cs-honest--grey { border-left-color: var(--border); }
+
+  .cs-honest-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .cs-honest--red .cs-honest-label { color: var(--accent); }
+
+  .cs-honest-body {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  /* ── Tags ─────────────────────────────────────────────────────────── */
+  .cs-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .cs-tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.55rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Next study ───────────────────────────────────────────────────── */
+  .cs-next {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .cs-next-link {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    transition: color 0.18s ease;
+  }
+  .cs-next-link:hover { color: var(--accent); }
+
+  /* ── Responsive ───────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .cs-stats { gap: 1.5rem; }
+    .cs-stat-val { font-size: 1.5rem; }
+  }
+</style>

@@ -1,27 +1,29 @@
 ---
-import CaseStudy from '../../layouts/CaseStudy.astro';
+import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro';
 ---
 
-<CaseStudy
-  period="2020–22"
-  tag="Platform Product"
-  title="Embedded Analytics Platform — Internal Customers Don't Choose to Adopt"
+<CaseStudyLayout
+  title="Aptean Embedded Analytics — Urvash Chheda"
   description="How I built a shared analytics platform across a $80M+ ARR SaaS portfolio — and the assumption that cost us two months."
+  company="APTEAN · 2020–22"
+  role="Product Manager · Platform Product"
+  headline="Embedded Analytics Platform — Internal Customers Don't Choose to Adopt"
   metrics={[
-    { value: "10+",   label: "products integrated" },
-    { value: "$80M+", label: "ARR portfolio" },
-    { value: "↓70%",  label: "duplicate build work eliminated" },
+    { value: '10+',   label: 'Products integrated' },
+    { value: '$80M+', label: 'ARR portfolio' },
+    { value: '↓70%',  label: 'Duplicate build work eliminated' },
   ]}
-  honestBlock={{
-    label: "THE FAILURE I'M MOST HONEST ABOUT",
-    body: "I skipped the discovery spike. Not accidentally — I made an active choice to skip it because I thought the architecture was strong enough that validation was a formality. I had one conversation with one PM lead and called it validated. Four months in, two of the first three product teams had already built their own solutions inside their stacks. A two-week round of structured internal interviews would have shown me that. I knew the principle. I talked myself out of applying it. That's what makes it the failure I'm most honest about.",
-    variant: "red"
-  }}
-  pills={["API-first", "Platform Product", "0→1", "Internal Adoption", "Embedded Analytics"]}
+  honestLabel="THE FAILURE I'M MOST HONEST ABOUT"
+  honestBody="I skipped the discovery spike. Not accidentally — I made an active choice to skip it because I thought the architecture was strong enough that validation was a formality. I had one conversation with one PM lead and called it validated. Four months in, two of the first three product teams had already built their own solutions inside their stacks. A two-week round of structured internal interviews would have shown me that. I knew the principle. I talked myself out of applying it. That's what makes it the failure I'm most honest about."
+  honestVariant="red"
+  tags={['API-first', 'Platform Product', '0→1', 'Internal Adoption', 'Embedded Analytics']}
 >
-  <p>Aptean had acquired roughly ten ERP software companies. Each had zero analytics capability and no shared infrastructure. The mandate: build one embedded analytics platform that all of them could use. I was the PM. The customers were internal product engineering teams at each acquired company — not external end-users buying a product.</p>
+  <div class="cs-sec-head">[01] · context</div>
+  <p class="cs-p">Aptean had acquired roughly ten ERP software companies. Each had zero analytics capability and no shared infrastructure. The mandate: build one embedded analytics platform that all of them could use. I was the PM. The customers were internal product engineering teams at each acquired company — not external end-users buying a product.</p>
 
-  <p>That distinction matters more than I treated it. Internal customers don't choose to adopt. They have to be convinced that routing through a shared layer is worth the integration cost and the loss of local control. I designed a clean API-first architecture and started building. I assumed that once the platform was good, teams would use it. They didn't. Two of the first three integrations fell apart: one team had already shipped their own solution inside their product, another wasn't going to cede control of their analytics layer regardless of how clean the shared API was.</p>
+  <div class="cs-sec-head">[02] · the problem</div>
+  <p class="cs-p">That distinction matters more than I treated it. Internal customers don't choose to adopt. They have to be convinced that routing through a shared layer is worth the integration cost and the loss of local control. I designed a clean API-first architecture and started building. I assumed that once the platform was good, teams would use it. They didn't. Two of the first three integrations fell apart: one team had already shipped their own solution inside their product, another wasn't going to cede control of their analytics layer regardless of how clean the shared API was.</p>
 
-  <p>The platform eventually integrated across the portfolio. The $80M+ ARR base got consistent analytics coverage. Duplicate build work dropped significantly. But two months of rework came directly from the assumption I chose not to validate.</p>
-</CaseStudy>
+  <div class="cs-sec-head">[03] · outcome</div>
+  <p class="cs-p">The platform eventually integrated across the portfolio. The $80M+ ARR base got consistent analytics coverage. Duplicate build work dropped significantly. But two months of rework came directly from the assumption I chose not to validate.</p>
+</CaseStudyLayout>

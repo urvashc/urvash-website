@@ -1,80 +1,73 @@
 ---
 ---
 <footer class="site-footer">
-  <div class="sf-g"></div>
-  <div class="sf-main">
-    <a href="/" class="sf-logo">UC</a>
-    <a href="/" class="sf-link">home</a>
-    <a href="/work" class="sf-link">work</a>
-    <a href="/about" class="sf-link">about</a>
-  </div>
-  <div class="sf-contact">
-    <a href="mailto:me@urvash.com" class="sf-clink">email →</a>
-    <a
-      href="https://linkedin.com/in/urvashchheda"
-      class="sf-clink"
-      target="_blank"
-      rel="noopener noreferrer"
-    >linkedin →</a>
+  <span class="footer-copy">© 2024 Urvash Chheda</span>
+  <div class="footer-links">
+    <a href="mailto:me@urvash.com" class="footer-link">email</a>
+    <span class="footer-sep">·</span>
+    <a href="https://linkedin.com/in/urvashchheda" class="footer-link" target="_blank" rel="noopener noreferrer">linkedin</a>
+    <span class="footer-sep">·</span>
+    <a href="https://github.com/urvashc" class="footer-link" target="_blank" rel="noopener noreferrer">github</a>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    display: grid;
-    grid-template-columns: var(--gutter) 1fr auto;
-    border-top: 1px solid var(--rule);
-    background: var(--surface-2);
-  }
-  .sf-g {
-    border-right: 1px solid var(--rule);
-  }
-  .sf-main {
-    padding: 18px 24px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    padding: 1.5rem var(--pad-r) 1.5rem var(--pad-l);
+    background: transparent;
+    border-top: 1px solid var(--border);
   }
-  .sf-logo {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink);
-    font-weight: 500;
-    text-decoration: none;
+
+  /* Gradient fade so content scrolls under cleanly */
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: -3rem;
+    background: linear-gradient(to top, var(--bg) 40%, transparent);
+    z-index: -1;
+    pointer-events: none;
   }
-  .sf-link {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--ink-4);
-    text-decoration: none;
-    transition: color 0.12s;
+
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dimmer);
     letter-spacing: 0.04em;
-    padding: 10px 8px;
   }
-  .sf-link:hover {
-    color: var(--ink);
-  }
-  .sf-contact {
-    padding: 18px 24px;
+
+  .footer-links {
     display: flex;
     align-items: center;
-    gap: 16px;
-    border-left: 1px solid var(--rule);
+    gap: 0.75rem;
   }
-  .sf-clink {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--ink-3);
-    text-decoration: none;
-    transition: color 0.12s;
-    padding: 10px 8px;
+
+  .footer-link {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    transition: color 0.2s ease;
   }
-  .sf-clink:hover {
-    color: var(--red);
-  }
-  @media (max-width: 780px) {
-    .site-footer { grid-template-columns: 1fr auto; }
-    .sf-g { display: none; }
+
+  .footer-link:hover { color: var(--accent); }
+
+  .footer-sep {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dimmer);
+    user-select: none;
   }
 </style>

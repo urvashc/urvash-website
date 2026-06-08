@@ -1,11 +1,10 @@
 ---
-import Nav from '../components/Nav.astro';
+import BaseLayout from './BaseLayout.astro';
 import Footer from '../components/Footer.astro';
 import Gutter from '../components/Gutter.astro';
 import SectionBar from '../components/SectionBar.astro';
 import ChatRoot from '../components/ChatRoot';
 import SEOHead from '../components/SEOHead.astro';
-import '../styles/global.css';
 
 interface Props {
   period: string;
@@ -21,16 +20,11 @@ interface Props {
 const { period, tag, title, description = 'Senior Technical PM — case study.', metrics, honestBlock, pills, nextStudy } = Astro.props;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} — Urvash Chheda</title>
-    {description && <meta name="description" content={description} />}
-    <SEOHead title={title} description={description} />
-  </head>
-  <body>
-    <Nav current="work" />
+<BaseLayout title={`${title} — Urvash Chheda`} description={description} currentPage="work">
+  <Fragment slot="head">
+    <SEOHead title={`${title} — Urvash Chheda`} description={description} />
+  </Fragment>
+
     <ChatRoot client:load />
 
     <main id="main-content">
@@ -115,8 +109,7 @@ const { period, tag, title, description = 'Senior Technical PM — case study.',
     </main>
 
     <Footer />
-  </body>
-</html>
+</BaseLayout>
 
 <style>
   /* ── HEADER ─────────────────────────────────────────────────────── */

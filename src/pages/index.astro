@@ -1,615 +1,355 @@
 ---
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
-import Gutter from '../components/Gutter.astro';
-import SectionBar from '../components/SectionBar.astro';
-import ChatRoot from '../components/ChatRoot';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import SEOHead from '../components/SEOHead.astro';
-import '../styles/global.css';
+import Particles from '../components/Particles.astro';
+import PixelReveal from '../components/PixelReveal.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Urvash Chheda — AI Technical PM';
+const description = 'AI Technical Product Manager building at the intersection of human intent and machine capability.';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Urvash Chheda — Senior Technical Product Manager</title>
-    <meta name="description" content="Senior Technical PM building the infrastructure modern AI runs on. 8 years across data platforms, ML pipelines, and 0→1 product builds." />
-    <SEOHead title="Urvash Chheda — Senior Technical Product Manager" description="Senior Technical PM building the infrastructure modern AI runs on. 8 years across data platforms, ML pipelines, and 0→1 product builds." />
-  </head>
-  <body>
-    <Nav />
+<BaseLayout title={title} description={description} currentPage="home">
+  <Fragment slot="head">
+    <SEOHead title={title} description={description} />
+  </Fragment>
 
-    <!-- Global chat drawer — listens for chat:open events from Nav + CTAs -->
-    <ChatRoot client:load />
+  <Particles />
 
-    <main id="main-content">
-    <!-- ── HERO ────────────────────────────────────────────────────── -->
+  <main class="page-home">
+
+    <!-- ── HERO ─────────────────────────────────────────────────────── -->
     <section class="hero">
-      <Gutter label="intro" borderBottom={false}>
-        <div class="hero-wrap">
-          <div class="hero-content">
-            <p class="hero-eyebrow fade-up" style="animation-delay:0s">SENIOR TECHNICAL PRODUCT MANAGER</p>
-            <h1 class="hero-h1 fade-up" style="animation-delay:0.07s">
-              I build the foundations<br>
-              <em class="hero-modern">modern</em> <span class="hero-ai">AI</span> runs on.
-            </h1>
-            <p class="hero-deck fade-up" style="animation-delay:0.14s">
-              Not a PM who delegates technical decisions. Someone who reads the schema, challenges the architecture, and stays accountable to what ships.
-            </p>
-            <div class="fade-up" style="animation-delay:0.21s">
-              <button id="hero-ask-btn" class="hero-ask-btn" aria-label="Open chat">
-                <span class="hero-dot"></span>
-                ask me anything
-              </button>
-            </div>
+      <div class="hero-left">
+        <h1 class="hero-name" id="hero-name">Urvash Chheda</h1>
+        <p class="hero-role">AI Technical Product Manager</p>
+        <p class="hero-tagline">I build the interface between human intent and machine capability.</p>
+        <div class="hero-stats">
+          <div class="stat-pill">
+            <span class="stat-num">7+</span>
+            <span class="stat-label">years experience</span>
           </div>
-          <aside class="hero-teaser fade-up" style="animation-delay:0.28s" aria-label="Suggested questions">
-            <p class="ht-label">Try it</p>
-            <div class="ht-chips">
-              <button class="ht-chip" data-seed="Walk me through the Later 360 architecture decision">Walk me through the Later 360 architecture decision</button>
-              <button class="ht-chip" data-seed="Why DynamoDB over BigQuery for the ML serving layer?">Why DynamoDB over BigQuery for the ML serving layer?</button>
-              <button class="ht-chip" data-seed="What would you do differently on the Aptean platform?">What would you do differently on the Aptean platform?</button>
-            </div>
-          </aside>
+          <div class="stat-pill">
+            <span class="stat-num">12+</span>
+            <span class="stat-label">AI products shipped</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-num">3</span>
+            <span class="stat-label">companies</span>
+          </div>
         </div>
-      </Gutter>
-    </section>
-
-    <!-- ── SUPERPOWER STRIP ────────────────────────────────────────── -->
-    <section class="sp-strip">
-      <Gutter label="pattern" borderBottom={false}>
-        <div class="sp-content">
-          <p class="sp-label">THE PATTERN ACROSS 8 YEARS</p>
-          <p class="sp-quote">
-            Every role has been a variation of the same problem:
-            <em class="sp-dim"> product ambition outpacing the infrastructure it runs on.</em>
-            The work is always closing that gap —
-            <span class="sp-warm">without rebuilding everything from scratch.</span>
-          </p>
-        </div>
-      </Gutter>
-    </section>
-
-    <!-- ── WORK PREVIEW ────────────────────────────────────────────── -->
-    <SectionBar label="WORK" />
-    <section class="work-preview">
-      <Gutter label="work" borderBottom={true}>
-        <div class="wi-list">
-
-          <a href="/work/insights-service" class="wi-row">
-            <div class="wi-meta">
-              <span class="wi-year">2023–24</span>
-              <span class="wi-tag">ML Platform · Later</span>
-            </div>
-            <div class="wi-body">
-              <h2 class="wi-title">Insights Service</h2>
-              <p class="wi-desc">Rebuilt the data layer underneath Later's analytics — one migration at a time, without stopping product.</p>
-              <p class="wi-hook">The hard part wasn't the architecture. Read why.</p>
-            </div>
-            <div class="wi-metric">
-              <span class="wi-num">4×</span>
-              <span class="wi-unit">faster queries</span>
-              <span class="wi-num wi-num-2">90%</span>
-              <span class="wi-unit">cost reduction</span>
-            </div>
-          </a>
-
-          <a href="/work/later-360" class="wi-row wi-row-border">
-            <div class="wi-meta">
-              <span class="wi-year">2022–23</span>
-              <span class="wi-tag">Enterprise Analytics · Later</span>
-            </div>
-            <div class="wi-body">
-              <h2 class="wi-title">Later 360</h2>
-              <p class="wi-desc">Enterprise analytics for Walmart, DraftKings, Southwest. One configuration layer instead of three custom builds.</p>
-              <p class="wi-hook">The reframe that changed the entire architecture.</p>
-            </div>
-            <div class="wi-metric">
-              <span class="wi-num">5</span>
-              <span class="wi-unit">enterprise clients</span>
-              <span class="wi-num wi-num-2">60%+</span>
-              <span class="wi-unit">SQL tickets reduced</span>
-            </div>
-          </a>
-
-          <a href="/work/aptean" class="wi-row wi-row-border">
-            <div class="wi-meta">
-              <span class="wi-year">2020–22</span>
-              <span class="wi-tag">Platform Product · Aptean</span>
-            </div>
-            <div class="wi-body">
-              <h2 class="wi-title">Embedded Analytics Platform</h2>
-              <p class="wi-desc">Analytics layer across a $80M+ ARR SaaS portfolio — built for internal engineering teams as the customer.</p>
-              <p class="wi-hook">The assumption that cost us two months.</p>
-            </div>
-            <div class="wi-metric">
-              <span class="wi-num">↓70%</span>
-              <span class="wi-unit">duplicate build work</span>
-              <span class="wi-num wi-num-2">10+</span>
-              <span class="wi-unit">products integrated</span>
-            </div>
-          </a>
-
-        </div>
-      </Gutter>
-    </section>
-
-    <!-- ── POST-WORK CHATBOT CTA ───────────────────────────────────── -->
-    <section class="pwc-section">
-      <Gutter label="ask" borderBottom={false}>
-        <button id="work-ask-btn" class="pwc-btn" aria-label="Open chat about case studies">
-          Read the case studies. Interrogate me on them. →
-        </button>
-      </Gutter>
-    </section>
-
-    <!-- ── PERSON ────────────────────────────────────────────────────── -->
-    <SectionBar label="THE PERSON" link={{ href: "/about", text: "About" }} />
-    <section class="ps-section">
-      <div class="ps-g"></div>
-      <div class="ps-l">
-        <div class="ps-name">Urvash<br><em>Chheda.</em></div>
-        <p class="ps-body">I've spent eight years as a product person who couldn't stop reading the schema.</p>
       </div>
-      <div class="ps-r">
-        <div class="ps-facts">
-          <div class="ps-fact"><span class="ps-fk">Currently</span><span class="ps-fv">At Later</span></div>
-          <div class="ps-fact"><span class="ps-fk">Building</span><span class="ps-fv">FinTrack · Obsidian second brain</span></div>
-          <div class="ps-fact"><span class="ps-fk">Contact</span><span class="ps-fv">me@urvash.com · <a href="https://linkedin.com/in/urvashchheda" class="ps-link">LinkedIn →</a></span></div>
+
+      <div class="hero-right">
+        <div class="hero-photo-wrap" id="photo-wrap">
+          <img
+            src="/images/urvash-bw.jpg"
+            alt="Urvash Chheda"
+            class="hero-photo"
+          />
+          <PixelReveal />
         </div>
       </div>
     </section>
 
-    {/* --- Final CTA --- */}
-    <section class="cta-wrap">
-      <Gutter label="contact" borderBottom={false}>
-        <div class="cta-inner">
-          <p class="cta-headline">Want to talk?</p>
-          <p class="cta-avail">Always open to interesting conversations.</p>
-          <div class="cta-btns">
-            <a href="mailto:me@urvash.com" class="cta-btn">me@urvash.com</a>
-            <a href="https://linkedin.com/in/urvashchheda" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn--outline">LinkedIn →</a>
-          </div>
-        </div>
-      </Gutter>
+    <!-- ── [01] SELECTED WORK ─────────────────────────────────────── -->
+    <section class="section work-preview">
+      <div class="section-label">
+        <span class="s-bracket">[</span>01<span class="s-bracket">]</span> · SELECTED WORK
+      </div>
+      <div class="work-cards">
+        <a href="/work/mavrck" class="work-card">
+          <div class="card-tag">[AI · PRODUCT]</div>
+          <div class="card-title">Mavrck AI Influencer Matching</div>
+          <p class="card-desc">Reduced manual influencer vetting by 70% through semantic matching pipeline</p>
+          <div class="card-foot">2023 · Mavrck</div>
+        </a>
+        <a href="/work/creator-intelligence" class="work-card">
+          <div class="card-tag">[ML · PLATFORM]</div>
+          <div class="card-title">Creator Intelligence Platform</div>
+          <p class="card-desc">Built real-time creator scoring across 50M+ profiles using LLM enrichment</p>
+          <div class="card-foot">2024 · LTK</div>
+        </a>
+      </div>
     </section>
 
-    </main>
+    <!-- ── [02] CURRENTLY ─────────────────────────────────────────── -->
+    <section class="section currently">
+      <div class="section-label">
+        <span class="s-bracket">[</span>02<span class="s-bracket">]</span> · CURRENTLY
+      </div>
+      <div class="currently-grid">
+        <div class="currently-col">
+          <div class="col-heading">Building</div>
+          <div class="col-item"><span class="col-arrow">→</span>AI search at LTK</div>
+          <div class="col-item"><span class="col-arrow">→</span>personal knowledge infrastructure</div>
+        </div>
+        <div class="currently-col">
+          <div class="col-heading">Thinking about</div>
+          <div class="col-item"><span class="col-arrow">→</span>ambient interfaces</div>
+          <div class="col-item"><span class="col-arrow">→</span>AI x PM career paths</div>
+        </div>
+      </div>
+    </section>
 
-    <Footer />
+  </main>
 
-    <!-- ── Event wiring ─────────────────────────────────────────────── -->
-    <script>
-      // Hero trigger — no seed, just open
-      document.getElementById('hero-ask-btn')?.addEventListener('click', () => {
-        window.dispatchEvent(new CustomEvent('chat:open', { detail: { seed: '' } }));
+  <Footer />
+
+  <script>
+    // ── Character assembly — name resolves char-by-char ──────────────
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const nameEl = document.getElementById('hero-name');
+
+    if (nameEl) {
+      const original = nameEl.textContent?.trim() ?? '';
+      nameEl.textContent = '';
+      nameEl.setAttribute('aria-label', original);
+
+      const spanData = [...original].map(ch => {
+        const span = document.createElement('span');
+        span.setAttribute('aria-hidden', 'true');
+        if (ch === ' ') {
+          span.innerHTML = '&nbsp;';
+          span.className = 'char resolved';
+        } else {
+          span.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
+          span.className = 'char unresolved';
+        }
+        nameEl.appendChild(span);
+        return { span, target: ch, isSpace: ch === ' ' };
       });
 
-      // Hero teaser chips — pre-seed with the chip's question
-      document.querySelectorAll<HTMLButtonElement>('.ht-chip').forEach(btn => {
-        btn.addEventListener('click', () => {
-          window.dispatchEvent(new CustomEvent('chat:open', {
-            detail: { seed: btn.dataset.seed ?? '' },
-          }));
+      const nonSpace = spanData.filter(s => !s.isSpace);
+      let resolvedIdx = 0;
+
+      function scramble() {
+        nonSpace.slice(resolvedIdx).forEach(item => {
+          item.span.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
         });
-      });
+        if (resolvedIdx < nonSpace.length) requestAnimationFrame(scramble);
+      }
 
-      // Post-work CTA — pre-seeds the input
-      document.getElementById('work-ask-btn')?.addEventListener('click', () => {
-        window.dispatchEvent(new CustomEvent('chat:open', {
-          detail: { seed: 'Walk me through your case studies.' },
-        }));
-      });
-    </script>
-  </body>
-</html>
+      function resolveNext() {
+        if (resolvedIdx >= nonSpace.length) return;
+        const item = nonSpace[resolvedIdx];
+        item.span.textContent = item.target;
+        item.span.className = 'char resolved';
+        resolvedIdx++;
+        if (resolvedIdx < nonSpace.length) setTimeout(resolveNext, 40);
+      }
+
+      setTimeout(() => {
+        resolveNext();
+        scramble();
+      }, 300);
+    }
+  </script>
+</BaseLayout>
 
 <style>
-  /* ── HERO ──────────────────────────────────────────────────────── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
+  /* ── Page wrapper ─────────────────────────────────────────────────── */
+  .page-home {
+    position: relative;
+    z-index: 1;
   }
 
-  .fade-up {
-    opacity: 0;
-    animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+  /* ── Section chrome ───────────────────────────────────────────────── */
+  .section {
+    border-top: 1px solid var(--border);
+    padding: var(--section-gap) var(--pad-r) var(--section-gap) var(--pad-l);
   }
 
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    margin-bottom: 1.5rem;
+  }
+
+  .s-bracket { color: var(--text-dimmer); }
+
+  /* ── Hero layout ──────────────────────────────────────────────────── */
   .hero {
-    padding-top: 88px;
-    padding-bottom: 60px;
-  }
-
-  .hero-wrap {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    gap: 80px;
-    align-items: start;
-  }
-
-  .hero-content { max-width: 560px; }
-
-  /* ── HERO TEASER ──────────────────────────────────────────────── */
-  .hero-teaser {
-    border-left: 1px solid var(--rule);
-    padding-left: 40px;
-    padding-top: 6px;
-  }
-
-  .ht-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    margin: 0 0 18px;
-  }
-
-  .ht-chips {
     display: flex;
-    flex-direction: column;
-  }
-
-  .ht-chip {
-    background: none;
-    border: none;
-    border-top: 1px solid var(--rule);
-    padding: 14px 0;
-    cursor: pointer;
-    font-family: var(--sans);
-    font-size: 14px;
-    line-height: 1.4;
-    color: var(--ink-3);
-    text-align: left;
-    transition: color 0.15s;
-  }
-  .ht-chip:last-child { border-bottom: 1px solid var(--rule); }
-  .ht-chip:hover { color: var(--ink); }
-
-  .hero-eyebrow {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--ink-3);
-    text-transform: uppercase;
-    margin: 0 0 24px;
-  }
-
-  .hero-h1 {
-    font-family: var(--serif);
-    font-size: clamp(36px, 5vw, 58px);
-    font-weight: 400;
-    line-height: 1.1;
-    color: var(--ink);
-    margin: 0 0 24px;
-  }
-
-  .hero-modern { color: var(--ink-2); font-style: italic; }
-  .hero-ai     { color: var(--red); font-style: normal; }
-
-  .hero-deck {
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.7;
-    color: var(--ink-3);
-    max-width: 420px;
-    margin: 0 0 40px;
-  }
-
-  .hero-ask-btn {
-    background: none;
-    border: 1px solid var(--rule);
-    padding: 11px 20px;
-    cursor: pointer;
-    display: inline-flex;
+    gap: 4rem;
     align-items: center;
-    gap: 10px;
-    font-family: var(--mono);
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    color: var(--ink);
-    transition: background 0.15s;
-  }
-  .hero-ask-btn:hover { background: var(--surface-2); }
-
-  .hero-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--color-available);
-    box-shadow: 0 0 0 2px rgba(34,197,94,0.2);
-    flex-shrink: 0;
+    min-height: 100vh;
+    padding: 7rem var(--pad-r) 5rem var(--pad-l);
   }
 
-  /* ── SUPERPOWER STRIP ─────────────────────────────────────────── */
-  .sp-strip {
-    background: var(--ink);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
+  .hero-left  { flex: 1.2; }
+  .hero-right { flex: 0.8; display: flex; justify-content: flex-end; align-items: center; }
 
-  .sp-strip :global(.g-label) { color: rgba(255,255,255,0.2); }
-
-  .sp-content {
-    padding: 64px 0;
-    max-width: 640px;
-  }
-
-  .sp-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
-    margin: 0 0 28px;
-  }
-
-  .sp-quote {
-    font-family: var(--serif);
-    font-size: clamp(20px, 2.5vw, 28px);
-    line-height: 1.55;
-    color: #fff;
-    margin: 0;
-  }
-
-  .sp-dim  { color: rgba(255, 255, 255, 0.5); font-style: italic; }
-  .sp-warm { color: #e07060; }
-
-  /* ── WORK PREVIEW ─────────────────────────────────────────────── */
-  .wi-list { width: 100%; border-top: 1px solid var(--rule); }
-
-  .wi-row {
-    display: grid;
-    grid-template-columns: 120px 1fr 160px;
-    gap: 28px;
-    padding: 40px 0;
-    text-decoration: none;
-    color: inherit;
-    align-items: start;
-    transition: opacity 0.14s;
-  }
-
-  .wi-row:hover { opacity: 0.6; }
-
-  .wi-row-border { border-top: 1px solid var(--rule); }
-
-  .wi-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding-top: 3px;
-  }
-
-  .wi-year {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--ink-3);
-  }
-
-  .wi-tag {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-3);
-    line-height: 1.4;
-  }
-
-  .wi-title {
-    font-family: var(--serif);
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--ink);
-    margin: 0 0 10px;
-  }
-
-  .wi-desc {
-    font-family: var(--sans);
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--ink-3);
-    margin: 0 0 12px;
-  }
-
-  .wi-hook {
-    font-family: var(--sans);
-    font-size: 14px;
+  /* ── Name ─────────────────────────────────────────────────────────── */
+  .hero-name {
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 4.5vw, 4.5rem);
     font-style: italic;
-    color: var(--ink-2);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1;
     margin: 0;
   }
 
-  .wi-metric {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    text-align: right;
-    padding-top: 2px;
-    align-items: flex-end;
+  :global(.char.unresolved) { color: var(--text-dimmer); }
+  :global(.char.resolved)   { color: var(--text); }
+
+  /* ── Hero text ────────────────────────────────────────────────────── */
+  .hero-role {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    margin-top: 1rem;
+    letter-spacing: 0.08em;
   }
 
-  .wi-num {
-    font-family: var(--mono);
-    font-size: 22px;
-    color: var(--ink);
+  .hero-tagline {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    font-style: italic;
+    color: var(--text);
+    margin-top: 1.5rem;
+    line-height: 1.5;
+    max-width: 480px;
+  }
+
+  /* ── Stat pills ───────────────────────────────────────────────────── */
+  .hero-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .stat-pill  { display: flex; flex-direction: column; gap: 0.25rem; }
+
+  .stat-num {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    color: var(--accent);
     line-height: 1;
   }
 
-  .wi-num-2 { margin-top: 14px; }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
 
-  .wi-unit {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--ink-2);
+  /* ── Photo ────────────────────────────────────────────────────────── */
+  .hero-photo-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+    overflow: hidden;
+  }
+
+  .hero-photo {
+    width: 100%;
+    display: block;
+    filter: grayscale(100%) contrast(1.1);
+  }
+
+  /* ── Work cards ───────────────────────────────────────────────────── */
+  .work-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .work-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: var(--surface);
+    text-decoration: none;
+    transition: background 0.2s ease, outline-color 0.2s ease;
+    outline: 1px solid transparent;
+    outline-offset: -1px;
+  }
+
+  .work-card:hover {
+    background: var(--surface-2);
+    outline-color: var(--accent);
+  }
+
+  .card-tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-title {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .card-desc {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    flex: 1;
+    margin: 0;
+  }
+
+  .card-foot {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-dimmer);
+    margin-top: 1.25rem;
     letter-spacing: 0.04em;
   }
 
-  /* ── POST-WORK CTA ────────────────────────────────────────────── */
-  .pwc-section {
-    border-top: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .pwc-btn {
-    display: block;
-    background: none;
-    border: none;
-    padding: 40px 0;
-    cursor: pointer;
-    font-family: var(--serif);
-    font-size: clamp(18px, 2.2vw, 26px);
-    font-weight: 400;
-    font-style: italic;
-    color: var(--ink-2);
-    text-align: left;
-    transition: color 0.15s;
-    width: 100%;
-  }
-
-  .pwc-btn:hover { color: var(--ink); }
-
-  /* ── PERSON ───────────────────────────────────────────────────── */
-  .ps-section {
+  /* ── Currently ────────────────────────────────────────────────────── */
+  .currently-grid {
     display: grid;
-    grid-template-columns: var(--gutter) 1fr 1fr;
-    border-bottom: 1px solid var(--rule);
-    max-width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
   }
-  .ps-g {
-    border-right: 1px solid var(--rule);
-  }
-  .ps-l {
-    padding: 36px 40px;
-    border-right: 1px solid var(--rule);
-  }
-  .ps-name {
-    font-family: var(--serif);
-    font-size: 26px;
-    font-weight: 400;
-    color: var(--ink);
-    line-height: 1.2;
-    margin-bottom: 14px;
-    letter-spacing: -0.02em;
-  }
-  .ps-name em {
-    font-style: italic;
-    color: var(--ink-2);
-  }
-  .ps-body {
-    font-size: 15px;
-    color: var(--ink-3);
-    line-height: 1.82;
-    max-width: 320px;
-  }
-  .ps-r {
-    padding: 36px 40px;
-  }
-  .ps-facts {
-    display: flex;
-    flex-direction: column;
-  }
-  .ps-fact {
-    display: flex;
-    gap: 14px;
-    padding: 11px 0;
-    border-bottom: 1px solid var(--rule);
-    align-items: flex-start;
-  }
-  .ps-fact:last-child {
-    border-bottom: none;
-  }
-  .ps-fk {
-    font-family: var(--mono);
-    font-size: 10px;
+
+  .col-heading {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
     letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    min-width: 76px;
-    padding-top: 1px;
-  }
-  .ps-fv {
-    font-size: 14px;
-    color: var(--ink-2);
-    line-height: 1.55;
-  }
-  .ps-link {
-    color: var(--ink-2);
-    text-decoration: none;
-  }
-  .ps-link:hover {
-    color: var(--ink);
+    margin-bottom: 0.75rem;
   }
 
-  /* ── Final CTA ────────────────────────────────────────────────── */
-  .cta-wrap {
-    border-top: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-  }
-  .cta-inner {
-    padding: 64px 0 72px;
+  .col-item {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 2;
     display: flex;
-    align-items: center;
-    gap: 40px;
-    flex-wrap: wrap;
-  }
-  .cta-headline {
-    font-family: var(--serif);
-    font-size: clamp(28px, 3.5vw, 42px);
-    font-weight: 400;
-    color: var(--ink);
-    line-height: 1;
-    margin: 0;
-  }
-  .cta-btns {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .cta-btn {
-    font-family: var(--sans);
-    font-size: 14px;
-    letter-spacing: 0.02em;
-    background: var(--ink);
-    color: var(--surface);
-    border: 1px solid var(--ink);
-    padding: 10px 20px;
-    text-decoration: none;
-    transition: opacity 0.15s ease;
-  }
-  .cta-btn:hover { opacity: 0.75; }
-  .cta-btn--outline {
-    background: transparent;
-    color: var(--ink);
+    align-items: baseline;
+    gap: 0.5rem;
   }
 
-  .cta-avail {
-    font-family: var(--sans);
-    font-size: 14px;
-    color: var(--ink-3);
-    font-style: italic;
-    margin: 0;
-    flex-basis: 100%;
-    width: 100%;
-  }
+  .col-arrow { color: var(--accent); flex-shrink: 0; }
 
-  /* ── MOBILE ────────────────────────────────────────────────────── */
-  @media (max-width: 780px) {
-    .hero-wrap {
-      grid-template-columns: 1fr;
+  /* ── Mobile ───────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .hero {
+      flex-direction: column-reverse;
+      min-height: auto;
+      padding-top: 6rem;
+      gap: 2.5rem;
     }
-    .hero-teaser { display: none; }
 
-    .wi-row {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    .wi-metric { text-align: left; }
-
-    .ps-section {
-      grid-template-columns: 1fr;
-    }
-    .ps-g { display: none; }
-    .ps-l { border-right: none; padding: 28px 20px; }
-    .ps-r { padding: 0 20px 28px; }
+    .hero-right { justify-content: flex-start; }
+    .hero-photo-wrap { max-width: 200px; }
+    .hero-stats { gap: 1rem; flex-wrap: wrap; }
+    .work-cards { grid-template-columns: 1fr; }
+    .currently-grid { grid-template-columns: 1fr; gap: 2rem; }
   }
 </style>

@@ -1,0 +1,40 @@
+:root {
+  /* Backgrounds */
+  --bg: #000000;
+  --surface: #0d0d0d;
+  --surface-2: #1a1a18;
+
+  /* Borders */
+  --border: #3a3a38;
+
+  /* Text */
+  --text: #f0f0ee;
+  --text-dim: #888880;
+  --text-dimmer: #444440;
+
+  /* Accent */
+  --accent: #00ff88;
+
+  /* Typography */
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Layout */
+  --pad-l: max(2.5rem, 11vw);
+  --pad-r: max(2.5rem, 5vw);
+  --section-gap: 5rem;
+
+  /* Transitions */
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+[data-theme="light"] {
+  --bg: #f2f1ec;
+  --surface: #eae9e3;
+  --surface-2: #dddbd4;
+  --border: #b8b6ae;
+  --text: #1c1c1a;
+  --text-dim: #5a5a54;
+  --text-dimmer: #9a9890;
+  --accent: #00994d;
+}
