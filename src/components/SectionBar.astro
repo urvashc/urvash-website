@@ -1,0 +1,50 @@
+---
+interface Props {
+  label: string;
+  link?: { href: string; text: string };
+}
+const { label, link } = Astro.props;
+---
+<div class="sbar">
+  <div class="sbar-g"></div>
+  <div class="sbar-inner">
+    <span>{label}</span>
+    {link && <a href={link.href}>{link.text} →</a>}
+  </div>
+</div>
+
+<style>
+  .sbar {
+    display: grid;
+    grid-template-columns: var(--gutter) 1fr;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--surface-2);
+  }
+  .sbar-g {
+    border-right: 1px solid var(--rule);
+  }
+  .sbar-inner {
+    padding: 8px 20px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sbar-inner a {
+    color: var(--ink-3);
+    text-decoration: none;
+    transition: color 0.13s;
+  }
+  .sbar-inner a:hover {
+    color: var(--red);
+  }
+  @media (max-width: 780px) {
+    .sbar { grid-template-columns: 1fr; }
+    .sbar-g { display: none; }
+  }
+</style>

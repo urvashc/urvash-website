@@ -1,0 +1,292 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import Gutter from '../components/Gutter.astro';
+import SectionBar from '../components/SectionBar.astro';
+import ChatRoot from '../components/ChatRoot';
+import SEOHead from '../components/SEOHead.astro';
+
+interface Props {
+  period: string;
+  tag: string;
+  title: string;
+  description?: string;
+  metrics: Array<{ value: string; label: string }>;
+  honestBlock: { label: string; body: string; variant: 'red' | 'grey' };
+  pills: string[];
+  nextStudy?: { label: string; href: string };
+}
+
+const { period, tag, title, description = 'Senior Technical PM — case study.', metrics, honestBlock, pills, nextStudy } = Astro.props;
+---
+
+<BaseLayout title={`${title} — Urvash Chheda`} description={description} currentPage="work">
+  <Fragment slot="head">
+    <SEOHead title={`${title} — Urvash Chheda`} description={description} />
+  </Fragment>
+
+    <ChatRoot client:load />
+
+    <main id="main-content">
+    <!-- HEADER -->
+    <section class="csh-section">
+      <Gutter label="case" borderBottom={false}>
+        <div class="csh-content">
+          <div class="csh-meta">
+            <span class="csh-period">{period}</span>
+            <span class="csh-tag">{tag}</span>
+          </div>
+          <h1 class="csh-title">{title}</h1>
+        </div>
+      </Gutter>
+    </section>
+
+    <!-- METRICS -->
+    <SectionBar label="IMPACT" />
+    <section class="csm-section">
+      <Gutter label="metrics" borderBottom={false}>
+        <div class="csm-grid">
+          {metrics.map((m) => (
+            <div class="csm-block">
+              <span class="csm-value">{m.value}</span>
+              <span class="csm-label">{m.label}</span>
+            </div>
+          ))}
+        </div>
+      </Gutter>
+    </section>
+
+    <!-- BODY -->
+    <SectionBar label="CASE STUDY" />
+    <section class="csb-section">
+      <Gutter label="body" borderBottom={false}>
+        <div class="csb-content">
+          <slot />
+        </div>
+      </Gutter>
+    </section>
+
+    <!-- HONEST BLOCK -->
+    <section class="cse-section">
+      <Gutter label="honest" borderBottom={false}>
+        <div class={`cse-block cse-${honestBlock.variant}`}>
+          <span class="cse-label">{honestBlock.label}</span>
+          <p class="cse-body">{honestBlock.body}</p>
+        </div>
+      </Gutter>
+    </section>
+
+    <!-- PILLS -->
+    <section class="csp-section">
+      <Gutter label="tags" borderBottom={false}>
+        <div class="csp-row">
+          {pills.map(p => <span class="csp-pill">{p}</span>)}
+        </div>
+      </Gutter>
+    </section>
+
+    <!-- SIDE PROJECTS (optional named slot) -->
+    {Astro.slots.has('sideProjects') && (
+      <Fragment>
+        <SectionBar label="ALSO" />
+        <section class="cside-section">
+          <Gutter label="side" borderBottom={false}>
+            <slot name="sideProjects" />
+          </Gutter>
+        </section>
+      </Fragment>
+    )}
+
+    <!-- BACK / NEXT NAV -->
+    <section class="csbk-section">
+      <Gutter label="" borderBottom={false}>
+        <div class="csbk-row">
+          <a href="/work" class="csbk-link">← All work</a>
+          {nextStudy && <a href={nextStudy.href} class="csbk-link">{nextStudy.label} →</a>}
+        </div>
+      </Gutter>
+    </section>
+    </main>
+
+    <Footer />
+</BaseLayout>
+
+<style>
+  /* ── HEADER ─────────────────────────────────────────────────────── */
+  .csh-section {
+    padding-top: 88px;
+    padding-bottom: 40px;
+  }
+
+  .csh-content { max-width: 720px; }
+
+  .csh-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .csh-period {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+  }
+
+  .csh-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 4px 10px;
+  }
+
+  .csh-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4.5vw, 52px);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  /* ── METRICS ────────────────────────────────────────────────────── */
+  .csm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 28px 0 36px;
+  }
+
+  .csm-block {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 32px 20px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .csm-block:nth-child(even) {
+    padding-left: 32px;
+    padding-right: 0;
+    border-left: 1px solid var(--rule);
+  }
+
+  /* Remove bottom border for last row (handles 2×2, 2×3, and odd counts) */
+  .csm-block:last-child { border-bottom: none; }
+  .csm-block:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+
+  .csm-value {
+    font-family: var(--serif);
+    font-size: 48px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .csm-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-top: 10px;
+  }
+
+  /* ── BODY ───────────────────────────────────────────────────────── */
+  .csb-content {
+    max-width: 640px;
+    padding: 48px 0;
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--ink-2);
+  }
+
+  .csb-content :global(p) { margin: 0 0 24px; }
+  .csb-content :global(p:last-child) { margin-bottom: 0; }
+
+  /* ── HONEST BLOCK ───────────────────────────────────────────────── */
+  .cse-section { border-top: 1px solid var(--rule); }
+
+  .cse-block {
+    padding: 48px 0 48px 20px;
+    border-left: 3px solid var(--rule);
+    max-width: 640px;
+  }
+
+  .cse-red { border-left-color: var(--red); }
+  .cse-grey { border-left-color: var(--rule); }
+
+  .cse-label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .cse-red .cse-label { color: var(--red); }
+  .cse-grey .cse-label { color: var(--ink-3); }
+
+  .cse-body {
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink-2);
+    margin: 10px 0 0;
+  }
+
+  /* ── PILLS ──────────────────────────────────────────────────────── */
+  .csp-section { border-top: 1px solid var(--rule); }
+
+  .csp-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 32px 0;
+  }
+
+  .csp-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 5px 10px;
+  }
+
+  /* ── SIDE PROJECTS ──────────────────────────────────────────────── */
+  .cside-section { padding: 48px 0; }
+
+  /* ── BACK / NEXT NAV ────────────────────────────────────────────── */
+  .csbk-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 0;
+  }
+  .csbk-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    text-decoration: none;
+    transition: color 0.14s;
+  }
+  .csbk-link:hover { color: var(--ink); }
+
+  /* ── MOBILE ─────────────────────────────────────────────────────── */
+  @media (max-width: 780px) {
+    .csh-section { padding-top: 72px; }
+
+    .csm-grid { grid-template-columns: 1fr; }
+    .csm-block { border-bottom: 1px solid var(--rule); }
+    .csm-block:nth-child(even) { padding-left: 0; border-left: none; }
+    .csm-block:nth-last-child(2):nth-child(odd) { border-bottom: 1px solid var(--rule); }
+    .csm-block:last-child { border-bottom: none; }
+  }
+</style>

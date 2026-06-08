@@ -1,0 +1,102 @@
+---
+interface Props {
+  currentPage?: 'home' | 'work' | 'about' | 'ask';
+}
+const { currentPage = 'home' } = Astro.props;
+---
+
+<nav class="site-nav">
+  <a href="/" class={`nav-link ${currentPage === 'home' ? 'active' : ''}`} data-page="home">
+    {currentPage === 'home' ? '[home]' : 'home'}
+  </a>
+  <a href="/work" class={`nav-link ${currentPage === 'work' ? 'active' : ''}`} data-page="work">
+    {currentPage === 'work' ? '[work]' : 'work'}
+  </a>
+  <a href="/about" class={`nav-link ${currentPage === 'about' ? 'active' : ''}`} data-page="about">
+    {currentPage === 'about' ? '[about]' : 'about'}
+  </a>
+  <a href="/ask" class={`nav-link ${currentPage === 'ask' ? 'active' : ''}`} data-page="ask">
+    {currentPage === 'ask' ? '[ask me]' : 'ask me'}
+  </a>
+  <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme"></button>
+</nav>
+
+<style>
+  .site-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.25rem var(--pad-r) 1.25rem var(--pad-l);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: transparent;
+  }
+
+  /* Gradient fade so content scrolls cleanly under the nav */
+  .site-nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, var(--bg) 40%, transparent);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .nav-link {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-dimmer);
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    transition: color 0.2s ease;
+  }
+
+  .nav-link:hover { color: var(--text-dim); }
+
+  .nav-link.active {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .theme-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-dimmer);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    transition: color 0.2s ease;
+    padding: 0;
+  }
+  .theme-btn:hover { color: var(--accent); }
+</style>
+
+<script>
+  const toggle = document.getElementById('theme-toggle') as HTMLButtonElement;
+
+  function getLabel(theme: string) {
+    return theme === 'dark' ? '$ set theme --light' : '$ set theme --dark';
+  }
+
+  function syncLabel() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    if (toggle) toggle.textContent = getLabel(current);
+  }
+
+  toggle?.addEventListener('click', () => {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    syncLabel();
+  });
+
+  syncLabel();
+</script>

@@ -1,0 +1,33 @@
+---
+import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro';
+---
+
+<CaseStudyLayout
+  title="Insights Service — Urvash Chheda"
+  description="How I rebuilt Later's analytics data layer — 4× faster queries, 90% cost reduction — without stopping product."
+  company="LATER · 2023–24"
+  role="Sr. Technical Product Manager · Analytics & Data Engineering"
+  headline="Insights Service — One Serving Layer, Four Teams, a Year of Work Saved"
+  metrics={[
+    { value: '4×',    label: 'Faster queries' },
+    { value: '90%',   label: 'Cost reduction' },
+    { value: '~100',  label: 'Sprints of duplication eliminated' },
+    { value: '200+',  label: 'Active campaigns to accurate payouts' },
+    { value: '4',     label: 'Teams consuming predictions' },
+    { value: '10 wk', label: 'Tech design to production' },
+  ]}
+  honestLabel="WHAT I NEARLY GOT WRONG"
+  honestBody="I shipped a prediction service with no quality validation gate. The proposal to build one came from a senior engineer, four months post-launch — not from me. There was no automated check between model output and downstream consumer. No documented incidents of bad outputs reaching customers, but the exposure was real and I owned the design. A service that serves ML predictions without standing behind their quality is half a product. I should have scoped the validation layer into v1 — not treated it as a phase 2 promise that was still in design six months after launch."
+  honestVariant="red"
+  tags={['AWS SageMaker', 'DynamoDB', 'BigQuery', 'Pub/Sub', 'REST API', 'Python', 'ML Platform']}
+  nextStudy={{ label: 'Later 360', href: '/work/later-360' }}
+>
+  <div class="cs-sec-head">[01] · context</div>
+  <p class="cs-p">Four product and platform teams were independently building SageMaker integrations for the same 10+ ML models — topic prediction, account type classification, predictive performance scoring. Each team normalized identical inputs, invoked the same models, and stored outputs in separate databases with no shared refresh cadence. Every new model multiplied the duplication: every team rebuilt the same integration plumbing. Every sprint spent on plumbing was a sprint not spent on product.</p>
+
+  <div class="cs-sec-head">[02] · the problem</div>
+  <p class="cs-p">The immediate failure was concrete. Influence scores the Search team used for campaign payout estimates were six months stale — causing incorrect payouts across 200+ active campaigns. Creators overpaid and underpaid by thousands of dollars per campaign in both directions. I made the business case to leadership for a centralized serving layer: a shared gateway to all ML inference, DynamoDB as the predictions store, BigQuery via Pub/Sub as the analytical replica. Ten weeks from tech design to production.</p>
+
+  <div class="cs-sec-head">[03] · the approach</div>
+  <p class="cs-p">The storage decision followed the access pattern. Downstream consumers needed fast API reads, not analytical queries. BigQuery was right for batch analytics and wrong for low-latency reads — direct per-inference queries at 1.4M account scale projected over $10,000/month, requiring a mid-flight pivot to Pub/Sub replication before full rollout. DynamoDB matched: sub-10ms reads, horizontal scale, schema-flexible across heterogeneous model outputs. The harder problem was organizational: teams preferred owning their own integrations. I had to show leadership that every new model multiplied a tax they were already paying. A shared service made that tax a one-time fixed cost.</p>
+</CaseStudyLayout>

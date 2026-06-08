@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Urvash Chheda — AI Technical PM · v4 Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+  <style>
+  /* =====================================================
+     DESIGN TOKENS — DARK (default)
+  ===================================================== */
+  :root {
+    --bg:          #000000;
+    --surface:     #0d0d0d;
+    --surface-2:   #1a1a18;
+    --border:      #3a3a38;
+    --text:        #f0f0ee;
+    --text-dim:    #888880;
+    --text-dimmer: #444440;
+    --accent:      #00ff88;
+    --accent-dim:  rgba(0,255,136,0.12);
+    --font-serif:  'Instrument Serif', Georgia, serif;
+    --font-mono:   'JetBrains Mono', monospace;
+    --pad-l: max(2.5rem, 11vw);
+    --pad-r: max(2.5rem, 5vw);
+    --section-gap: 5rem;
+  }
+
+  /* LIGHT MODE OVERRIDES */
+  [data-theme="light"] {
+    --bg:          #f2f1ec;
+    --surface:     #eae9e3;
+    --surface-2:   #dddbd4;
+    --border:      #b8b6ae;
+    --text:        #1c1c1a;
+    --text-dim:    #5a5a54;
+    --text-dimmer: #9a9890;
+    --accent:      #00994d;
+    --accent-dim:  rgba(0,153,77,0.1);
+  }
+
+  /* =====================================================
+     RESET
+  ===================================================== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; transition: background 0.3s, color 0.3s; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s, color 0.3s;
+  }
+  a { color: inherit; text-decoration: none; cursor: pointer; }
+  button { background: none; border: none; cursor: pointer; font-family: var(--font-mono); padding: 0; color: inherit; }
+
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* =====================================================
+     NAVIGATION
+  ===================================================== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.4rem var(--pad-r) 1.4rem var(--pad-l);
+    pointer-events: none;
+  }
+  [data-theme="dark"] nav  { background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%); }
+  [data-theme="light"] nav { background: linear-gradient(to bottom, rgba(242,241,236,0.9) 0%, transparent 100%); }
+  nav * { pointer-events: all; }
+
+  .nav-logo {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--text);
+    cursor: pointer;
+    transition: color 0.18s;
+  }
+  .nav-logo:hover { color: var(--text-dim); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-link {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: color 0.18s;
+  }
+  .nav-link:hover { color: var(--text-dim); }
+  .nav-link.active { color: var(--text); }
+  .nav-link.active::before { content: '['; color: var(--text-dimmer); }
+  .nav-link.active::after  { content: ']'; color: var(--text-dimmer); }
+
+  .nav-ask {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    padding: 0.38rem 0.8rem;
+    transition: color 0.18s, border-color 0.18s;
+  }
+  .nav-ask:hover { color: var(--text); border-color: var(--text-dim); }
+
+  .nav-theme {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: color 0.18s;
+    user-select: none;
+    padding: 0.38rem 0;
+  }
+  .nav-theme:hover { color: var(--text-dim); }
+
+  .pulse-dot {
+    width: 5px; height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse-dot 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:0.4; transform:scale(0.7); }
+  }
+
+  /* =====================================================
+     CURTAIN TRANSITION
+  ===================================================== */
+  #curtain {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    transform: translateY(100%);
+    z-index: 800;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  /* =====================================================
+     FLOATING CHAT
+  ===================================================== */
+  .chat-trigger {
+    position: fixed;
+    bottom: 2rem;
+    right: 2.5rem;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    padding: 0.48rem 0.9rem;
+    transition: color 0.18s, border-color 0.18s;
+  }
+  .chat-trigger:hover { color: var(--text-dim); border-color: var(--text-dim); }
+
+  .chat-panel {
+    position: fixed;
+    bottom: 4.5rem;
+    right: 2.5rem;
+    z-index: 499;
+    width: 330px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    transform: translateY(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .chat-panel.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+  .chat-panel-head {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .chat-suggestion {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--surface-2);
+    cursor: pointer;
+    transition: color 0.18s;
+    line-height: 1.5;
+  }
+  .chat-suggestion:first-of-type { border-top: 1px solid var(--surface-2); }
+  .chat-suggestion:hover { color: var(--text); }
+  .chat-arrow {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--text-dimmer);
+    margin-top: 0.18rem;
+    letter-spacing: 0.08em;
+  }
+  .chat-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+  .chat-input {
+    flex: 1;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.55rem 0.75rem;
+    outline: none;
+    transition: border-color 0.18s;
+  }
+  .chat-input:focus { border-color: var(--text-dim); }
+  .chat-input::placeholder { color: var(--text-dimmer); }
+  .chat-send {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-dimmer);
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: color 0.18s;
+    flex-shrink: 0;
+  }
+  .chat-send:hover { color: var(--accent); }
+
+  /* =====================================================
+     BOTTOM CHROME
+  ===================================================== */
+  .motion-toggle {
+    position: fixed;
+    bottom: 2rem;
+    left: var(--pad-l);
+    z-index: 400;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-dimmer);
+    cursor: pointer;
+    letter-spacing: 0.12em;
+    transition: color 0.18s;
+    user-select: none;
+  }
+  .motion-toggle:hover { color: var(--text-dim); }
+
+  .preview-badge {
+    position: fixed;
+    bottom: 3.5rem;
+    left: var(--pad-l);
+    z-index: 400;
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.1em;
+    border: 1px solid var(--surface-2);
+    padding: 0.25rem 0.55rem;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* =====================================================
+     LAYOUT
+  ===================================================== */
+  .wrap { padding-left: var(--pad-l); padding-right: var(--pad-r); }
+
+  /* =====================================================
+     SECTION LABELS  — developer bracket style
+  ===================================================== */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .s-bracket { color: var(--text-dimmer); }
+  .s-num {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+  .s-name {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  /* =====================================================
+     DEV LINK
+  ===================================================== */
+  .dev-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: color 0.18s;
+  }
+  .dev-link:hover { color: var(--text); }
+  .cursor {
+    display: inline-block;
+    width: 5px; height: 0.7em;
+    background: currentColor;
+    vertical-align: middle;
+    animation: blink 1.1s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* =====================================================
+     SECTION DIVIDERS
+  ===================================================== */
+  .section-div {
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  /* =====================================================
+     FOOTER
+  ===================================================== */
+  .page-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 6rem;
+    padding: 2.25rem 0;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-id {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.12em;
+  }
+  .footer-links { display: flex; gap: 2rem; align-items: center; }
+  .footer-link {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: color 0.18s;
+  }
+  .footer-link:hover { color: var(--text-dim); }
+
+  /* =====================================================
+     HOME · HERO
+  ===================================================== */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  #particleCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.28;
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 5rem;
+    align-items: center;
+    padding-top: 5rem;
+    padding-bottom: 3rem;
+  }
+  .hero-role {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero-headline {
+    font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 4.2vw, 4rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+  .hero-headline em { font-style: italic; color: var(--text-dim); }
+  .hero-body {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.85;
+    max-width: 460px;
+    margin-bottom: 2.25rem;
+  }
+  .ask-btn-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    border: 1px solid var(--border);
+    padding: 0.62rem 1.2rem;
+    cursor: pointer;
+    transition: color 0.18s, border-color 0.18s;
+    background: transparent;
+  }
+  .ask-btn-inline:hover { color: var(--text); border-color: var(--text-dim); }
+
+  /* Hero photo — right column */
+  .hero-photo-wrap { position: relative; }
+  .hero-photo-box {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  #heroCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .hero-photo-caption {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.12em;
+    margin-top: 0.75rem;
+    text-align: right;
+  }
+
+  /* =====================================================
+     HOME · HOW I THINK
+  ===================================================== */
+  .think-section {
+    padding: var(--section-gap) 0;
+    border-top: 1px solid var(--border);
+  }
+  .think-quote {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.22;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    max-width: 780px;
+  }
+  .think-body {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.88;
+    max-width: 500px;
+    margin-bottom: 1.5rem;
+  }
+
+  /* =====================================================
+     HOME · KNOWN FOR
+  ===================================================== */
+  .known-section { padding: var(--section-gap) 0; border-top: 1px solid var(--border); }
+  .known-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .known-card {
+    background: var(--surface);
+    padding: 2.25rem 2rem;
+    transition: background 0.22s;
+  }
+  .known-card:hover { background: var(--surface-2); }
+  .known-n {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+  }
+  .known-hook {
+    font-family: var(--font-serif);
+    font-size: 1.12rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.42;
+    margin-bottom: 0.85rem;
+  }
+  .known-body {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  /* =====================================================
+     HOME · SELECTED WORK
+  ===================================================== */
+  .work-home-section { padding: var(--section-gap) 0; border-top: 1px solid var(--border); }
+  .work-grid-home {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .work-card-home {
+    background: var(--surface);
+    padding: 2rem;
+    cursor: pointer;
+    transition: background 0.22s;
+    display: flex;
+    flex-direction: column;
+    min-height: 240px;
+  }
+  .work-card-home:hover { background: var(--surface-2); }
+  .wc-tag {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+  }
+  .wc-title {
+    font-family: var(--font-serif);
+    font-size: 1.02rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.42;
+    flex: 1;
+    margin-bottom: 1.25rem;
+  }
+  .wc-metric {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.65rem;
+    text-align: right;
+  }
+  .wc-link {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.1em;
+  }
+
+  /* =====================================================
+     HOME · LET'S TALK
+  ===================================================== */
+  .talk-section { padding: var(--section-gap) 0; border-top: 1px solid var(--border); }
+  .talk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+  .fl {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    line-height: 2.6;
+    letter-spacing: 0.02em;
+  }
+  .fl.strike { text-decoration: line-through; color: var(--text-dimmer); }
+  .talk-headline {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.2vw, 3.2rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.18;
+    margin-bottom: 2rem;
+  }
+  .contact-links { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  /* =====================================================
+     WORK PAGE
+  ===================================================== */
+  .work-header {
+    padding-top: 9.5rem;
+    padding-bottom: 3.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 5.5vw, 5.5rem);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.0;
+  }
+  .case-row {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 4.5rem;
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .case-co {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .case-role-lbl {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    margin-bottom: 1.25rem;
+  }
+  .case-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.28;
+    margin-bottom: 1rem;
+  }
+  .case-desc {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    line-height: 1.9;
+    max-width: 560px;
+    margin-bottom: 1.25rem;
+  }
+  .case-metrics { display: flex; flex-direction: column; gap: 0.6rem; }
+  .metric-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.9rem 1.1rem;
+  }
+  .metric-val {
+    font-family: var(--font-mono);
+    font-size: 1.45rem;
+    color: var(--text);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .metric-desc {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Work · stack table */
+  .stack-section { padding: var(--section-gap) 0; border-top: 1px solid var(--border); }
+  .stack-tbl { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+  .stack-tbl tr { border-bottom: 1px solid var(--border); }
+  .stack-tbl tr:first-child { border-top: 1px solid var(--border); }
+  .stack-tbl td {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    padding: 1rem 0;
+    vertical-align: top;
+  }
+  .stack-tbl td:first-child {
+    color: var(--text-dimmer);
+    width: 150px;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding-right: 2.5rem;
+  }
+  .stack-tbl td:last-child { color: var(--text-dim); }
+
+  .side-section { padding: var(--section-gap) 0 0; border-top: 1px solid var(--border); }
+  .side-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 2.25rem;
+  }
+  .side-card { background: var(--surface); padding: 2rem; }
+  .side-tag {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+  }
+  .side-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .side-body {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    line-height: 1.82;
+    margin-bottom: 1.1rem;
+  }
+
+  /* =====================================================
+     ABOUT PAGE
+  ===================================================== */
+  .about-header {
+    padding-top: 9.5rem;
+    padding-bottom: 3.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .about-seg {
+    padding: var(--section-gap) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .about-seg:last-child { border-bottom: none; }
+
+  .placeholder-block {
+    border: 1px dashed var(--border);
+    padding: 2.25rem;
+    color: var(--text-dimmer);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    line-height: 1.9;
+  }
+  .placeholder-block strong { color: var(--text-dim); font-weight: 400; }
+
+  .who-grid {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+  .avatar-box {
+    width: 260px;
+    aspect-ratio: 3/4;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  #aboutAvatarCanvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+
+  /* Principles */
+  .principle {
+    display: grid;
+    grid-template-columns: 2.25rem 1fr;
+    gap: 1.5rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .principle:first-child { border-top: 1px solid var(--border); }
+  .p-num {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.15em;
+    padding-top: 0.38rem;
+  }
+  .p-text {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.42;
+  }
+
+  /* Graphs */
+  .graphs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 2.25rem;
+  }
+  .graph-panel { background: var(--surface); padding: 1.75rem; }
+  .graph-label {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+  .graph-canvas { display: block; width: 100%; height: 170px; }
+
+  /* =====================================================
+     CASE STUDY
+  ===================================================== */
+  .cs-header {
+    padding-top: 9.5rem;
+    padding-bottom: 4.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-co {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .cs-role-lbl {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    margin-bottom: 1.25rem;
+  }
+  .cs-h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.2rem, 3.8vw, 3.6rem);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.18;
+    max-width: 760px;
+    margin-bottom: 3rem;
+  }
+  .cs-metrics-bar {
+    display: flex;
+    gap: 4rem;
+    padding: 2.25rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-m { display: flex; flex-direction: column; gap: 0.28rem; }
+  .cs-m-val {
+    font-family: var(--font-mono);
+    font-size: 2.2rem;
+    color: var(--text);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .cs-m-label {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .cs-body { max-width: 660px; }
+  .cs-sec-head {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-top: 3rem;
+    margin-bottom: 1.1rem;
+  }
+  .cs-p {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.95;
+    margin-bottom: 1.1rem;
+  }
+  .cs-callout {
+    background: var(--surface);
+    border-left: 2px solid var(--accent);
+    padding: 1.5rem 1.75rem;
+    margin: 2.5rem 0;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .cs-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    margin-top: 4rem;
+    margin-bottom: 6rem;
+    transition: color 0.18s;
+  }
+  .cs-back:hover { color: var(--text); }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo" onclick="goto('home')">UC</span>
+  <div class="nav-right">
+    <span class="nav-link active" data-page="home"      onclick="goto('home')">home</span>
+    <span class="nav-link"        data-page="work"      onclick="goto('work')">work</span>
+    <span class="nav-link"        data-page="about"     onclick="goto('about')">about</span>
+    <span class="nav-ask"         onclick="openChat()"><span class="pulse-dot"></span>ask me</span>
+    <span class="nav-theme" id="themeBtn" onclick="toggleTheme()">[ light ]</span>
+  </div>
+</nav>
+
+<!-- CURTAIN -->
+<div id="curtain"></div>
+
+<!-- CHAT PANEL -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-head"><span class="pulse-dot"></span>ask me anything</div>
+  <span class="chat-suggestion" onclick="void(0)">
+    Walk me through the Later 360 architecture decision
+    <span class="chat-arrow">→_</span>
+  </span>
+  <span class="chat-suggestion" onclick="void(0)">
+    Why DynamoDB over BigQuery for the ML serving layer?
+    <span class="chat-arrow">→_</span>
+  </span>
+  <span class="chat-suggestion" onclick="void(0)">
+    What would you do differently on the Aptean platform?
+    <span class="chat-arrow">→_</span>
+  </span>
+  <div class="chat-input-row">
+    <input class="chat-input" placeholder=">_ type a question" />
+    <span class="chat-send">send →_</span>
+  </div>
+</div>
+
+<div class="chat-trigger" id="chatTrigger" onclick="toggleChat()">
+  <span class="pulse-dot"></span>>_ ask
+</div>
+
+<!-- CHROME -->
+<div class="motion-toggle" id="motionBtn" onclick="toggleMotion()">·· motion on</div>
+<div class="preview-badge">preview · effects approximated</div>
+
+
+<!-- ============================================================
+     HOME
+============================================================ -->
+<div class="page active" id="home">
+
+  <section class="hero">
+    <canvas id="particleCanvas"></canvas>
+    <div class="wrap hero-inner">
+
+      <!-- LEFT: text -->
+      <div>
+        <p class="hero-role">AI Technical Product Manager</p>
+        <h1 class="hero-headline">I build the infrastructure<br><em>modern AI</em> runs on.</h1>
+        <p class="hero-body">Not a PM who delegates technical decisions. Someone who reads the schema, challenges the architecture, and stays accountable to what ships.</p>
+        <button class="ask-btn-inline" onclick="openChat()">
+          <span class="pulse-dot"></span>ask me anything
+        </button>
+      </div>
+
+      <!-- RIGHT: photo -->
+      <div class="hero-photo-wrap">
+        <div class="hero-photo-box">
+          <canvas id="heroCanvas"></canvas>
+        </div>
+        <p class="hero-photo-caption">[ pixel reveal · B/W portrait ]</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW I THINK -->
+  <section class="think-section">
+    <div class="wrap">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>02<span class="s-bracket">]</span></span>
+        <span class="s-name">How I Think</span>
+      </div>
+      <p class="think-quote" id="thinkQuote">Data products are only as good as the decisions they enable.</p>
+      <p class="think-body">I think in systems but write in English. My job isn't to build the most technically impressive solution — it's to build the right one, and make sure the team understands why. That means going deep enough on the data layer to know when the "simple" path is actually a trap.</p>
+      <span class="dev-link" onclick="goto('about')">Read how I work →_<span class="cursor"></span></span>
+    </div>
+  </section>
+
+  <!-- KNOWN FOR -->
+  <section class="known-section">
+    <div class="wrap">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>03<span class="s-bracket">]</span></span>
+        <span class="s-name">What I'm Known For</span>
+      </div>
+      <div class="known-grid">
+        <div class="known-card">
+          <span class="known-n">01</span>
+          <p class="known-hook">"I read the schema before I read the brief."</p>
+          <p class="known-body">When I write a spec, the technical assumptions are already stress-tested.</p>
+        </div>
+        <div class="known-card">
+          <span class="known-n">02</span>
+          <p class="known-hook">"I've shipped it — the warehouse, the ML layer, the API, the analytics."</p>
+          <p class="known-body">At Mavrck, Aptean, Bushel. Not just roadmapped. Shipped.</p>
+        </div>
+        <div class="known-card">
+          <span class="known-n">03</span>
+          <p class="known-hook">"I build in the open — FinTrack, this site, a second brain in Obsidian."</p>
+          <p class="known-body">What I build when nobody's watching is the truest signal of what I value.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK -->
+  <section class="work-home-section">
+    <div class="wrap">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>04<span class="s-bracket">]</span></span>
+        <span class="s-name">Selected Work</span>
+      </div>
+      <div class="work-grid-home">
+        <div class="work-card-home" onclick="goto('case-study')">
+          <div class="wc-tag">Mavrck / Later</div>
+          <p class="wc-title">Centralising ML deployment across a fragmented data platform</p>
+          <div class="wc-metric">1 qtr · 6+ ML models · ↓ cloud spend</div>
+          <div class="wc-link">Read case study →_</div>
+        </div>
+        <div class="work-card-home" onclick="goto('work')">
+          <div class="wc-tag">Aptean</div>
+          <p class="wc-title">Building a data warehouse and analytics layer from scratch</p>
+          <div class="wc-metric">0→1 · enterprise scale</div>
+          <div class="wc-link">Read case study →_</div>
+        </div>
+        <div class="work-card-home" onclick="goto('work')">
+          <div class="wc-tag">Bushel</div>
+          <p class="wc-title">Making API usage data actionable for product and revenue</p>
+          <div class="wc-metric">↑ API adoption · ↓ support tickets</div>
+          <div class="wc-link">Read case study →_</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LET'S TALK -->
+  <section class="talk-section">
+    <div class="wrap">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>05<span class="s-bracket">]</span></span>
+        <span class="s-name">Let's Talk</span>
+      </div>
+      <div class="talk-grid">
+        <div>
+          <span class="fl strike">If you want a PM who says yes to everything,</span>
+          <span class="fl strike">if you need someone who just writes tickets,</span>
+          <span class="fl strike">if the data layer is someone else's problem —</span>
+          <span class="fl">&nbsp;</span>
+          <span class="fl">If you're building something that lives or dies on data quality,</span>
+          <span class="fl">if you need someone who can talk to engineers and executives in the same breath —</span>
+        </div>
+        <div>
+          <p class="talk-headline">Ideas worth discussing.</p>
+          <div class="contact-links">
+            <a class="dev-link" href="mailto:urvash94@gmail.com">email →_<span class="cursor"></span></a>
+            <a class="dev-link" href="https://linkedin.com/in/urvashchheda" target="_blank">linkedin →_<span class="cursor"></span></a>
+            <a class="dev-link" href="https://github.com/urvash" target="_blank">github →_<span class="cursor"></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-footer">
+    <div class="wrap footer-inner">
+      <span class="footer-id">Urvash Chheda · urvash.com</span>
+      <div class="footer-links">
+        <a class="footer-link" href="mailto:urvash94@gmail.com">email</a>
+        <a class="footer-link" href="https://linkedin.com/in/urvashchheda" target="_blank">linkedin</a>
+        <a class="footer-link" href="https://github.com/urvash" target="_blank">github</a>
+        <span class="footer-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ top</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     WORK
+============================================================ -->
+<div class="page" id="work">
+  <div class="wrap">
+
+    <div class="work-header">
+      <div class="section-label" style="margin-bottom:1.25rem">
+        <span class="s-num"><span class="s-bracket">[</span>01<span class="s-bracket">]</span></span>
+        <span class="s-name">Selected Work</span>
+      </div>
+      <h1 class="page-h1">The work.</h1>
+    </div>
+
+    <div class="case-row">
+      <div>
+        <div class="case-co">Mavrck / Later</div>
+        <div class="case-role-lbl">Senior Product Manager · Data Platform · 2022–2023</div>
+        <h2 class="case-title">Centralising ML deployment across a fragmented data platform</h2>
+        <p class="case-desc">Mavrck's ML infrastructure had grown organically across two companies — three deployment pipelines, no shared feature store, no unified monitoring. I led the consolidation: one deployment surface, shared feature registry, one alerting layer. Six models migrated in one quarter.</p>
+        <span class="dev-link" onclick="goto('case-study')">Read full case study →_<span class="cursor"></span></span>
+      </div>
+      <div class="case-metrics">
+        <div class="metric-tile"><div class="metric-val">1 qtr</div><div class="metric-desc">full migration</div></div>
+        <div class="metric-tile"><div class="metric-val">6+</div><div class="metric-desc">ML models unified</div></div>
+        <div class="metric-tile"><div class="metric-val">↓</div><div class="metric-desc">cloud spend</div></div>
+      </div>
+    </div>
+
+    <div class="case-row">
+      <div>
+        <div class="case-co">Aptean</div>
+        <div class="case-role-lbl">Product Manager · Data & Analytics · 2020–2022</div>
+        <h2 class="case-title">Building a data warehouse and analytics layer from zero</h2>
+        <p class="case-desc">No warehouse, no pipeline, no reporting layer. I scoped and shipped the full data infrastructure from scratch — schema design, ETL pipelines, analytics dashboards, and a self-serve layer for enterprise customers. Every decision became a constraint for the next five years.</p>
+        <span class="dev-link">Read full case study →_<span class="cursor"></span></span>
+      </div>
+      <div class="case-metrics">
+        <div class="metric-tile"><div class="metric-val">0→1</div><div class="metric-desc">data warehouse</div></div>
+        <div class="metric-tile"><div class="metric-val">enterprise</div><div class="metric-desc">scale deployed</div></div>
+      </div>
+    </div>
+
+    <div class="case-row">
+      <div>
+        <div class="case-co">Bushel</div>
+        <div class="case-role-lbl">Product Manager · API Platform · 2019–2020</div>
+        <h2 class="case-title">Making API usage data actionable for product and revenue teams</h2>
+        <p class="case-desc">API analytics was a black box. Usage data existed but lived in logs nobody read. I built the visibility layer — usage dashboards, partner-facing analytics, and a feedback loop from consumption data into the product roadmap.</p>
+        <span class="dev-link">Read full case study →_<span class="cursor"></span></span>
+      </div>
+      <div class="case-metrics">
+        <div class="metric-tile"><div class="metric-val">↑</div><div class="metric-desc">API adoption</div></div>
+        <div class="metric-tile"><div class="metric-val">↓</div><div class="metric-desc">support tickets</div></div>
+      </div>
+    </div>
+
+    <!-- STACK — on Work page -->
+    <div class="stack-section">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>02<span class="s-bracket">]</span></span>
+        <span class="s-name">What I Use</span>
+      </div>
+      <table class="stack-tbl">
+        <tr><td>Tools</td><td>Jira, Linear, Notion, Obsidian, Figma, Miro</td></tr>
+        <tr><td>Data</td><td>SQL, dbt, Snowflake, BigQuery, Looker, Metabase</td></tr>
+        <tr><td>ML / AI</td><td>Python, Jupyter, feature stores, MLflow, prompt engineering, LangChain</td></tr>
+        <tr><td>Code</td><td>TypeScript, React, Astro, Supabase, Vercel, Node</td></tr>
+        <tr><td>APIs</td><td>REST, GraphQL, OpenAPI, API analytics platforms</td></tr>
+      </table>
+    </div>
+
+    <!-- SIDE PROJECTS -->
+    <div class="side-section">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>03<span class="s-bracket">]</span></span>
+        <span class="s-name">Side Projects</span>
+      </div>
+      <div class="side-grid">
+        <div class="side-card">
+          <div class="side-tag">Personal Finance</div>
+          <div class="side-title">FinTrack</div>
+          <p class="side-body">A personal finance tracker built in the open. What I build when there's no product brief — just a problem I wanted to solve. React + Supabase.</p>
+          <span class="dev-link" style="font-size:0.68rem">View on GitHub →_<span class="cursor"></span></span>
+        </div>
+        <div class="side-card">
+          <div class="side-tag">This Site</div>
+          <div class="side-title">urvash.com v4</div>
+          <p class="side-body">Astro + Vercel. Live Obsidian vault graph and GitHub heatmap via Supabase. The design system is a deliberate choice — worth reading about.</p>
+          <span class="dev-link" style="font-size:0.68rem">View source →_<span class="cursor"></span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="page-footer">
+    <div class="wrap footer-inner">
+      <span class="footer-id">Urvash Chheda · urvash.com</span>
+      <div class="footer-links">
+        <a class="footer-link" href="mailto:urvash94@gmail.com">email</a>
+        <a class="footer-link" href="https://linkedin.com/in/urvashchheda" target="_blank">linkedin</a>
+        <a class="footer-link" href="https://github.com/urvash" target="_blank">github</a>
+        <span class="footer-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ top</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     ABOUT
+============================================================ -->
+<div class="page" id="about">
+  <div class="wrap">
+
+    <div class="about-header">
+      <div class="section-label" style="margin-bottom:1.25rem">
+        <span class="s-num"><span class="s-bracket">[</span>00<span class="s-bracket">]</span></span>
+        <span class="s-name">About</span>
+      </div>
+      <h1 class="page-h1">A person,<br>not a résumé.</h1>
+    </div>
+
+    <!-- 01 WHO I AM -->
+    <div class="about-seg">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>01<span class="s-bracket">]</span></span>
+        <span class="s-name">Who I Am</span>
+      </div>
+      <div class="who-grid">
+        <div>
+          <div class="avatar-box">
+            <canvas id="aboutAvatarCanvas"></canvas>
+          </div>
+          <p style="font-family:var(--font-mono);font-size:0.54rem;color:var(--text-dimmer);letter-spacing:0.1em;margin-top:0.65rem;">[ pixel reveal · B/W portrait ]</p>
+        </div>
+        <div>
+          <div class="placeholder-block">
+            <strong>[ content TBD — personal &amp; informal ]</strong><br><br>
+            Not a bio. Who I am as a person — what I care about,<br>
+            what I'm curious about, what gets me out of bed.<br>
+            Tone: warm, dry, no LinkedIn voice.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 HOW I WORK -->
+    <div class="about-seg">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>02<span class="s-bracket">]</span></span>
+        <span class="s-name">How I Work</span>
+      </div>
+      <div class="principle"><span class="p-num">01</span><p class="p-text">I stress-test the technical assumptions before I write the spec.</p></div>
+      <div class="principle"><span class="p-num">02</span><p class="p-text">I make the invisible visible.</p></div>
+      <div class="principle"><span class="p-num">03</span><p class="p-text">I don't own the roadmap. I own the outcome.</p></div>
+      <div class="principle"><span class="p-num">04</span><p class="p-text">A decision not written down didn't happen.</p></div>
+      <div class="principle"><span class="p-num">05</span><p class="p-text">The right tool for the right problem. Not the most impressive-sounding one.</p></div>
+      <div class="principle"><span class="p-num">06</span><p class="p-text">I push back. I own the outcome.</p></div>
+    </div>
+
+    <!-- 03 WHAT I BUILD -->
+    <div class="about-seg">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>03<span class="s-bracket">]</span></span>
+        <span class="s-name">What I Build</span>
+      </div>
+      <div class="placeholder-block" style="margin-bottom:2rem">
+        <strong>[ content TBD — fun &amp; informal ]</strong><br><br>
+        What I actually build outside of work.<br>
+        Connects to the live graphs below.
+      </div>
+      <div class="graphs-row">
+        <div class="graph-panel">
+          <div class="graph-label">Obsidian vault · folder topology</div>
+          <canvas class="graph-canvas" id="vaultGraph"></canvas>
+        </div>
+        <div class="graph-panel">
+          <div class="graph-label">GitHub · contribution activity</div>
+          <canvas class="graph-canvas" id="ghGraph"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 WHERE I COME FROM -->
+    <div class="about-seg">
+      <div class="section-label">
+        <span class="s-num"><span class="s-bracket">[</span>04<span class="s-bracket">]</span></span>
+        <span class="s-name">Where I Come From</span>
+      </div>
+      <div class="placeholder-block">
+        <strong>[ draft saved — final copy TBD ]</strong><br><br>
+        Personal prose about background and origins. Not a timeline.<br>
+        The story of how I got here — the real version.
+      </div>
+    </div>
+
+  </div>
+  <div class="page-footer">
+    <div class="wrap footer-inner">
+      <span class="footer-id">Urvash Chheda · urvash.com</span>
+      <div class="footer-links">
+        <a class="footer-link" href="mailto:urvash94@gmail.com">email</a>
+        <a class="footer-link" href="https://linkedin.com/in/urvashchheda" target="_blank">linkedin</a>
+        <a class="footer-link" href="https://github.com/urvash" target="_blank">github</a>
+        <span class="footer-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ top</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     CASE STUDY
+============================================================ -->
+<div class="page" id="case-study">
+  <div class="wrap">
+
+    <div class="cs-header">
+      <span class="cs-co">Mavrck / Later · 2022–2023</span>
+      <div class="cs-role-lbl">Senior Product Manager · Data Platform</div>
+      <h1 class="cs-h1">Centralising ML deployment across a fragmented data platform</h1>
+      <div class="cs-metrics-bar">
+        <div class="cs-m"><span class="cs-m-val">1 qtr</span><span class="cs-m-label">full migration</span></div>
+        <div class="cs-m"><span class="cs-m-val">6+</span><span class="cs-m-label">ML models unified</span></div>
+        <div class="cs-m"><span class="cs-m-val">↓</span><span class="cs-m-label">cloud spend</span></div>
+      </div>
+    </div>
+
+    <div class="cs-body" style="padding-top:0.5rem">
+      <div class="cs-sec-head">// context</div>
+      <p class="cs-p">Mavrck acquired Later in 2022, creating a combined influencer marketing platform with a significant technical debt problem: two separate data stacks, three ML deployment pipelines, no shared infrastructure. Models were deployed wherever the team that built them happened to work — Kubernetes here, Lambda there, a SageMaker endpoint that one engineer understood.</p>
+      <p class="cs-p">I was brought in to own the data platform roadmap after the merger. The ML deployment problem wasn't the only issue, but it was the one compounding fastest. Cloud costs were climbing. Model monitoring was non-existent. Every new model created another one-off deployment pattern.</p>
+
+      <div class="cs-callout">"The problem wasn't that we had six models. It was that we had six deployment philosophies."</div>
+
+      <div class="cs-sec-head">// the problem</div>
+      <p class="cs-p">Before writing a single line of spec, I needed to understand the actual state of the infrastructure. I spent the first two weeks reading schemas, reviewing deployment configs, and sitting with the ML engineers. Not to tell them what to build — to understand what we actually had.</p>
+      <p class="cs-p">Three deployment patterns across two clouds, no shared feature store, no centralized monitoring, and model metadata scattered across Confluence pages and Slack threads. The technical debt was real but not insurmountable. The organizational debt was harder.</p>
+
+      <div class="cs-sec-head">// the approach</div>
+      <p class="cs-p">Phased consolidation: first, a unified deployment surface (one pipeline, two environments); second, a shared feature registry; third, one monitoring layer with standardized alerting. The spec went through five revisions — not because the technical direction changed, but because each revision forced a harder conversation about ownership.</p>
+
+      <div class="cs-sec-head">// outcome</div>
+      <p class="cs-p">Six models migrated in one quarter. Cloud spend down. New models now have a clear deployment path. The monitoring layer that didn't exist now pages on-call when a model's output distribution drifts.</p>
+
+      <div class="cs-callout">The boring outcome: a table in Confluence that says exactly which team owns each model and what the SLA is. That table didn't exist before. It matters more than any architecture diagram.</div>
+    </div>
+
+    <span class="cs-back" onclick="goto('work')">← back to work</span>
+
+  </div>
+  <div class="page-footer">
+    <div class="wrap footer-inner">
+      <span class="footer-id">Urvash Chheda · urvash.com</span>
+      <div class="footer-links">
+        <a class="footer-link" href="mailto:urvash94@gmail.com">email</a>
+        <a class="footer-link" href="https://linkedin.com/in/urvashchheda" target="_blank">linkedin</a>
+        <a class="footer-link" href="https://github.com/urvash" target="_blank">github</a>
+        <span class="footer-link" onclick="goto('work')">← all work</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     JS
+============================================================ -->
+<script>
+'use strict';
+
+// ── State ─────────────────────────────────────────────────
+let motionOn    = true;
+let currentPage = 'home';
+let pRafId      = null;
+let chatOpen    = false;
+let heroAvatarDone  = false;
+let aboutAvatarDone = false;
+let vaultRafId  = null;
+
+// ── Theme helpers ──────────────────────────────────────────
+const isDark  = () => document.documentElement.dataset.theme === 'dark';
+const themeC  = (dark, light) => isDark() ? dark : light;
+
+// ── Curtain ────────────────────────────────────────────────
+const curtain = document.getElementById('curtain');
+
+function goto(pageId) {
+  if (pageId === currentPage) return;
+  if (!motionOn) { switchPage(pageId); return; }
+
+  curtain.style.transition = 'transform 0.34s cubic-bezier(0.76,0,0.24,1)';
+  curtain.style.transform  = 'translateY(0)';
+
+  setTimeout(() => {
+    switchPage(pageId);
+    curtain.style.transform = 'translateY(-100%)';
+    setTimeout(() => {
+      curtain.style.transition = 'none';
+      curtain.style.transform  = 'translateY(100%)';
+    }, 360);
+  }, 350);
+}
+
+function switchPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById(id);
+  if (!pg) return;
+  pg.classList.add('active');
+  window.scrollTo(0, 0);
+  currentPage = id;
+  updateNav(id);
+
+  if (id === 'about') setTimeout(() => {
+    initAboutAvatar();
+    drawVaultGraph();
+    drawGhGraph();
+  }, 80);
+}
+
+// ── Nav active ─────────────────────────────────────────────
+function updateNav(id) {
+  document.querySelectorAll('.nav-link').forEach(el => {
+    el.classList.toggle('active', el.dataset.page === id);
+  });
+}
+
+// ── Theme toggle ───────────────────────────────────────────
+function toggleTheme() {
+  const dark = isDark();
+  document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+  document.getElementById('themeBtn').textContent = dark ? '[ dark ]' : '[ light ]';
+  // Update curtain bg
+  curtain.style.background = dark ? '#f2f1ec' : '#000000';
+
+  // Redraw canvases with new palette
+  if (pRafId) cancelAnimationFrame(pRafId);
+  initParticles();
+
+  if (currentPage === 'home') {
+    heroAvatarDone = false;
+    initHeroAvatar();
+  }
+  if (currentPage === 'about') {
+    drawVaultGraph();
+    drawGhGraph();
+    aboutAvatarDone = false;
+    initAboutAvatar();
+  }
+}
+
+// ── Chat ───────────────────────────────────────────────────
+function toggleChat() { chatOpen = !chatOpen; document.getElementById('chatPanel').classList.toggle('open', chatOpen); }
+function openChat()   { chatOpen = true; document.getElementById('chatPanel').classList.add('open'); }
+document.addEventListener('click', e => {
+  if (!chatOpen) return;
+  const panel = document.getElementById('chatPanel');
+  const trig  = document.getElementById('chatTrigger');
+  const askBtns = document.querySelectorAll('.nav-ask, .ask-btn-inline');
+  let outside = !panel.contains(e.target) && !trig.contains(e.target);
+  askBtns.forEach(b => { if (b.contains(e.target)) outside = false; });
+  if (outside) { chatOpen = false; panel.classList.remove('open'); }
+});
+
+// ── Motion ─────────────────────────────────────────────────
+function toggleMotion() {
+  motionOn = !motionOn;
+  document.getElementById('motionBtn').textContent = `·· motion ${motionOn ? 'on' : 'off'}`;
+  if (motionOn) {
+    initParticles();
+    initCharAssembly();
+  } else {
+    if (pRafId) { cancelAnimationFrame(pRafId); pRafId = null; }
+    if (vaultRafId) { cancelAnimationFrame(vaultRafId); vaultRafId = null; }
+    document.querySelectorAll('.cursor').forEach(c => { c.style.animation='none'; c.style.opacity='1'; });
+    document.querySelectorAll('.pulse-dot').forEach(d => { d.style.animation='none'; });
+  }
+}
+
+// ── Particles ──────────────────────────────────────────────
+function initParticles() {
+  const canvas = document.getElementById('particleCanvas');
+  if (!canvas) return;
+
+  function resize() {
+    canvas.width  = canvas.parentElement.offsetWidth  || window.innerWidth;
+    canvas.height = canvas.parentElement.offsetHeight || window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const ctx = canvas.getContext('2d');
+  const N = 80;
+  const pts = Array.from({length: N}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random()-.5) * 0.4,
+    vy: (Math.random()-.5) * 0.4,
+    r:  Math.random() * 1.3 + 0.3,
+    a:  Math.random() * 0.35 + 0.06,
+  }));
+
+  function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // In light mode, particles are dark; in dark mode, light
+    const pc = isDark() ? '240,240,238' : '28,28,26';
+    for (let i = 0; i < N; i++) {
+      const p = pts[i];
+      p.x = (p.x + p.vx + canvas.width)  % canvas.width;
+      p.y = (p.y + p.vy + canvas.height) % canvas.height;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${pc},${p.a})`;
+      ctx.fill();
+      for (let j = i+1; j < N; j++) {
+        const q = pts[j];
+        const dx = p.x-q.x, dy = p.y-q.y;
+        const d  = Math.sqrt(dx*dx+dy*dy);
+        if (d < 100) {
+          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle = `rgba(${pc},${0.05*(1-d/100)})`;
+          ctx.lineWidth = 0.5; ctx.stroke();
+        }
+      }
+    }
+    if (motionOn) pRafId = requestAnimationFrame(frame);
+  }
+  if (pRafId) cancelAnimationFrame(pRafId);
+  frame();
+}
+
+// ── Avatar pixel reveal (shared draw logic) ────────────────
+function drawAvatarPhoto(ctx, W, H) {
+  const light = !isDark();
+  const bg1 = light ? '#d8d6d0' : '#242424';
+  const bg2 = light ? '#cbc8c0' : '#1c1c1c';
+  const bg3 = light ? '#c0bdb5' : '#141414';
+  const head = light ? '#b0ada5' : '#363636';
+  const body = light ? '#c8c5bd' : '#1e1e1e';
+  const neck = light ? '#b8b5ad' : '#303030';
+
+  const g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0, bg1); g.addColorStop(.5, bg2); g.addColorStop(1, bg3);
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = body;
+  ctx.beginPath(); ctx.ellipse(W*.5,H*.86,W*.52,H*.32,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = neck; ctx.fillRect(W*.43,H*.52,W*.14,H*.1);
+  ctx.fillStyle = head;
+  ctx.beginPath(); ctx.ellipse(W*.5,H*.33,W*.23,H*.26,0,0,Math.PI*2); ctx.fill();
+  const fg = ctx.createRadialGradient(W*.47,H*.28,0,W*.5,H*.33,W*.2);
+  fg.addColorStop(0, light ? 'rgba(200,200,195,0.3)' : 'rgba(70,70,70,0.3)');
+  fg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = fg;
+  ctx.beginPath(); ctx.ellipse(W*.5,H*.33,W*.23,H*.26,0,0,Math.PI*2); ctx.fill();
+}
+
+function runPixelReveal(canvas, doneFlag, setDone) {
+  const W = canvas.width, H = canvas.height;
+  const ctx = canvas.getContext('2d');
+
+  // offscreen photo
+  const off = document.createElement('canvas');
+  off.width = W; off.height = H;
+  drawAvatarPhoto(off.getContext('2d'), W, H);
+
+  ctx.fillStyle = isDark() ? '#000' : '#f2f1ec';
+  ctx.fillRect(0,0,W,H);
+
+  const GW=24, GH=30, cw=W/GW, ch=H/GH;
+  const cells = [];
+  for (let r=0;r<GH;r++) for (let c=0;c<GW;c++) cells.push({r,c});
+  for (let i=cells.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [cells[i],cells[j]]=[cells[j],cells[i]];
+  }
+
+  if (!motionOn) { drawAvatarPhoto(ctx, W, H); setDone(true); return; }
+
+  let idx = 0;
+  function tick() {
+    for (let k=0;k<5&&idx<cells.length;k++,idx++) {
+      const {r,c}=cells[idx];
+      ctx.drawImage(off,c*cw,r*ch,cw+.5,ch+.5,c*cw,r*ch,cw+.5,ch+.5);
+    }
+    if (idx<cells.length&&motionOn) setTimeout(tick,28);
+    else setDone(true);
+  }
+  setTimeout(tick,500);
+}
+
+function initHeroAvatar() {
+  if (heroAvatarDone) return;
+  const canvas = document.getElementById('heroCanvas');
+  const box    = canvas?.parentElement;
+  if (!canvas||!box) return;
+  canvas.width  = box.offsetWidth;
+  canvas.height = box.offsetHeight;
+  runPixelReveal(canvas, heroAvatarDone, v => heroAvatarDone = v);
+}
+
+function initAboutAvatar() {
+  if (aboutAvatarDone) return;
+  const canvas = document.getElementById('aboutAvatarCanvas');
+  const box    = canvas?.parentElement;
+  if (!canvas||!box) return;
+  canvas.width  = box.offsetWidth;
+  canvas.height = box.offsetHeight;
+  runPixelReveal(canvas, aboutAvatarDone, v => aboutAvatarDone = v);
+}
+
+// ── Character assembly ─────────────────────────────────────
+function initCharAssembly() {
+  const el = document.getElementById('thinkQuote');
+  if (!el||!motionOn) return;
+  const text = el.textContent.trim();
+  el.innerHTML = '';
+  const spans = [...text].map(ch => {
+    const s = document.createElement('span');
+    s.textContent = ch;
+    s.style.cssText = 'opacity:0;transition:opacity 0.04s';
+    el.appendChild(s);
+    return s;
+  });
+  new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting)
+      spans.forEach((s,i) => setTimeout(() => s.style.opacity='1', i*15));
+  },{threshold:0.3}).observe(el);
+}
+
+// ── Vault graph ────────────────────────────────────────────
+function drawVaultGraph() {
+  const canvas = document.getElementById('vaultGraph');
+  if (!canvas) return;
+  canvas.width  = canvas.parentElement.clientWidth - 56 || 420;
+  canvas.height = 170;
+  const ctx = canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+
+  const light = !isDark();
+  const nodeColor = light ? 'rgba(90,90,84,0.75)' : 'rgba(136,136,128,0.75)';
+  const edgeColor = light ? 'rgba(160,158,150,0.5)' : 'rgba(68,68,64,0.5)';
+  const labelColor = light ? 'rgba(100,98,92,0.85)' : 'rgba(68,68,64,0.85)';
+
+  const nodes = [
+    {l:'01-projects',  x:W*.50,y:H*.28,r:7},
+    {l:'02-areas',     x:W*.76,y:H*.56,r:5.5},
+    {l:'03-resources', x:W*.22,y:H*.62,r:6},
+    {l:'04-archive',   x:W*.56,y:H*.78,r:4},
+    {l:'00-inbox',     x:W*.18,y:H*.28,r:4.5},
+    {l:'fleeting',     x:W*.36,y:H*.48,r:3.5},
+    {l:'maps',         x:W*.66,y:H*.17,r:5},
+    {l:'people',       x:W*.82,y:H*.35,r:3.5},
+  ];
+  const edges = [[0,1],[0,2],[0,3],[0,5],[0,6],[1,7],[1,3],[2,5],[2,3],[4,5],[6,0],[6,1],[7,1]];
+
+  let t=0;
+  function frame() {
+    ctx.clearRect(0,0,W,H);
+    edges.forEach(([a,b]) => {
+      const na=nodes[a],nb=nodes[b];
+      ctx.beginPath(); ctx.moveTo(na.x,na.y); ctx.lineTo(nb.x,nb.y);
+      ctx.strokeStyle=edgeColor; ctx.lineWidth=0.8; ctx.stroke();
+    });
+    nodes.forEach((n,i) => {
+      const fy = motionOn ? Math.sin(t*.025+i*.9)*2 : 0;
+      ctx.beginPath(); ctx.arc(n.x,n.y+fy,n.r+2,0,Math.PI*2);
+      ctx.strokeStyle='rgba(136,136,128,0.1)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(n.x,n.y+fy,n.r,0,Math.PI*2);
+      ctx.fillStyle=nodeColor; ctx.fill();
+      ctx.fillStyle=labelColor;
+      ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='center';
+      ctx.fillText(n.l,n.x,n.y+fy+n.r+11);
+    });
+    t++;
+    if (motionOn) vaultRafId=requestAnimationFrame(frame);
+  }
+  if (vaultRafId) cancelAnimationFrame(vaultRafId);
+  frame();
+}
+
+// ── GitHub heatmap ─────────────────────────────────────────
+function drawGhGraph() {
+  const canvas = document.getElementById('ghGraph');
+  if (!canvas) return;
+  canvas.width  = canvas.parentElement.clientWidth - 56 || 420;
+  canvas.height = 170;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+
+  const light = !isDark();
+  const WEEKS=52,DAYS=7;
+  const cw=Math.floor((W-38)/WEEKS)-1;
+  const ch=Math.floor((H-34)/DAYS)-1;
+  const ox=24,oy=16;
+
+  let seed=42;
+  const rnd=()=>{seed=(seed*1664525+1013904223)&0xffffffff;return(seed>>>0)/0xffffffff;};
+  const data=Array.from({length:WEEKS},()=>
+    Array.from({length:DAYS},(_,d)=>rnd()<(d>=5?.72:.38)?0:Math.floor(rnd()*9+1))
+  );
+
+  const col = v => {
+    if (v===0) return light ? '#dddbd4' : '#111';
+    const greens = light
+      ? ['#c8e6d4','#8ec9a8','#4aab78','#00994d']
+      : ['#0d2d1c','#155b34','#198a4b','#00ff88'];
+    return greens[v<=2?0:v<=4?1:v<=7?2:3];
+  };
+
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle=light?'rgba(90,90,84,0.72)':'rgba(68,68,64,0.72)';
+  ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].forEach((m,i)=>{
+    ctx.fillText(m, ox+Math.round(i*WEEKS/12)*(cw+1), oy-3);
+  });
+  ['M','','W','','F','',''].forEach((d,i)=>{
+    if(d) ctx.fillText(d, 0, oy+i*(ch+1)+ch);
+  });
+  data.forEach((week,w)=>week.forEach((v,d)=>{
+    ctx.fillStyle=col(v);
+    ctx.fillRect(ox+w*(cw+1), oy+d*(ch+1), cw, ch);
+  }));
+  const total=data.flat().reduce((a,b)=>a+b,0);
+  ctx.fillStyle=light?'rgba(90,90,84,0.65)':'rgba(136,136,128,0.62)';
+  ctx.fillText(`${total} contributions in the last year`,ox,H-2);
+}
+
+// ── Init ───────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  initParticles();
+  initHeroAvatar();
+  initCharAssembly();
+  updateNav('home');
+});
+</script>
+</body>
+</html>
