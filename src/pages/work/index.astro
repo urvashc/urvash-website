@@ -116,6 +116,14 @@ const description = 'AI products, platforms, and the occasional prototype that m
           <div class="tool-name">Linear</div>
           <p class="tool-desc">I keep an explicit dropped-items list every sprint. A dropped item that isn't documented is a commitment that doesn't exist.</p>
         </div>
+        <div class="tool-card">
+          <div class="tool-name">SageMaker</div>
+          <p class="tool-desc">I can't review a model's business impact without seeing the endpoint latency and prediction volume directly.</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">GitHub</div>
+          <p class="tool-desc">Read access isn't optional if I'm accountable for what ships. I run PR review sessions with the team — not to gatekeep, to understand.</p>
+        </div>
       </div>
     </section>
 
@@ -295,14 +303,15 @@ const description = 'AI products, platforms, and the occasional prototype that m
   .tools-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
   }
 
   .tool-card {
     background: var(--surface);
     padding: 1.25rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
 
   .tool-name {
