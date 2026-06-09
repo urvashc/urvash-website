@@ -1,0 +1,138 @@
+---
+let error = '';
+const next = Astro.url.searchParams.get('next') || '/';
+
+if (Astro.request.method === 'POST') {
+  const data = await Astro.request.formData();
+  const password = data.get('password')?.toString() ?? '';
+
+  if (password && password === import.meta.env.SITE_PASSWORD) {
+    Astro.cookies.set('site-auth', 'v4-authenticated', {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 604800,
+    });
+    return Astro.redirect(next);
+  } else {
+    error = 'access denied.';
+  }
+}
+---
+
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>enter — urvash.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <main>
+      <form method="POST" action={`/enter?next=${encodeURIComponent(next)}`}>
+        <label class="prompt-label">&gt; enter password</label>
+        <div class="input-row">
+          <span class="caret">&gt;</span>
+          <input
+            type="password"
+            name="password"
+            class="pass-input"
+            autocomplete="current-password"
+            autofocus
+            aria-label="Password"
+          />
+          <button type="submit" class="submit-btn">↵</button>
+        </div>
+        {error && <p class="error-msg">{error}</p>}
+      </form>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    --bg: #000000;
+    --surface: #0d0d0d;
+    --border: #3a3a38;
+    --text: #f0f0ee;
+    --text-dim: #888880;
+    --text-dimmer: #444440;
+    --accent: #00ff88;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    width: 100%;
+    max-width: 420px;
+    padding: 2rem;
+  }
+
+  .prompt-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+
+  .caret {
+    color: var(--accent);
+    font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+
+  .pass-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+  }
+
+  .pass-input::placeholder { color: var(--text-dimmer); }
+
+  .submit-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.18s ease;
+    flex-shrink: 0;
+  }
+  .submit-btn:hover { color: var(--accent); }
+
+  .error-msg {
+    font-size: 0.75rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.06em;
+    margin-top: 1rem;
+  }
+</style>
