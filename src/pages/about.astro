@@ -144,6 +144,8 @@ const description = 'Product person. AI builder. Systems thinker.';
 
   <Footer />
 
+  <div id="commit-tooltip" style="position:fixed; display:none; background:var(--surface); border:1px solid var(--border); padding:0.4rem 0.75rem; font-family:var(--font-mono); font-size:0.72rem; color:var(--text); pointer-events:none; z-index:1000;"></div>
+
   <!-- D3 from CDN for vault graph -->
   <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 
@@ -152,6 +154,9 @@ const description = 'Product person. AI builder. Systems thinker.';
 
     // ── GitHub heatmap ───────────────────────────────────────────────
     const WEEKS = 52, DAYS = 7, GAP = 2, CELL = 10;
+
+    type CellMeta = { date: string; count: number };
+    let heatmapMeta: CellMeta[][] = [];
 
     function countToLevel(n: number): number {
       if (n === 0) return 0;
@@ -179,6 +184,63 @@ const description = 'Product person. AI builder. Systems thinker.';
       );
     }
 
+    function formatDate(iso: string): string {
+      if (!iso) return '';
+      const [y, m, d] = iso.split('-').map(Number);
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `${months[m - 1]} ${d}, ${y}`;
+    }
+
+    function buildFallbackMeta(): CellMeta[][] {
+      const today = new Date();
+      const start = new Date(today);
+      start.setDate(today.getDate() - WEEKS * 7 + 1);
+      start.setDate(start.getDate() - start.getDay()); // rewind to Sunday
+      return Array.from({ length: WEEKS }, (_, w) =>
+        Array.from({ length: DAYS }, (_, d) => {
+          const dt = new Date(start);
+          dt.setDate(start.getDate() + w * 7 + d);
+          return { date: dt.toISOString().split('T')[0], count: 0 };
+        })
+      );
+    }
+
+    function setupHeatmapTooltip(canvas: HTMLCanvasElement) {
+      const tooltip = document.getElementById('commit-tooltip') as HTMLDivElement | null;
+      if (!tooltip) return;
+
+      canvas.addEventListener('mousemove', (e: MouseEvent) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const px = (e.clientX - rect.left) * scaleX;
+        const py = (e.clientY - rect.top) * scaleY;
+        const w = Math.floor(px / (CELL + GAP));
+        const d = Math.floor(py / (CELL + GAP));
+
+        if (w >= 0 && w < WEEKS && d >= 0 && d < DAYS) {
+          const cell = heatmapMeta[w]?.[d];
+          if (cell) {
+            const ds = formatDate(cell.date);
+            tooltip.textContent = cell.count === 0
+              ? `No contributions on ${ds}`
+              : cell.count === 1
+              ? `1 contribution on ${ds}`
+              : `${cell.count} contributions on ${ds}`;
+            tooltip.style.display = 'block';
+            tooltip.style.left = `${e.clientX + 12}px`;
+            tooltip.style.top  = `${e.clientY - 28}px`;
+          }
+        } else {
+          tooltip.style.display = 'none';
+        }
+      });
+
+      canvas.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+      });
+    }
+
     async function initHeatmap() {
       const canvas = document.getElementById('github-heatmap') as HTMLCanvasElement;
       if (!canvas) return;
@@ -188,24 +250,35 @@ const description = 'Product person. AI builder. Systems thinker.';
       // Draw grey fallback immediately
       const fallback = Array.from({ length: WEEKS }, () => Array(DAYS).fill(0));
       renderHeatmap(canvas, fallback);
+      heatmapMeta = buildFallbackMeta();
 
       try {
         const res = await fetch('/api/github-activity');
         if (!res.ok) throw new Error('non-200');
         const { weeks } = await res.json() as {
-          weeks: { contributionDays: { contributionCount: number }[] }[]
+          weeks: { contributionDays: { contributionCount: number; date: string }[] }[]
         };
 
-        const grid = weeks.slice(0, WEEKS).map(week =>
-          week.contributionDays.slice(0, DAYS).map(d => countToLevel(d.contributionCount))
+        const sliced = weeks.slice(0, WEEKS);
+        const grid = sliced.map(week =>
+          week.contributionDays.slice(0, DAYS).map(day => countToLevel(day.contributionCount))
         );
+        heatmapMeta = sliced.map(week =>
+          week.contributionDays.slice(0, DAYS).map(day => ({
+            date: day.date,
+            count: day.contributionCount,
+          }))
+        );
+
         // Pad if fewer than 52 weeks returned
-        while (grid.length < WEEKS) grid.push(Array(DAYS).fill(0));
+        while (grid.length < WEEKS) { grid.push(Array(DAYS).fill(0)); heatmapMeta.push(Array(DAYS).fill({ date: '', count: 0 })); }
 
         renderHeatmap(canvas, grid);
       } catch {
-        // fallback already rendered
+        // fallback already rendered; heatmapMeta already set to fallback
       }
+
+      setupHeatmapTooltip(canvas);
     }
 
     // ── Vault graph ──────────────────────────────────────────────────
