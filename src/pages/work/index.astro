@@ -57,37 +57,89 @@ const description = 'AI products, platforms, and the occasional prototype that m
 
     </section>
 
-    <!-- ── [02] TECHNICAL STACK ──────────────────────────────────────── -->
-    <section class="section stack-section">
+    <!-- ── [02] CAREER ───────────────────────────────────────────────── -->
+    <section class="section career-section">
       <div class="section-label">
-        <span class="s-bracket">[</span>02<span class="s-bracket">]</span> · TECHNICAL STACK
+        <span class="s-bracket">[</span>02<span class="s-bracket">]</span> · CAREER
       </div>
-      <p class="stack-desc">Tools I reach for and when I use them.</p>
 
-      <div class="stack-grid">
-        <div class="stack-card">
-          <div class="stack-cat">AI / ML</div>
-          <div class="stack-items">LLMs (GPT-4, Claude), embeddings, vector search (Pinecone, pgvector), fine-tuning</div>
+      <div class="cs-card">
+        <div class="cs-company">LATER (FORMERLY MAVRCK) · FEB 2023–PRESENT</div>
+        <div class="career-title">Senior PM, Data &amp; Analytics</div>
+        <p class="cs-desc">Leading data platform transformation, ML operationalization, and revenue-generating analytics products.</p>
+      </div>
+
+      <div class="cs-card">
+        <div class="cs-company">BUSHEL, INC · JUNE 2021–DEC 2022</div>
+        <div class="career-title">Product Manager, Data Analytics</div>
+        <p class="cs-desc">Built analytics platform 0→1; migrated enterprise data warehouse to GCP, cutting downtime 75%.</p>
+      </div>
+
+      <div class="cs-card">
+        <div class="cs-company">APTEAN, INC. · FEB 2020–JUNE 2021</div>
+        <div class="career-title">Associate PM, M&amp;A Integrations</div>
+        <p class="cs-desc">Managed data integrations across 10+ acquisitions and 30+ product lines on $80M+ ARR.</p>
+      </div>
+
+      <div class="cs-card">
+        <div class="cs-company">MYCROP TECHNOLOGIES · JUNE 2016–JULY 2018</div>
+        <div class="career-title">Founding Product Manager</div>
+        <p class="cs-desc">0→1 SaaS for precision agriculture — 100% YoY growth, 2,000+ global users.</p>
+      </div>
+
+    </section>
+
+    <!-- ── [03] TOOLS I ACTUALLY USE ─────────────────────────────────── -->
+    <section class="section tools-section">
+      <div class="section-label">
+        <span class="s-bracket">[</span>03<span class="s-bracket">]</span> · TOOLS I ACTUALLY USE
+      </div>
+
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-name">Claude</div>
+          <p class="tool-desc">Because the API call is faster than a meeting, and the hard part is the eval layer — figuring out when the model is confidently wrong.</p>
         </div>
-        <div class="stack-card">
-          <div class="stack-cat">Data</div>
-          <div class="stack-items">Python, SQL, dbt, Kafka, Spark, Airflow</div>
+        <div class="tool-card">
+          <div class="tool-name">Supabase</div>
+          <p class="tool-desc">Every schema decision is a product decision. I want to be the one making it, not approving it after the fact.</p>
         </div>
-        <div class="stack-card">
-          <div class="stack-cat">Product</div>
-          <div class="stack-items">Linear, Figma, Notion, Retool, Amplitude</div>
+        <div class="tool-card">
+          <div class="tool-name">Obsidian</div>
+          <p class="tool-desc">Running decision log across 8 years of product calls. Not a productivity trick — the pattern recognition starts working when the archive gets long enough.</p>
         </div>
-        <div class="stack-card">
-          <div class="stack-cat">Backend</div>
-          <div class="stack-items">Node.js, FastAPI, Supabase, PostgreSQL, Redis</div>
+        <div class="tool-card">
+          <div class="tool-name">dbt + BigQuery</div>
+          <p class="tool-desc">The stack I build on, not just adjacent to. If I'm speccing a data product and I haven't touched the model, the spec is incomplete.</p>
         </div>
-        <div class="stack-card">
-          <div class="stack-cat">Frontend</div>
-          <div class="stack-items">React, Astro, TypeScript, Tailwind</div>
+        <div class="tool-card">
+          <div class="tool-name">Linear</div>
+          <p class="tool-desc">I keep an explicit dropped-items list every sprint. A dropped item that isn't documented is a commitment that doesn't exist.</p>
         </div>
-        <div class="stack-card">
-          <div class="stack-cat">Infrastructure</div>
-          <div class="stack-items">Vercel, AWS, Docker, GitHub Actions</div>
+      </div>
+    </section>
+
+    <!-- ── [04] WORKING PRINCIPLES ────────────────────────────────────── -->
+    <section class="section principles-section">
+      <div class="section-label">
+        <span class="s-bracket">[</span>04<span class="s-bracket">]</span> · WORKING PRINCIPLES
+      </div>
+
+      <div class="principles-grid">
+        <div class="principle-card">
+          <div class="principle-num">01</div>
+          <div class="principle-title">Say no before it gets expensive</div>
+          <p class="principle-body">The cost of a wrong decision compounds with time. Being wrong fast and cheap beats being right slowly and expensively. That requires willingness to kill work I personally championed.</p>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02</div>
+          <div class="principle-title">Read the actual data</div>
+          <p class="principle-body">I don't trust dashboards I haven't traced back to a source. Decisions about data products need to be made from raw data, not summaries of summaries. The signal lives in the table.</p>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03</div>
+          <div class="principle-title">The architecture is the roadmap</div>
+          <p class="principle-body">Most product constraints aren't strategic — they're structural. Understanding the data model tells you more about what's actually possible than any discovery session.</p>
         </div>
       </div>
     </section>
@@ -116,6 +168,7 @@ const description = 'AI products, platforms, and the occasional prototype that m
   .work-header {
     padding: 9rem var(--pad-r) 3.5rem var(--pad-l);
     border-bottom: 1px solid var(--border);
+    text-align: right;
   }
 
   .page-label {
@@ -229,15 +282,17 @@ const description = 'AI products, platforms, and the occasional prototype that m
     margin-top: 0.75rem;
   }
 
-  /* ── Stack section ────────────────────────────────────────────────── */
-  .stack-desc {
+  /* ── Career section ───────────────────────────────────────────────── */
+  .career-title {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-top: 0.25rem;
   }
 
-  .stack-grid {
+  /* ── Tools section ────────────────────────────────────────────────── */
+  .tools-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
@@ -245,34 +300,72 @@ const description = 'AI products, platforms, and the occasional prototype that m
     border: 1px solid var(--border);
   }
 
-  .stack-card {
+  .tool-card {
     background: var(--surface);
     padding: 1.25rem;
   }
 
-  .stack-cat {
+  .tool-name {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 1rem;
     font-weight: 500;
-    color: var(--accent);
-    letter-spacing: 0.1em;
+    color: var(--text);
     margin-bottom: 0.75rem;
   }
 
-  .stack-items {
+  .tool-desc {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--text-dim);
-    line-height: 1.8;
+    line-height: 1.7;
+  }
+
+  /* ── Principles section ───────────────────────────────────────────── */
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .principle-card {
+    background: var(--surface);
+    padding: 1.25rem;
+  }
+
+  .principle-num {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    color: var(--text-dimmer);
+    margin-bottom: 0.75rem;
+    line-height: 1;
+  }
+
+  .principle-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .principle-body {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.7;
   }
 
   /* ── Responsive ───────────────────────────────────────────────────── */
   @media (max-width: 900px) {
-    .stack-grid { grid-template-columns: repeat(2, 1fr); }
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
+    .principles-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 600px) {
-    .stack-grid { grid-template-columns: 1fr; }
+    .tools-grid { grid-template-columns: 1fr; }
+    .principles-grid { grid-template-columns: 1fr; }
     .work-header { padding-top: 7rem; }
   }
 </style>
