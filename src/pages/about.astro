@@ -232,12 +232,18 @@ const description = 'Product person. AI builder. Systems thinker.';
       const ctx = canvas.getContext('2d')!;
 
       const sim = d3.forceSimulation(nodes)
-        .force('charge', d3.forceManyBody().strength(-80))
+        .force('charge', d3.forceManyBody().strength(-120))
         .force('link', d3.forceLink(links).id((d: any) => d.id).distance(40))
-        .force('center', d3.forceCenter(W / 2, H / 2))
+        .force('center', d3.forceCenter(W / 2, H / 2).strength(0.05))
+        .alphaDecay(0.01)
         .stop();
 
-      sim.tick(200);
+      sim.tick(300);
+
+      nodes.forEach((n: any) => {
+        n.x = Math.max(8, Math.min(W - 8, n.x ?? W / 2));
+        n.y = Math.max(8, Math.min(H - 8, n.y ?? H / 2));
+      });
 
       ctx.clearRect(0, 0, W, H);
 
