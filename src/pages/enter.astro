@@ -31,7 +31,15 @@ if (Astro.request.method === 'POST') {
   </head>
   <body>
     <main>
-      <form method="POST" action={`/enter?next=${encodeURIComponent(next)}`}>
+      <pre id="ascii-lock">  .-------.
+  |       |
+  | [   ] |
+  |  | |  |
+  '--| |--'
+     |_|
+  [LOCKED]</pre>
+
+      <form id="gate-form" method="POST" action={`/enter?next=${encodeURIComponent(next)}`}>
         <label class="prompt-label">&gt; enter password</label>
         <div class="input-row">
           <span class="caret">&gt;</span>
@@ -47,7 +55,110 @@ if (Astro.request.method === 'POST') {
         </div>
         {error && <p class="error-msg">{error}</p>}
       </form>
+
+      <div id="gate-joke"></div>
+      <div id="terminal-output"></div>
     </main>
+
+    <script define:vars={{ next }}>
+      const jokes = [
+        "nope.",
+        "still nope.",
+        "bold of you to try again.",
+        "have you considered that this might not be for you?",
+        "at this point i'm rooting for you. still no.",
+        "a lesser lock would've given up by now. not this one.",
+        "i'm genuinely starting to worry about you.",
+        "okay. i'll be here. we both know how this ends.",
+      ];
+
+      const UNLOCKED_ART = `  .-------.
+  |       |
+  |  \\ /  |
+  |   V   |
+  '-------'
+
+ [UNLOCKED]`;
+
+      let attempts = 0;
+      const form = document.getElementById('gate-form');
+      const lock = document.getElementById('ascii-lock');
+      const jokeEl = document.getElementById('gate-joke');
+      const terminalEl = document.getElementById('terminal-output');
+
+      function sleep(ms) {
+        return new Promise(r => setTimeout(r, ms));
+      }
+
+      async function typeText(el, text, delay = 40) {
+        for (const char of text) {
+          el.textContent += char;
+          await sleep(delay);
+        }
+      }
+
+      async function runUnlockSequence() {
+        lock.textContent = UNLOCKED_ART;
+        lock.style.color = '#27ae60';
+
+        await sleep(400);
+        jokeEl.textContent = '> access granted. entering...';
+        jokeEl.style.color = '#27ae60';
+        jokeEl.style.display = 'block';
+
+        await sleep(900);
+        terminalEl.style.display = 'block';
+
+        const lines = [
+          '> identity confirmed.',
+          '> decrypting...',
+          '> welcome back.',
+        ];
+
+        for (const line of lines) {
+          const lineEl = document.createElement('div');
+          lineEl.className = 'terminal-line';
+          terminalEl.appendChild(lineEl);
+          await typeText(lineEl, line, 40);
+          await sleep(100);
+        }
+
+        await sleep(600);
+        window.location.href = next;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const action = form.getAttribute('action');
+
+        let response;
+        try {
+          response = await fetch(action, { method: 'POST', body: formData });
+        } catch {
+          jokeEl.textContent = 'connection error. try again.';
+          jokeEl.style.display = 'block';
+          return;
+        }
+
+        if (response.redirected || !response.url.includes('/enter')) {
+          await runUnlockSequence();
+        } else {
+          const joke = jokes[Math.min(attempts++, jokes.length - 1)];
+
+          lock.classList.add('shaking');
+          setTimeout(() => lock.classList.remove('shaking'), 400);
+
+          jokeEl.textContent = joke;
+          jokeEl.style.display = 'block';
+
+          const input = form.querySelector('.pass-input');
+          if (input) input.value = '';
+          input?.focus();
+        }
+      });
+    </script>
   </body>
 </html>
 
@@ -80,6 +191,30 @@ if (Astro.request.method === 'POST') {
     width: 100%;
     max-width: 420px;
     padding: 2rem;
+  }
+
+  #ascii-lock {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: #555;
+    text-align: center;
+    white-space: pre;
+    letter-spacing: 0.05em;
+    margin-bottom: 2rem;
+    transition: color 0.3s ease;
+  }
+
+  @keyframes lock-shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  #ascii-lock.shaking {
+    animation: lock-shake 0.4s ease;
   }
 
   .prompt-label {
@@ -134,5 +269,27 @@ if (Astro.request.method === 'POST') {
     color: var(--text-dimmer);
     letter-spacing: 0.06em;
     margin-top: 1rem;
+  }
+
+  #gate-joke {
+    display: none;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: #c0392b;
+    margin-top: 1rem;
+    letter-spacing: 0.04em;
+  }
+
+  #terminal-output {
+    display: none;
+    margin-top: 1.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: #27ae60;
+    letter-spacing: 0.04em;
+  }
+
+  .terminal-line {
+    line-height: 1.8;
   }
 </style>

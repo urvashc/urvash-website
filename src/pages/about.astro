@@ -26,9 +26,16 @@ const description = 'Product person. AI builder. Systems thinker.';
       <div class="section-label">
         <span class="s-bracket">[</span>01<span class="s-bracket">]</span> · WHO I AM
       </div>
-      <div class="bio">
-        <p class="bio-p">I've spent 8 years at companies where the data infrastructure was always slightly behind what the product needed it to be. That specific tension — product ambition outpacing its own foundation — is the problem I keep getting hired to solve. At this point I think I just find it interesting.</p>
-        <p class="bio-p">My technical depth is real but specific. I can read a dbt model, trace a dependency graph, write SQL well enough to validate a data model from the query layer, review an API contract and spot where it'll break at scale. What I do with that is make the technical conversation faster and the decisions cheaper — without anyone needing to translate in the room.</p>
+      <div class="bio-cols">
+        <div class="bio">
+          <p class="bio-p">I've spent 8 years at companies where the data infrastructure was always slightly behind what the product needed it to be. That specific tension — product ambition outpacing its own foundation — is the problem I keep getting hired to solve. At this point I think I just find it interesting.</p>
+          <p class="bio-p">My technical depth is real but specific. I can read a dbt model, trace a dependency graph, write SQL well enough to validate a data model from the query layer, review an API contract and spot where it'll break at scale. What I do with that is make the technical conversation faster and the decisions cheaper — without anyone needing to translate in the room.</p>
+        </div>
+        <div class="bio-aside">
+          <p class="bio-p">I've been a Manchester United fan for over 20 years. This wasn't always a character flaw.</p>
+          <p class="bio-p">Eight years in, I've graduated from learning what a data pipeline is to deciding whether one gets built. I'm told this counts as growth. Off the clock: cooking, hiking, sci-fi, and apparently still building software, because I genuinely cannot stop.</p>
+          <p class="bio-p">The Office is my most-watched show. I quote it in meetings. Not as a joke. Just as communication.</p>
+        </div>
       </div>
     </section>
 
@@ -87,34 +94,69 @@ const description = 'Product person. AI builder. Systems thinker.';
       <div class="section-label">
         <span class="s-bracket">[</span>04<span class="s-bracket">]</span> · WHERE I COME FROM
       </div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-date">2022–present</div>
-          <div class="tl-content">
-            <span class="tl-company">Later (now Mavrck)</span> — Senior PM, Analytics &amp; Data Engineering. 3 teams, ML platform, reporting infrastructure.
+      <div class="h-timeline">
+        <div class="h-timeline-track">
+
+          <div class="htl-node htl-edu">
+            <div class="htl-dot"></div>
+            <div class="htl-body">
+              <div class="htl-dates">2012–2016</div>
+              <div class="htl-badge">[edu]</div>
+              <div class="htl-title">B.Tech Computer Science</div>
+              <div class="htl-org">NMIMS Mumbai</div>
+            </div>
           </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">2020–2022</div>
-          <div class="tl-content">
-            <span class="tl-company">Aptean</span> — Product Manager. Managed data integrations for 10+ acquisitions. $80M+ ARR.
+
+          <div class="htl-node htl-work">
+            <div class="htl-dot"></div>
+            <div class="htl-body">
+              <div class="htl-dates">2016–2018</div>
+              <div class="htl-badge">[work]</div>
+              <div class="htl-title">Founding PM</div>
+              <div class="htl-org">MyCrop Technologies</div>
+            </div>
           </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">Earlier</div>
-          <div class="tl-content">
-            <span class="tl-company">Bushel</span> — Data PM. Built analytics platform from scratch. Led enterprise data warehouse migration to GCP.
+
+          <div class="htl-node htl-edu">
+            <div class="htl-dot"></div>
+            <div class="htl-body">
+              <div class="htl-dates">2018–2019</div>
+              <div class="htl-badge">[edu]</div>
+              <div class="htl-title">M.S. Information Systems</div>
+              <div class="htl-org">UMD Smith School</div>
+            </div>
           </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">Earlier</div>
-          <div class="tl-content">
-            <span class="tl-company">MyCrop Technologies</span> — Founding PM. First product hire at an AgTech startup. 0 to global launch.
+
+          <div class="htl-node htl-work">
+            <div class="htl-dot"></div>
+            <div class="htl-body">
+              <div class="htl-dates">2020–2021</div>
+              <div class="htl-badge">[work]</div>
+              <div class="htl-title">Associate PM</div>
+              <div class="htl-org">Aptean</div>
+            </div>
           </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">Education</div>
-          <div class="tl-content">M.S. Information Systems, UMD Smith · B.Tech CS, NMIMS Mumbai.</div>
+
+          <div class="htl-node htl-work">
+            <div class="htl-dot"></div>
+            <div class="htl-body">
+              <div class="htl-dates">2021–2022</div>
+              <div class="htl-badge">[work]</div>
+              <div class="htl-title">PM</div>
+              <div class="htl-org">GrainBridge → Bushel</div>
+            </div>
+          </div>
+
+          <div class="htl-node htl-work htl-current">
+            <div class="htl-dot"></div>
+            <div class="htl-body">
+              <div class="htl-dates">2023–present</div>
+              <div class="htl-badge">[work]</div>
+              <div class="htl-title">Senior PM, Analytics &amp; Data Engineering</div>
+              <div class="htl-org">Later</div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -161,6 +203,7 @@ const description = 'Product person. AI builder. Systems thinker.';
 
     type CellMeta = { date: string; count: number };
     let heatmapMeta: CellMeta[][] = [];
+    let currentHeatmapGrid: number[][] = [];
 
     function countToLevel(n: number): number {
       if (n === 0) return 0;
@@ -178,6 +221,7 @@ const description = 'Product person. AI builder. Systems thinker.';
     }
 
     function renderHeatmap(canvas: HTMLCanvasElement, grid: number[][]) {
+      currentHeatmapGrid = grid;
       const ctx = canvas.getContext('2d')!;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       grid.forEach((week, w) =>
@@ -199,7 +243,7 @@ const description = 'Product person. AI builder. Systems thinker.';
       const today = new Date();
       const start = new Date(today);
       start.setDate(today.getDate() - WEEKS * 7 + 1);
-      start.setDate(start.getDate() - start.getDay()); // rewind to Sunday
+      start.setDate(start.getDate() - start.getDay());
       return Array.from({ length: WEEKS }, (_, w) =>
         Array.from({ length: DAYS }, (_, d) => {
           const dt = new Date(start);
@@ -251,7 +295,6 @@ const description = 'Product person. AI builder. Systems thinker.';
       canvas.width  = WEEKS * (CELL + GAP);
       canvas.height = DAYS  * (CELL + GAP);
 
-      // Draw grey fallback immediately
       const fallback = Array.from({ length: WEEKS }, () => Array(DAYS).fill(0));
       renderHeatmap(canvas, fallback);
       heatmapMeta = buildFallbackMeta();
@@ -274,24 +317,29 @@ const description = 'Product person. AI builder. Systems thinker.';
           }))
         );
 
-        // Pad if fewer than 52 weeks returned
         while (grid.length < WEEKS) { grid.push(Array(DAYS).fill(0)); heatmapMeta.push(Array(DAYS).fill({ date: '', count: 0 })); }
 
         renderHeatmap(canvas, grid);
       } catch {
-        // fallback already rendered; heatmapMeta already set to fallback
+        // fallback already rendered
       }
 
       setupHeatmapTooltip(canvas);
     }
 
     // ── Vault graph ──────────────────────────────────────────────────
+    type VaultNode = { id: number; folder: string; degree: number; x?: number; y?: number; vx?: number; vy?: number };
+    type VaultLink = { source: number | VaultNode; target: number | VaultNode };
+
+    let vaultNodes: VaultNode[] = [];
+    let vaultLinks: VaultLink[] = [];
+
     function nodeColor(folder: string): string {
       const dark = isDark();
       const map: Record<string, [string, string]> = {
-        '01-projects': ['#00ff88', '#00994d'],
-        '02-decisions': ['#4488ff', '#2266cc'],
-        '03-learnings': ['#ff8844', '#cc5522'],
+        '01-projects':   ['#00ff88', '#00994d'],
+        '02-decisions':  ['#4488ff', '#2266cc'],
+        '03-learnings':  ['#ff8844', '#cc5522'],
         '04-interviews': ['#888880', '#5a5a54'],
       };
       const pair = map[folder];
@@ -299,36 +347,16 @@ const description = 'Product person. AI builder. Systems thinker.';
       return dark ? '#888880' : '#5a5a54';
     }
 
-    function drawGraph(
-      canvas: HTMLCanvasElement,
-      nodes: { id: number; folder: string; degree: number; x?: number; y?: number }[],
-      links: { source: number | { id: number; x: number; y: number }; target: number | { id: number; x: number; y: number } }[]
-    ) {
-      const d3 = (window as any).d3;
+    function drawGraph(canvas: HTMLCanvasElement, nodes: VaultNode[], links: VaultLink[]) {
       const W = canvas.width, H = canvas.height;
       const ctx = canvas.getContext('2d')!;
-
-      const sim = d3.forceSimulation(nodes)
-        .force('charge', d3.forceManyBody().strength(-120))
-        .force('link', d3.forceLink(links).id((d: any) => d.id).distance(40))
-        .force('center', d3.forceCenter(W / 2, H / 2).strength(0.05))
-        .alphaDecay(0.01)
-        .stop();
-
-      sim.tick(300);
-
-      nodes.forEach((n: any) => {
-        n.x = Math.max(8, Math.min(W - 8, n.x ?? W / 2));
-        n.y = Math.max(8, Math.min(H - 8, n.y ?? H / 2));
-      });
-
       ctx.clearRect(0, 0, W, H);
 
-      const linkColor = isDark() ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+      const linkColor = isDark() ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.12)';
       links.forEach(l => {
-        const src = typeof l.source === 'object' ? l.source : nodes[l.source as number];
-        const tgt = typeof l.target === 'object' ? l.target : nodes[l.target as number];
-        if (!src || !tgt) return;
+        const src = typeof l.source === 'object' ? l.source as VaultNode : nodes.find(n => n.id === l.source);
+        const tgt = typeof l.target === 'object' ? l.target as VaultNode : nodes.find(n => n.id === l.target);
+        if (!src || !tgt || src === tgt) return;
         ctx.beginPath();
         ctx.moveTo(src.x!, src.y!);
         ctx.lineTo(tgt.x!, tgt.y!);
@@ -348,37 +376,75 @@ const description = 'Product person. AI builder. Systems thinker.';
 
     function placeholderGraph() {
       const folders = ['01-projects','02-decisions','03-learnings','04-interviews'];
-      return {
-        nodes: Array.from({ length: 10 }, (_, i) => ({
-          id: i, folder: folders[i % 4], degree: Math.floor(Math.random() * 5) + 1,
-        })),
-        links: Array.from({ length: 12 }, () => ({
-          source: Math.floor(Math.random() * 10),
-          target: Math.floor(Math.random() * 10),
-        })),
-      };
+      const nodes = Array.from({ length: 12 }, (_, i) => ({
+        id: i, folder: folders[i % 4], degree: Math.floor(Math.random() * 5) + 1,
+      }));
+      const links: { source: number; target: number }[] = [];
+      while (links.length < 16) {
+        const s = Math.floor(Math.random() * 12);
+        let t = Math.floor(Math.random() * 11);
+        if (t >= s) t++;
+        if (!links.some(l => (l.source === s && l.target === t) || (l.source === t && l.target === s))) {
+          links.push({ source: s, target: t });
+        }
+      }
+      return { nodes, links };
     }
 
     async function initVaultGraph() {
       const canvas = document.getElementById('vault-graph') as HTMLCanvasElement;
       if (!canvas || typeof (window as any).d3 === 'undefined') return;
-      canvas.width  = canvas.offsetWidth  || 400;
-      canvas.height = canvas.offsetHeight || 300;
 
-      let nodes: any[], links: any[];
+      const bcrect = canvas.getBoundingClientRect();
+      canvas.width  = Math.round(bcrect.width)  || 400;
+      canvas.height = Math.round(bcrect.height) || 300;
+
+      const W = canvas.width, H = canvas.height;
+      const d3 = (window as any).d3;
+
+      let rawNodes: VaultNode[], rawLinks: { source: number; target: number }[];
       try {
         const res = await fetch('/api/vault-graph');
         if (!res.ok) throw new Error('non-200');
-        ({ nodes, links } = await res.json());
-        if (!nodes?.length) throw new Error('empty');
+        ({ nodes: rawNodes, links: rawLinks } = await res.json());
+        if (!rawNodes?.length) throw new Error('empty');
       } catch {
-        ({ nodes, links } = placeholderGraph());
+        ({ nodes: rawNodes, links: rawLinks } = placeholderGraph() as any);
       }
 
-      drawGraph(canvas, nodes, links);
+      // Deep-copy so D3 mutations don't affect callers; layout runs once, re-draws just repaint
+      const simNodes: VaultNode[] = rawNodes.map(n => ({ ...n }));
+      const simLinks: VaultLink[] = rawLinks.map(l => ({ ...l }));
+
+      d3.forceSimulation(simNodes)
+        .force('charge', d3.forceManyBody().strength(-80))
+        .force('link',   d3.forceLink(simLinks).id((d: any) => d.id).distance(55).strength(0.6))
+        .force('center', d3.forceCenter(W / 2, H / 2))
+        .force('collide', d3.forceCollide(10))
+        .alphaDecay(0.025)
+        .stop()
+        .tick(500);
+
+      simNodes.forEach((n: any) => {
+        n.x = Math.max(12, Math.min(W - 12, n.x ?? W / 2));
+        n.y = Math.max(12, Math.min(H - 12, n.y ?? H / 2));
+      });
+
+      vaultNodes = simNodes;
+      vaultLinks = simLinks;
+
+      drawGraph(canvas, vaultNodes, vaultLinks);
     }
 
-    // Run after D3 CDN script and layout are ready
+    // Re-paint both canvases immediately on theme toggle — no re-layout needed
+    new MutationObserver(() => {
+      const hc = document.getElementById('github-heatmap') as HTMLCanvasElement | null;
+      if (hc && currentHeatmapGrid.length) renderHeatmap(hc, currentHeatmapGrid);
+
+      const vc = document.getElementById('vault-graph') as HTMLCanvasElement | null;
+      if (vc && vaultNodes.length) drawGraph(vc, vaultNodes, vaultLinks);
+    }).observe(document.documentElement, { attributeFilter: ['data-theme'] });
+
     window.addEventListener('load', () => {
       initHeatmap();
       initVaultGraph();
@@ -430,7 +496,13 @@ const description = 'Product person. AI builder. Systems thinker.';
   }
 
   /* ── Bio ──────────────────────────────────────────────────────────── */
-  .bio { max-width: 600px; }
+  .bio-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+  }
+
+  .bio-cols .bio { max-width: none; }
 
   .bio-p {
     font-family: var(--font-mono);
@@ -467,36 +539,96 @@ const description = 'Product person. AI builder. Systems thinker.';
     margin: 0;
   }
 
-  /* ── Timeline ─────────────────────────────────────────────────────── */
-  .timeline { display: flex; flex-direction: column; gap: 1.5rem; }
-
-  .tl-item {
-    display: flex;
-    gap: 2rem;
-    align-items: flex-start;
+  /* ── Horizontal timeline ─────────────────────────────────────────── */
+  .h-timeline {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
   }
 
-  .tl-date {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-dimmer);
-    min-width: 120px;
-    padding-top: 0.1rem;
+  .h-timeline-track {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    padding-top: 1.75rem;
+    padding-bottom: 0.5rem;
+    min-width: max-content;
+  }
+
+  .h-timeline-track::before {
+    content: '';
+    position: absolute;
+    top: calc(1.75rem + 6px);
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .htl-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 190px;
+    padding: 0 1.5rem;
     flex-shrink: 0;
   }
 
-  .tl-content {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    line-height: 1.6;
-    padding-left: 1.5rem;
-    border-left: 1px dotted var(--border);
+  .htl-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1.25rem;
+    flex-shrink: 0;
   }
 
-  .tl-company {
-    color: var(--text);
+  .htl-work .htl-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--accent);
+  }
+
+  .htl-edu .htl-dot {
+    background: var(--bg);
+    border: 1.5px solid var(--text-dim);
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--text-dim);
+  }
+
+  .htl-body { width: 100%; }
+
+  .htl-dates {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.35rem;
+  }
+
+  .htl-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
     font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.45rem;
+  }
+
+  .htl-work .htl-badge { color: var(--accent); }
+  .htl-edu  .htl-badge { color: var(--text-dim); }
+
+  .htl-title {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 0.3rem;
+  }
+
+  .htl-org {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
   }
 
   /* ── Graphs ───────────────────────────────────────────────────────── */
@@ -539,6 +671,7 @@ const description = 'Product person. AI builder. Systems thinker.';
 
   /* ── Responsive ───────────────────────────────────────────────────── */
   @media (max-width: 768px) {
+    .bio-cols      { grid-template-columns: 1fr; }
     .items-grid    { grid-template-columns: 1fr; }
     .graphs-row    { grid-template-columns: 1fr; }
     .about-header  { padding-top: 7rem; }

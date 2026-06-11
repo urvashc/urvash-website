@@ -15,6 +15,7 @@ const { currentPage = 'home' } = Astro.props;
   <a href="/about" class={`nav-link ${currentPage === 'about' ? 'active' : ''}`} data-page="about">
     {currentPage === 'about' ? '[about]' : 'about'}
   </a>
+  <span class="nav-sep" aria-hidden="true">···</span>
   <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme"></button>
 </nav>
 
@@ -60,6 +61,16 @@ const { currentPage = 'home' } = Astro.props;
     font-weight: 500;
   }
 
+  .nav-sep {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-dimmer);
+    opacity: 0.4;
+    letter-spacing: 0.15em;
+    pointer-events: none;
+    user-select: none;
+  }
+
   .theme-btn {
     background: none;
     border: none;
@@ -68,17 +79,18 @@ const { currentPage = 'home' } = Astro.props;
     font-family: var(--font-mono);
     font-size: 0.68rem;
     letter-spacing: 0.04em;
-    transition: color 0.2s ease;
+    opacity: 0.6;
+    transition: color 0.2s ease, opacity 0.2s ease;
     padding: 0;
   }
-  .theme-btn:hover { color: var(--accent); }
+  .theme-btn:hover { color: var(--accent); opacity: 1; }
 </style>
 
 <script>
   const toggle = document.getElementById('theme-toggle') as HTMLButtonElement;
 
   function getLabel(theme: string) {
-    return theme === 'dark' ? '$ set theme --light' : '$ set theme --dark';
+    return theme === 'dark' ? '$--light' : '$--dark';
   }
 
   function syncLabel() {
